@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Multi-species intelligence research tool using triangular visualization mapping">
+    <meta name="author" content="Kerri Lake">
+    <title>Species Intelligence Research Agent v24</title>
+    
+    <!-- React and Babel -->
+    <script crossorigin src="https://unpkg.com/react@18/umd/react.development.js"></script>
+    <script crossorigin src="https://unpkg.com/react-dom@18/umd/react-dom.development.js"></script>
+    <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+    
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    
+    <!-- Lucide React Icons (via CDN) -->
+    <script src="https://unpkg.com/lucide@latest/dist/umd/lucide.js"></script>
+    
+    <!-- Custom Styles -->
+    <link rel="stylesheet" href="css/styles.css">
+</head>
+<body>
+    <!-- React App Mount Point -->
+    <div id="root"></div>
+
+    <!-- Load React component -->
+    <script type="text/babel" src="js/react-component.js"></script>
+    
+    <!-- Initialize the app -->
+    <script type="text/babel">
+        // Render the main React component
+        ReactDOM.render(React.createElement(SpeciesIntelligenceResearcher), document.getElementById('root'));
+    </script>
+</body>
+</html>
