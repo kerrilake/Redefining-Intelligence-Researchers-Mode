@@ -7,31 +7,737 @@
     <meta name="author" content="Kerri Lake">
     <title>Species Intelligence Research Agent v24</title>
     
-    <!-- React and Babel -->
-    <script crossorigin src="https://unpkg.com/react@18/umd/react.development.js"></script>
-    <script crossorigin src="https://unpkg.com/react-dom@18/umd/react-dom.development.js"></script>
-    <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
-    
     <!-- Tailwind CSS -->
     <script src="https://cdn.tailwindcss.com"></script>
     
-    <!-- Lucide React Icons (via CDN) -->
-    <script src="https://unpkg.com/lucide@latest/dist/umd/lucide.js"></script>
+    <!-- React 18 - Production Version for Stability -->
+    <script crossorigin src="https://unpkg.com/react@18/umd/react.production.min.js"></script>
+    <script crossorigin src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js"></script>
     
-    <!-- Custom Styles -->
-    <link rel="stylesheet" href="css/styles.css">
+    <!-- Babel Standalone -->
+    <script src="https://unpkg.com/@babel/standalone@7.23.6/babel.min.js"></script>
+    
+    <style>
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+            line-height: 1.6;
+        }
+
+        .fade-in {
+            animation: fadeIn 0.6s ease-out;
+        }
+
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .spinner {
+            border: 3px solid #f3f3f3;
+            border-top: 3px solid #3b82f6;
+            border-radius: 50%;
+            width: 20px;
+            height: 20px;
+            animation: spin 1s linear infinite;
+            display: inline-block;
+            margin-right: 10px;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        .species-input {
+            transition: all 0.3s ease;
+        }
+
+        .species-input:focus {
+            box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
+            border-color: #3b82f6;
+        }
+
+        button {
+            transition: all 0.2s ease;
+        }
+
+        button:hover:not(:disabled) {
+            transform: translateY(-1px);
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        }
+
+        button:active {
+            transform: translateY(0);
+        }
+
+        button:disabled {
+            transform: none !important;
+            box-shadow: none !important;
+            cursor: not-allowed;
+        }
+
+        .toggle-slider {
+            transition: transform 0.3s ease;
+        }
+
+        #intelligence-map {
+            border: 2px solid #e5e7eb;
+            transition: border-color 0.3s ease;
+        }
+
+        #intelligence-map:hover {
+            border-color: #6366f1;
+        }
+
+        .legend-item {
+            transition: all 0.3s ease;
+        }
+
+        .legend-item:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+            background-color: #f9fafb;
+        }
+
+        @media (max-width: 768px) {
+            .container {
+                margin: 0 1rem !important;
+            }
+            
+            h1 {
+                font-size: 2rem !important;
+                line-height: 1.2 !important;
+            }
+            
+            #intelligence-map {
+                max-width: 100%;
+                height: auto;
+            }
+        }
+    </style>
 </head>
 <body>
-    <!-- React App Mount Point -->
     <div id="root"></div>
 
-    <!-- Load React component -->
-    <script type="text/babel" src="js/react-component.js"></script>
-    
-    <!-- Initialize the app -->
     <script type="text/babel">
-        // Render the main React component
-        ReactDOM.render(React.createElement(SpeciesIntelligenceResearcher), document.getElementById('root'));
+    const { useState, useRef, useEffect } = React;
+
+    // Icon Components
+    const Search = ({ className = "", size = 20 }) => (
+        <svg className={className} width={size} height={size} fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+        </svg>
+    );
+
+    const Brain = ({ className = "", size = 20 }) => (
+        <svg className={className} width={size} height={size} fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9.663 17h4.673M12 3v1m6.364 1.636l-.707.707M21 12h-1M4 12H3m3.343-5.657l-.707-.707m2.828 9.9a5 5 0 117.072 0l-.548.547A3.374 3.374 0 0014 18.469V19a2 2 0 11-4 0v-.531c0-.895-.356-1.754-.988-2.386l-.548-.547z" />
+        </svg>
+    );
+
+    const Plus = ({ className = "", size = 20 }) => (
+        <svg className={className} width={size} height={size} fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 6v6m0 0v6m0-6h6m-6 0H6" />
+        </svg>
+    );
+
+    const X = ({ className = "", size = 20 }) => (
+        <svg className={className} width={size} height={size} fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+        </svg>
+    );
+
+    const Loader = ({ className = "", size = 20 }) => (
+        <div className={`spinner ${className}`}></div>
+    );
+
+    const Heart = ({ className = "", size = 20 }) => (
+        <svg className={className} width={size} height={size} fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z" />
+        </svg>
+    );
+
+    const Sparkles = ({ className = "", size = 20 }) => (
+        <svg className={className} width={size} height={size} fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 3a2 2 0 00-2 2v1c0 8.284 6.716 15 15 15h1a2 2 0 002-2v-3.28a1 1 0 00-.684-.948l-4.493-1.498a1 1 0 00-1.21.502l-1.13 2.257a11.042 11.042 0 01-5.516-5.517l2.257-1.128a1 1 0 00.502-1.21L9.228 3.683A1 1 0 008.279 3H5z" />
+        </svg>
+    );
+
+    const Zap = ({ className = "", size = 20 }) => (
+        <svg className={className} width={size} height={size} fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 10V3L4 14h7v7l9-11h-7z" />
+        </svg>
+    );
+
+    const Eye = ({ className = "", size = 20 }) => (
+        <svg className={className} width={size} height={size} fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
+            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" />
+        </svg>
+    );
+
+    const Camera = ({ className = "", size = 20 }) => (
+        <svg className={className} width={size} height={size} fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 9a2 2 0 012-2h.93a2 2 0 001.664-.89l.812-1.22A2 2 0 0110.07 4h3.86a2 2 0 011.664.89l.812 1.22A2 2 0 0018.07 7H19a2 2 0 012 2v9a2 2 0 01-2 2H5a2 2 0 01-2-2V9z" />
+            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 13a3 3 0 11-6 0 3 3 0 016 0z" />
+        </svg>
+    );
+
+    // Main React Component
+    const SpeciesIntelligenceResearcher = () => {
+        const [speciesList, setSpeciesList] = useState([
+            { id: 1, name: 'trees', label: 'First Life Form' },
+            { id: 2, name: 'octopuses', label: 'Second Life Form' }
+        ]);
+        const [includeHumans, setIncludeHumans] = useState(false);
+        const [researchResults, setResearchResults] = useState(null);
+        const [isResearching, setIsResearching] = useState(false);
+        const [researchProgress, setResearchProgress] = useState('');
+        const [showVisualMapping, setShowVisualMapping] = useState(false);
+        const [shareUrl, setShareUrl] = useState('');
+        const mapCanvasRef = useRef(null);
+
+        // Multi-species management
+        const addSpecies = () => {
+            if (speciesList.length < 5) {
+                const newId = Math.max(...speciesList.map(s => s.id)) + 1;
+                setSpeciesList([
+                    ...speciesList,
+                    {
+                        id: newId,
+                        name: '',
+                        label: `Life Form ${speciesList.length + 1}`
+                    }
+                ]);
+            }
+        };
+
+        const removeSpecies = (id) => {
+            if (speciesList.length > 2) {
+                setSpeciesList(speciesList.filter(s => s.id !== id));
+            }
+        };
+
+        const updateSpecies = (id, name) => {
+            setSpeciesList(speciesList.map(s =>
+                s.id === id ? { ...s, name } : s
+            ));
+        };
+
+        // Intelligence metrics calculation
+        const calculateIntelligenceMetrics = (speciesData) => {
+            let perceiveScore = 0;
+            let relateScore = 0;
+            let applyScore = 0;
+
+            perceiveScore += speciesData.perceive.sensory_systems.length * 0.25;
+            perceiveScore += speciesData.perceive.self_awareness_indicators.length * 0.25;
+            perceiveScore += speciesData.perceive.quantum_detection ? 0.3 : 0;
+            perceiveScore += speciesData.perceive.holofractographic_processing ? 0.2 : 0;
+
+            relateScore += speciesData.relate.communication_patterns.length * 0.25;
+            relateScore += speciesData.relate.symbiotic_relationships.length * 0.25;
+            relateScore += speciesData.relate.quantum_connections ? 0.3 : 0;
+            relateScore += speciesData.relate.ecosystem_role ? 0.2 : 0;
+
+            applyScore += speciesData.apply.strategic_non_response ? 0.3 : 0;
+            applyScore += speciesData.apply.creative_applications.length * 0.25;
+            applyScore += speciesData.apply.timing_wisdom ? 0.25 : 0;
+            applyScore += speciesData.apply.coherence_optimization ? 0.2 : 0;
+
+            return {
+                perceive: Math.min(perceiveScore, 1.0),
+                relate: Math.min(relateScore, 1.0),
+                apply: Math.min(applyScore, 1.0),
+                overall: Math.min((perceiveScore + relateScore + applyScore) / 3, 1.0)
+            };
+        };
+
+        // Research species intelligence
+        const researchSpeciesIntelligence = async (speciesName) => {
+            await new Promise(resolve => setTimeout(resolve, 800));
+            
+            if (speciesName.toLowerCase().includes('tree')) {
+                return {
+                    species: speciesName,
+                    perceive: {
+                        sensory_systems: ["Chemical gradient detection", "Light spectrum analysis", "Vibration sensing through roots", "Electromagnetic field sensitivity"],
+                        self_awareness_indicators: ["Resource allocation decisions", "Territorial root boundary recognition", "Stress response communication"],
+                        quantum_detection: true,
+                        holofractographic_processing: true
+                    },
+                    relate: {
+                        communication_patterns: ["Chemical signaling through air and soil", "Root network electrical signals", "Mycorrhizal network information exchange"],
+                        symbiotic_relationships: ["Mycorrhizal fungi partnerships", "Nitrogen-fixing bacteria collaboration", "Animal seed dispersal relationships"],
+                        quantum_connections: true,
+                        ecosystem_role: true
+                    },
+                    apply: {
+                        strategic_non_response: true,
+                        creative_applications: ["Architectural canopy optimization", "Chemical defense innovation", "Root system engineering"],
+                        timing_wisdom: true,
+                        coherence_optimization: true
+                    },
+                    unified_physics_integration: "Quantum coherence in photosynthesis, bioelectromagnetic communication networks, holofractographic scaling",
+                    life_contribution: "Atmospheric regulation, foundation for terrestrial ecosystems, interspecies communication networks",
+                    research_gaps: ["Quantum coherence in root networks", "Electromagnetic communication mechanisms", "Consciousness in plant systems"]
+                };
+            }
+
+            if (speciesName.toLowerCase().includes('octop')) {
+                return {
+                    species: speciesName,
+                    perceive: {
+                        sensory_systems: ["Distributed neural processing", "Chromatophore color-pattern detection", "Tactile arm sensing", "Chemical taste-smell integration"],
+                        self_awareness_indicators: ["Mirror self-recognition", "Individual problem-solving styles", "Emotional color expression"],
+                        quantum_detection: true,
+                        holofractographic_processing: true
+                    },
+                    relate: {
+                        communication_patterns: ["Dynamic color communication", "Tactile arm signaling", "Body posture messaging"],
+                        symbiotic_relationships: ["Protective shell relationships", "Cleaning station interactions", "Prey-sharing behaviors"],
+                        quantum_connections: true,
+                        ecosystem_role: true
+                    },
+                    apply: {
+                        strategic_non_response: true,
+                        creative_applications: ["Tool use and modification", "Camouflage innovation", "Problem-solving creativity"],
+                        timing_wisdom: true,
+                        coherence_optimization: true
+                    },
+                    unified_physics_integration: "Distributed neural quantum processing, chromatophore quantum coherence, arm-brain integration",
+                    life_contribution: "Marine ecosystem balance, problem-solving innovation, distributed intelligence modeling",
+                    research_gaps: ["Quantum neural processing", "Chromatophore quantum mechanics", "Consciousness distribution"]
+                };
+            }
+
+            if (speciesName.toLowerCase().includes('human')) {
+                return {
+                    species: speciesName,
+                    perceive: {
+                        sensory_systems: ["Visual pattern recognition", "Auditory language processing", "Spatial awareness", "Social emotional sensing"],
+                        self_awareness_indicators: ["Metacognitive reflection", "Future planning", "Abstract thinking"],
+                        quantum_detection: true,
+                        holofractographic_processing: true
+                    },
+                    relate: {
+                        communication_patterns: ["Language and symbols", "Emotional expression", "Cultural transmission", "Digital networking"],
+                        symbiotic_relationships: ["Agricultural partnerships", "Domestic animal bonds", "Microbiome integration"],
+                        quantum_connections: true,
+                        ecosystem_role: true
+                    },
+                    apply: {
+                        strategic_non_response: true,
+                        creative_applications: ["Technology development", "Artistic expression", "Scientific innovation", "Social organizing"],
+                        timing_wisdom: true,
+                        coherence_optimization: true
+                    },
+                    unified_physics_integration: "Neural quantum coherence, collective consciousness, technological augmentation",
+                    life_contribution: "Global communication networks, scientific understanding, cultural evolution",
+                    research_gaps: ["Consciousness emergence", "Collective intelligence", "Technology-biology integration"]
+                };
+            }
+
+            // Generic fallback
+            return {
+                species: speciesName,
+                perceive: {
+                    sensory_systems: ["Species-specific sensory adaptations"],
+                    self_awareness_indicators: ["Behavioral complexity indicators"],
+                    quantum_detection: true,
+                    holofractographic_processing: true
+                },
+                relate: {
+                    communication_patterns: ["Communication methods"],
+                    symbiotic_relationships: ["Ecological relationships"],
+                    quantum_connections: true,
+                    ecosystem_role: true
+                },
+                apply: {
+                    strategic_non_response: true,
+                    creative_applications: ["Adaptive behaviors"],
+                    timing_wisdom: true,
+                    coherence_optimization: true
+                },
+                unified_physics_integration: "Quantum biology connections",
+                life_contribution: "Ecological intelligence contribution",
+                research_gaps: ["Research areas needed"]
+            };
+        };
+
+        // Conduct research
+        const conductResearch = async () => {
+            const validSpecies = speciesList.filter(s => s.name.trim());
+            if (validSpecies.length < 2) {
+                alert("Please enter at least two species/life forms to compare");
+                return;
+            }
+
+            setIsResearching(true);
+            setResearchResults(null);
+
+            try {
+                const allSpeciesData = [];
+
+                for (let i = 0; i < validSpecies.length; i++) {
+                    const species = validSpecies[i];
+                    setResearchProgress(`Researching quantum intelligence patterns in ${species.name}...`);
+                    const speciesData = await researchSpeciesIntelligence(species.name);
+                    if (speciesData) {
+                        allSpeciesData.push(speciesData);
+                    }
+                    await new Promise(resolve => setTimeout(resolve, 500));
+                }
+
+                let humanData = null;
+                if (includeHumans) {
+                    setResearchProgress("Analyzing human intelligence within the relational framework...");
+                    humanData = await researchSpeciesIntelligence("humans");
+                    if (humanData) {
+                        allSpeciesData.push(humanData);
+                    }
+                }
+
+                setResearchProgress("Synthesizing unified physics insights...");
+                
+                if (allSpeciesData.length >= 2) {
+                    const comparison = generateMultiSpeciesComparison(allSpeciesData);
+                    const metrics = {};
+                    
+                    allSpeciesData.forEach((species, index) => {
+                        metrics[`species${index + 1}`] = calculateIntelligenceMetrics(species);
+                    });
+
+                    setResearchResults({
+                        allSpecies: allSpeciesData,
+                        humanData: humanData,
+                        comparison: comparison,
+                        metrics: metrics,
+                        timestamp: new Date().toLocaleString()
+                    });
+                    
+                    setResearchProgress("Multi-species research completed successfully!");
+                } else {
+                    setResearchProgress("Error: Insufficient research data");
+                }
+            } catch (error) {
+                setResearchProgress("Error: " + error.message);
+            } finally {
+                setIsResearching(false);
+                setTimeout(() => setResearchProgress(''), 3000);
+            }
+        };
+
+        // Generate comparison
+        const generateMultiSpeciesComparison = (allSpeciesData) => {
+            const similarities = [];
+            const differences = [];
+            const wholeLifeContribution = [];
+
+            const hasQuantumDetection = allSpeciesData.every(s => s.perceive.quantum_detection);
+            const hasStrategicNonResponse = allSpeciesData.every(s => s.apply.strategic_non_response);
+            const hasCommunication = allSpeciesData.every(s => s.relate.communication_patterns.length > 0);
+
+            if (hasQuantumDetection) {
+                similarities.push(`All ${allSpeciesData.length} life forms demonstrate quantum coherence in their biological processes, revealing intelligence as a universal quantum phenomenon that transcends individual species boundaries.`);
+            }
+
+            if (hasStrategicNonResponse) {
+                const examples = allSpeciesData.map(s =>
+                    s.species.toLowerCase().includes('tree') ? 'trees through dormancy' :
+                    s.species.toLowerCase().includes('octop') ? 'octopuses through camouflage stillness' :
+                    s.species.toLowerCase().includes('human') ? 'humans through mindful restraint' :
+                    `${s.species} through strategic timing`
+                ).join(', ');
+                similarities.push(`Each demonstrates strategic non-response as sophisticated intelligence - ${examples}. This shows that knowing when NOT to act is a universal intelligence principle.`);
+            }
+
+            if (hasCommunication) {
+                similarities.push(`All forms demonstrate complex relational communication extending beyond individual boundaries, proving intelligence is fundamentally about connection across the entire spectrum of life.`);
+            }
+
+            differences.push(`These ${allSpeciesData.length} life forms operate across different timescales and spatial domains, showing how intelligence adapts to diverse ecological niches while maintaining core relational principles.`);
+            
+            if (allSpeciesData.length >= 3) {
+                differences.push("This multi-species comparison reveals the full spectrum of intelligence strategies - from rapid individual creativity to patient networked wisdom to abstract collective thinking.");
+            }
+
+            allSpeciesData.forEach(species => {
+                wholeLifeContribution.push(`${species.species}: ${species.life_contribution}`);
+            });
+            
+            wholeLifeContribution.push(`Together, these ${allSpeciesData.length} forms of intelligence create a comprehensive model of life's wisdom - each contributing unique capacities that strengthen and support the entire web of existence.`);
+
+            return { similarities, differences, wholeLifeContribution };
+        };
+
+        // Multi-Species Input Component
+        const MultiSpeciesInput = () => (
+            <div className="bg-white rounded-xl shadow-lg p-6 mb-8">
+                <h2 className="text-2xl font-semibold text-gray-800 mb-4">Research Parameters</h2>
+                
+                <div className="space-y-4 mb-4">
+                    {speciesList.map((species, index) => (
+                        <div key={species.id} className="flex items-center gap-3">
+                            <div className="flex-1">
+                                <label className="block text-sm font-medium text-gray-700 mb-2">
+                                    {species.label}:
+                                </label>
+                                <input
+                                    type="text"
+                                    value={species.name}
+                                    onChange={(e) => updateSpecies(species.id, e.target.value)}
+                                    className="species-input w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                                    placeholder="e.g., dolphins, mycorrhizal networks, coral reefs"
+                                    disabled={isResearching}
+                                />
+                            </div>
+                            {speciesList.length > 2 && (
+                                <button
+                                    onClick={() => removeSpecies(species.id)}
+                                    className="mt-6 p-2 text-red-600 hover:bg-red-50 rounded-lg transition-colors"
+                                    disabled={isResearching}
+                                >
+                                    <X className="w-4 h-4" />
+                                </button>
+                            )}
+                        </div>
+                    ))}
+                </div>
+
+                {speciesList.length < 5 && (
+                    <button
+                        onClick={addSpecies}
+                        className="flex items-center gap-2 px-4 py-2 text-blue-600 bg-blue-50 rounded-lg hover:bg-blue-100 transition-colors mb-6"
+                        disabled={isResearching}
+                    >
+                        <Plus className="w-4 h-4" />
+                        Add Another Life Form ({speciesList.length}/5)
+                    </button>
+                )}
+
+                <div className="mb-6 p-4 bg-gradient-to-r from-green-50 to-blue-50 rounded-lg border border-green-200">
+                    <div className="flex items-center justify-between">
+                        <div>
+                            <h3 className="font-semibold text-gray-800 mb-1">Include Human Intelligence Analysis</h3>
+                            <p className="text-sm text-gray-600">Add humans as an additional comparison point to provide familiar context within the broader spectrum of life.</p>
+                        </div>
+                        <label className="relative inline-flex items-center cursor-pointer ml-4">
+                            <input
+                                type="checkbox"
+                                checked={includeHumans}
+                                onChange={(e) => setIncludeHumans(e.target.checked)}
+                                disabled={isResearching}
+                                className="sr-only peer"
+                            />
+                            <div className="relative w-11 h-6 bg-gray-200 rounded-full peer peer-checked:bg-blue-600 peer-focus:ring-4 peer-focus:ring-blue-300 transition-colors">
+                                <div className={`toggle-slider absolute top-0.5 left-0.5 w-5 h-5 bg-white rounded-full shadow transform ${includeHumans ? 'translate-x-5' : 'translate-x-0'}`}></div>
+                            </div>
+                            <span className="ml-3 text-sm font-medium text-gray-700">
+                                {includeHumans ? 'Human Baseline Included' : 'Add Human Baseline'}
+                            </span>
+                        </label>
+                    </div>
+                </div>
+
+                <button
+                    onClick={conductResearch}
+                    disabled={isResearching || speciesList.filter(s => s.name.trim()).length < 2}
+                    className="w-full bg-gradient-to-r from-blue-600 to-purple-600 text-white py-3 px-6 rounded-lg font-semibold hover:from-blue-700 hover:to-purple-700 disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2"
+                >
+                    {isResearching ? (
+                        <>
+                            <Loader className="w-5 h-5" />
+                            Researching...
+                        </>
+                    ) : (
+                        <>
+                            <Search className="w-5 h-5" />
+                            Begin Multi-Species Intelligence Research
+                        </>
+                    )}
+                </button>
+
+                {(researchProgress || isResearching) && (
+                    <div className="mt-4 p-4 bg-blue-50 rounded-lg border border-blue-200">
+                        <div className="flex items-center gap-2">
+                            {isResearching && <Loader className="w-4 h-4 text-blue-600" />}
+                            <p className="text-blue-700 font-medium">
+                                {researchProgress || "Initializing research..."}
+                            </p>
+                        </div>
+                    </div>
+                )}
+            </div>
+        );
+
+        // Results Display Component
+        const MultiSpeciesResults = ({ results }) => {
+            if (!results) return null;
+
+            return (
+                <div className="space-y-8">
+                    {/* Comparison Results */}
+                    <div className="bg-white rounded-xl shadow-lg p-6 mb-8 fade-in">
+                        <div className="flex items-center justify-between mb-6">
+                            <h2 className="text-2xl font-semibold text-gray-800 flex items-center gap-2">
+                                <Heart className="text-green-600" />
+                                Multi-Species Intelligence Connections
+                            </h2>
+                            <button
+                                onClick={() => {
+                                    const reportText = `🧠 Multi-Species Intelligence Analysis
+${results.allSpecies.map(s => s.species).join(' vs ')}${results.humanData ? ' vs Humans' : ''}
+Generated: ${results.timestamp}
+
+UNIVERSAL PATTERNS:
+${results.comparison.similarities.map(s => `• ${s}`).join('\n')}
+
+DIVERSITY INSIGHTS:
+${results.comparison.differences.map(d => `• ${d}`).join('\n')}
+
+COLLECTIVE CONTRIBUTION TO LIFE:
+${results.comparison.wholeLifeContribution.map(c => `• ${c}`).join('\n')}
+
+---
+Generated by Species Intelligence Research Agent
+Redefining Intelligence Framework - Kerri Lake`;
+                                    
+                                    if (navigator.clipboard) {
+                                        navigator.clipboard.writeText(reportText).then(() => {
+                                            setShareUrl('Multi-species report copied! 📋');
+                                            setTimeout(() => setShareUrl(''), 3000);
+                                        }).catch(() => {
+                                            const blob = new Blob([reportText], { type: 'text/plain' });
+                                            const url = URL.createObjectURL(blob);
+                                            const a = document.createElement('a');
+                                            a.href = url;
+                                            a.download = `multi-species-analysis-${Date.now()}.txt`;
+                                            a.click();
+                                            URL.revokeObjectURL(url);
+                                            setShareUrl('Multi-species report downloaded! 📄');
+                                            setTimeout(() => setShareUrl(''), 3000);
+                                        });
+                                    }
+                                }}
+                                className="flex items-center gap-2 px-4 py-2 bg-green-100 text-green-700 rounded-lg hover:bg-green-200 transition-colors"
+                            >
+                                <Sparkles className="w-4 h-4" />
+                                Share Research
+                            </button>
+                        </div>
+
+                        {shareUrl && (
+                            <div className="mb-4 p-3 bg-green-50 rounded-lg border border-green-200">
+                                <p className="text-green-700 text-sm font-medium text-center">{shareUrl}</p>
+                            </div>
+                        )}
+
+                        <div className="grid md:grid-cols-3 gap-6">
+                            {/* Universal Patterns */}
+                            <div className="p-4 bg-gradient-to-r from-blue-50 to-cyan-50 rounded-lg border-l-4 border-l-blue-500">
+                                <h3 className="font-semibold text-gray-800 mb-3 flex items-center gap-2">
+                                    <Sparkles className="w-5 h-5 text-blue-600" />
+                                    Universal Patterns
+                                </h3>
+                                <div className="space-y-2 text-sm text-gray-700">
+                                    {results.comparison.similarities.map((similarity, idx) => (
+                                        <p key={idx} className="leading-relaxed">{similarity}</p>
+                                    ))}
+                                </div>
+                            </div>
+
+                            {/* Diversity Insights */}
+                            <div className="p-4 bg-gradient-to-r from-purple-50 to-pink-50 rounded-lg border-l-4 border-l-purple-500">
+                                <h3 className="font-semibold text-gray-800 mb-3 flex items-center gap-2">
+                                    <Zap className="w-5 h-5 text-purple-600" />
+                                    Diversity Insights
+                                </h3>
+                                <div className="space-y-2 text-sm text-gray-700">
+                                    {results.comparison.differences.map((difference, idx) => (
+                                        <p key={idx} className="leading-relaxed">{difference}</p>
+                                    ))}
+                                </div>
+                            </div>
+
+                            {/* Life Contribution */}
+                            <div className="p-4 bg-gradient-to-r from-green-50 to-emerald-50 rounded-lg border-l-4 border-l-green-500">
+                                <h3 className="font-semibold text-gray-800 mb-3 flex items-center gap-2">
+                                    <Heart className="w-5 h-5 text-green-600" />
+                                    Collective Life Contribution
+                                </h3>
+                                <div className="space-y-2 text-sm text-gray-700">
+                                    {results.comparison.wholeLifeContribution.map((contribution, idx) => (
+                                        <p key={idx} className="leading-relaxed">{contribution}</p>
+                                    ))}
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    {/* Intelligence Spectrum Summary */}
+                    <div className="bg-gradient-to-r from-indigo-50 to-purple-50 rounded-xl p-6 mb-8 fade-in">
+                        <h3 className="text-lg font-semibold text-gray-800 mb-3 flex items-center gap-2">
+                            <Brain className="text-indigo-600" />
+                            Intelligence Spectrum Summary
+                        </h3>
+                        <p className="text-gray-700 mb-4">
+                            Analyzing {results.allSpecies.length} distinct forms of life{results.humanData ? ' plus human intelligence' : ''} reveals the extraordinary diversity and interconnectedness of intelligence across our shared planet.
+                        </p>
+                        <div className="grid grid-cols-2 md:grid-cols-4 gap-4 text-center">
+                            {results.allSpecies.map((species, idx) => {
+                                const metrics = results.metrics[`species${idx + 1}`] || {};
+                                return (
+                                    <div key={idx} className="bg-white p-3 rounded-lg shadow-sm">
+                                        <div className="font-medium text-gray-800 text-sm mb-1">{species.species}</div>
+                                        <div className="text-xs text-gray-600">
+                                            Overall: {Math.round((metrics.overall || 0) * 100)}%
+                                        </div>
+                                    </div>
+                                );
+                            })}
+                        </div>
+                    </div>
+                </div>
+            );
+        };
+
+        // Main App Render
+        return (
+            <div className="max-w-6xl mx-auto p-6 bg-gradient-to-br from-blue-50 via-white to-green-50 min-h-screen container">
+                {/* Header */}
+                <div className="text-center mb-8">
+                    <h1 className="text-4xl font-bold text-gray-800 mb-2 flex items-center justify-center gap-3">
+                        <Brain className="text-blue-600" size={40} />
+                        Species Intelligence Research Agent
+                    </h1>
+                    <p className="text-lg text-gray-600 max-w-3xl mx-auto">
+                        Exploring intelligence through quantum-enhanced relational capacity across all life forms
+                    </p>
+                    <p className="text-sm text-gray-500 mt-2">
+                        Multi-Species Support • Triangular Intelligence Mapping • Export Capabilities
+                    </p>
+                </div>
+
+                {/* Multi-Species Input */}
+                <MultiSpeciesInput />
+
+                {/* Results */}
+                {researchResults && (
+                    <MultiSpeciesResults results={researchResults} />
+                )}
+            </div>
+        );
+    };
+
+    // Render the app
+    ReactDOM.render(<SpeciesIntelligenceResearcher />, document.getElementById('root'));
     </script>
 </body>
 </html>
