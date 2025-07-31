@@ -204,7 +204,9 @@
         const generateWisdomInsights = (species) => {
             const insights = { perceive: [], relate: [], apply: [], essence: "" };
 
-            if (species.species.toLowerCase().includes('tree')) {
+            const speciesName = species.species.toLowerCase();
+
+            if (speciesName.includes('tree')) {
                 insights.perceive = [
                     "Trees sense the world through chemical conversations, reading the atmosphere like an ancient language",
                     "They feel light's subtle changes across seasons, adjusting their entire being to cosmic rhythms",
@@ -222,7 +224,7 @@
                 ];
                 insights.essence = "Trees embody the wisdom of deep time and interconnected generosity, showing us that true intelligence flows through relationship and patient presence.";
             }
-            else if (species.species.toLowerCase().includes('octop')) {
+            else if (speciesName.includes('octop')) {
                 insights.perceive = [
                     "Octopuses think with their entire body, each arm processing the world independently yet in harmony",
                     "Their skin becomes a living canvas of emotion and communication, expressing thoughts as dynamic art",
@@ -240,11 +242,172 @@
                 ];
                 insights.essence = "Octopuses teach us that intelligence can be fluid, creative, and deeply embodied - thinking not just with our minds but with our entire being.";
             }
+            else if (speciesName.includes('human')) {
+                insights.perceive = [
+                    "Humans excel at pattern recognition across vast scales, from quantum to cosmic phenomena",
+                    "Language processing allows them to share internal experiences and build collective knowledge",
+                    "Social emotional sensing creates deep empathy and understanding across diverse communities"
+                ];
+                insights.relate = [
+                    "Through stories and symbols, humans transmit wisdom across generations and cultures",
+                    "Digital networks enable instant global communication, connecting minds across continents",
+                    "Collaborative partnerships with other species show capacity for inter-species intelligence"
+                ];
+                insights.apply = [
+                    "Technology amplifies human capabilities, extending intelligence beyond biological limits",
+                    "Artistic expression transforms inner experience into shared beauty and meaning",
+                    "Scientific innovation systematically expands understanding of reality's fundamental nature"
+                ];
+                insights.essence = "Humans demonstrate the power of collective intelligence and symbolic thinking, showing how individual minds can unite to understand and transform reality.";
+            }
+            else if (speciesName.includes('hummingbird')) {
+                insights.perceive = [
+                    "Hummingbirds see ultraviolet patterns on flowers invisible to most eyes, navigating a secret world of color",
+                    "Their spatial memory maps thousands of flower locations with GPS-like precision across vast territories",
+                    "Millisecond flight adjustments demonstrate real-time processing of complex aerodynamic calculations"
+                ];
+                insights.relate = [
+                    "Hummingbirds form intricate partnerships with specific flowers, co-evolving in mutual dependence",
+                    "They communicate through elaborate aerial dances, turning flight into expressive art",
+                    "Migration routes connect ecosystems across continents, linking distant habitats through their journeys"
+                ];
+                insights.apply = [
+                    "Masters of energy efficiency, they balance high-speed living with precise resource management",
+                    "Territorial strategies show sophisticated understanding of cost-benefit analysis in nature",
+                    "Hovering flight demonstrates perfect control - the ability to be dynamically still"
+                ];
+                insights.essence = "Hummingbirds embody the intelligence of precision and grace, showing us how to live intensely while maintaining perfect balance and efficiency.";
+            }
+            else if (speciesName.includes('cat')) {
+                insights.perceive = [
+                    "Cats perceive subtle vibrations through whiskers, reading the world through touch at a distance",
+                    "Their night vision reveals a shadow world of movement invisible to human eyes",
+                    "Acute hearing detects ultrasonic communications, accessing hidden layers of environmental information"
+                ];
+                insights.relate = [
+                    "Cats form complex social hierarchies based on mutual respect rather than dominance",
+                    "Purring creates healing vibrations that benefit both themselves and their companions",
+                    "They communicate through scent marking, leaving invisible messages for future visitors"
+                ];
+                insights.apply = [
+                    "Masters of energy conservation, cats demonstrate the wisdom of rest as strategic preparation",
+                    "Hunting techniques reveal patient observation followed by explosive, precise action",
+                    "Territorial intelligence shows how to maintain boundaries while remaining adaptable"
+                ];
+                insights.essence = "Cats teach us the intelligence of presence and patience, showing how awareness and readiness can be more powerful than constant action.";
+            }
+            else if (speciesName.includes('dolphin')) {
+                insights.perceive = [
+                    "Dolphins navigate through echolocation, painting detailed sound-pictures of their underwater world",
+                    "They recognize themselves in mirrors, demonstrating self-awareness rivaling human consciousness",
+                    "Biosonar abilities reveal internal structures of objects, seeing through matter itself"
+                ];
+                insights.relate = [
+                    "Complex social networks span generations, with grandmothers teaching hunting techniques to young",
+                    "Signature whistles act as names, allowing dolphins to call specific individuals across vast distances",
+                    "Cooperative hunting strategies show collective intelligence and coordinated group decision-making"
+                ];
+                insights.apply = [
+                    "Tool use varies by region, showing cultural transmission of innovative techniques",
+                    "Play behaviors extend throughout life, demonstrating joy as a form of intelligence",
+                    "Rescue behaviors toward other species reveal empathy that transcends biological boundaries"
+                ];
+                insights.essence = "Dolphins embody the intelligence of joy and connection, showing us that play, empathy, and community are not luxuries but essential aspects of consciousness.";
+            }
+            else if (speciesName.includes('bee')) {
+                insights.perceive = [
+                    "Bees perceive polarized light patterns in the sky, using the sun as a compass even on cloudy days",
+                    "They detect electrical fields around flowers, sensing which blossoms have recently been visited",
+                    "Compound eyes process rapid movement and ultraviolet patterns invisible to most other creatures"
+                ];
+                insights.relate = [
+                    "Waggle dances communicate precise locations, transforming complex spatial information into embodied language",
+                    "Collective decision-making processes evaluate potential nest sites through democratic consensus",
+                    "Chemical communications coordinate the activities of thousands through sophisticated pheromone vocabularies"
+                ];
+                insights.apply = [
+                    "Architectural genius creates hexagonal cells with mathematical precision, maximizing storage with minimal materials",
+                    "Foraging efficiency algorithms rival computer optimization systems for route planning",
+                    "Temperature regulation demonstrates collective intelligence managing complex environmental systems"
+                ];
+                insights.essence = "Bees reveal the intelligence of collective harmony, showing how individual actions can create emergent wisdom greater than the sum of its parts.";
+            }
+            else if (speciesName.includes('whale')) {
+                insights.perceive = [
+                    "Whales hear across ocean basins, their songs traveling thousands of miles through deep sound channels",
+                    "Magnetic field sensitivity guides epic migrations with precision across trackless seas",
+                    "Low-frequency calls penetrate ocean depths, connecting whale communities across vast underwater distances"
+                ];
+                insights.relate = [
+                    "Multi-generational songs evolve like cultural traditions, passed down and modified through whale societies",
+                    "Complex social structures include lifelong friendships and cooperative child-rearing practices",
+                    "Inter-species communications show sophisticated understanding of different marine intelligences"
+                ];
+                insights.apply = [
+                    "Migration strategies demonstrate long-term planning and environmental prediction across seasons",
+                    "Cooperative feeding techniques like bubble-netting show coordinated group problem-solving",
+                    "Deep diving abilities reveal mastery over extreme environmental pressures"
+                ];
+                insights.essence = "Whales embody the intelligence of depth and endurance, teaching us about the wisdom that comes from navigating life's deepest currents with grace.";
+            }
+            else if (speciesName.includes('fungi') || speciesName.includes('mushroom') || speciesName.includes('mycelium')) {
+                insights.perceive = [
+                    "Fungi sense chemical gradients across vast underground networks, detecting resources and threats across forest ecosystems",
+                    "They perceive seasonal changes through soil temperature and moisture variations, timing reproduction with perfect precision",
+                    "Chemical sensing abilities detect and respond to the needs of partner plants in real-time"
+                ];
+                insights.relate = [
+                    "Mycorrhizal networks connect plant communities, creating internet-like communication systems beneath forests",
+                    "Resource sharing protocols distribute nutrients based on need, supporting struggling plants with excess resources",
+                    "Chemical messaging systems coordinate ecosystem-wide responses to environmental changes"
+                ];
+                insights.apply = [
+                    "Decomposition mastery transforms death into life, recycling complex organic matter with biochemical precision",
+                    "Network optimization creates efficient resource distribution systems that human engineers study and emulate",
+                    "Adaptive growth patterns explore and exploit environmental opportunities with algorithmic efficiency"
+                ];
+                insights.essence = "Fungi reveal the intelligence of connection and transformation, showing us how to turn endings into beginnings and create abundance through generous networking.";
+            }
+            else if (speciesName.includes('elephant')) {
+                insights.perceive = [
+                    "Elephants detect seismic vibrations through their feet, communicating across miles through ground tremors",
+                    "Infrasonic calls travel vast distances, maintaining contact with family groups beyond visual range",
+                    "Emotional intelligence recognizes grief, joy, and complex social dynamics within their communities"
+                ];
+                insights.relate = [
+                    "Matriarchal wisdom guides herds across traditional migration routes passed down through generations",
+                    "Mourning rituals show deep emotional connections and understanding of death's significance",
+                    "Cooperative child-rearing involves entire family groups in teaching and protecting young"
+                ];
+                insights.apply = [
+                    "Problem-solving abilities include tool use and environmental modification to access food and water",
+                    "Leadership strategies balance individual needs with group welfare in complex decision-making",
+                    "Memory systems store decades of environmental knowledge crucial for family survival"
+                ];
+                insights.essence = "Elephants embody the intelligence of memory and compassion, teaching us that wisdom grows through caring for others and honoring the knowledge of our ancestors.";
+            }
             else {
-                insights.perceive = [`${species.species} demonstrates unique sensory adaptations that reveal aspects of reality invisible to other species`];
-                insights.relate = [`${species.species} participates in complex ecological webs of communication and mutual support`];
-                insights.apply = [`${species.species} applies intelligence through behaviors perfectly adapted to their environment`];
-                insights.essence = `${species.species} embodies a unique form of intelligence perfectly suited to their role in the web of life.`;
+                // Enhanced generic fallback with more variety
+                const genericInsights = [
+                    {
+                        perceive: [`${species.species} demonstrates unique sensory adaptations that reveal hidden aspects of reality`, "Their perceptual abilities unlock environmental information invisible to other species", "Specialized awareness allows them to thrive in ecological niches others cannot access"],
+                        relate: [`${species.species} participates in complex ecological relationships that support biodiversity`, "Their communication patterns contribute to ecosystem health and stability", "Symbiotic connections demonstrate intelligence expressed through cooperation and mutual support"],
+                        apply: [`${species.species} applies environmental intelligence through perfectly adapted survival strategies`, "Their behavioral innovations show creative problem-solving unique to their form of life", "Energy management and resource optimization reveal sophisticated biological intelligence"],
+                        essence: `${species.species} embodies a unique form of intelligence perfectly suited to their role in the web of life, contributing irreplaceable wisdom to our understanding of consciousness.`
+                    },
+                    {
+                        perceive: [`${species.species} perceives environmental patterns and changes with remarkable sensitivity`, "Their sensory systems detect subtle cues that guide survival and reproduction", "Awareness capabilities reveal how different forms of life interpret reality"],
+                        relate: [`${species.species} engages in complex social and ecological interactions within their habitat`, "Communication methods create connections that strengthen community bonds", "Relational intelligence supports both individual and collective wellbeing"],
+                        apply: [`${species.species} demonstrates adaptive intelligence through flexible responses to environmental challenges`, "Strategic behaviors show how intelligence manifests through life-sustaining actions", "Creative adaptations reveal problem-solving capabilities refined over evolutionary time"],
+                        essence: `${species.species} represents a distinctive approach to living intelligence, showing us alternative ways of being conscious and engaged with the world.`
+                    }
+                ];
+                
+                const randomInsight = genericInsights[Math.floor(Math.random() * genericInsights.length)];
+                insights.perceive = randomInsight.perceive;
+                insights.relate = randomInsight.relate;
+                insights.apply = randomInsight.apply;
+                insights.essence = randomInsight.essence;
             }
 
             return insights;
