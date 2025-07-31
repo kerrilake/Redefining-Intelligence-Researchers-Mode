@@ -3,7 +3,8 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Species Intelligence Research Agent</title>
+    <title>Species Intelligence Research Agent - Redefining Intelligence</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
     <style>
         * {
             margin: 0;
@@ -12,841 +13,1921 @@
         }
 
         body {
-            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
-            background: linear-gradient(135deg, #dbeafe 0%, #ffffff 50%, #dcfce7 100%);
+            font-family: 'Arial', sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
             min-height: 100vh;
-            line-height: 1.6;
+            color: #333;
+            overflow-x: hidden;
         }
 
         .container {
             max-width: 1200px;
             margin: 0 auto;
-            padding: 24px;
+            padding: 20px;
+            position: relative;
+        }
+
+        .glass {
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(10px);
+            border-radius: 20px;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            box-shadow: 0 8px 32px rgba(31, 38, 135, 0.37);
         }
 
         .header {
             text-align: center;
-            margin-bottom: 32px;
+            padding: 40px 20px;
+            margin-bottom: 30px;
         }
 
-        .title {
-            font-size: 2.5rem;
-            font-weight: bold;
-            color: #1f2937;
-            margin-bottom: 8px;
+        .header h1 {
+            font-size: 2.5em;
+            color: white;
+            margin-bottom: 10px;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
+        }
+
+        .header p {
+            color: rgba(255, 255, 255, 0.9);
+            font-size: 1.1em;
+            font-style: italic;
+        }
+
+        .search-section {
+            padding: 30px;
+            margin-bottom: 30px;
+            text-align: center;
+        }
+
+        .search-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 15px;
+            margin-bottom: 20px;
+        }
+
+        .species-input {
+            padding: 15px;
+            font-size: 16px;
+            border: none;
+            border-radius: 15px;
+            background: rgba(255, 255, 255, 0.9);
+            color: #333;
+            backdrop-filter: blur(5px);
+            transition: all 0.3s ease;
+        }
+
+        .species-input:focus {
+            outline: none;
+            transform: scale(1.05);
+            box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+        }
+
+        .species-input::placeholder {
+            color: #666;
+        }
+
+        .options-section {
+            margin: 20px 0;
+            text-align: left;
+        }
+
+        .checkbox-group {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 20px;
+            margin: 15px 0;
+        }
+
+        .checkbox-item {
             display: flex;
             align-items: center;
-            justify-content: center;
-            gap: 12px;
-        }
-
-        .subtitle {
-            font-size: 1.125rem;
-            color: #4b5563;
-            max-width: 768px;
-            margin: 0 auto;
-        }
-
-        .tagline {
-            font-size: 0.875rem;
-            color: #6b7280;
-            margin-top: 8px;
-        }
-
-        .card {
-            background: rgba(255, 255, 255, 0.95);
-            border-radius: 12px;
-            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
-            border: 1px solid rgba(255, 255, 255, 0.2);
-            backdrop-filter: blur(10px);
-            padding: 24px;
-            margin-bottom: 32px;
-        }
-
-        .card-title {
-            font-size: 1.5rem;
-            font-weight: 600;
-            color: #1f2937;
-            margin-bottom: 16px;
-        }
-
-        .input-grid {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 16px;
-            margin-bottom: 24px;
-        }
-
-        @media (max-width: 768px) {
-            .input-grid {
-                grid-template-columns: 1fr;
-            }
-        }
-
-        .input-group {
-            display: flex;
-            flex-direction: column;
-        }
-
-        .label {
-            display: block;
-            font-size: 0.875rem;
-            font-weight: 500;
-            color: #374151;
-            margin-bottom: 8px;
-        }
-
-        .input {
-            width: 100%;
-            padding: 12px;
-            border: 2px solid #d1d5db;
-            border-radius: 8px;
-            font-size: 16px;
-            transition: all 0.3s ease;
-            background: white;
-        }
-
-        .input:focus {
-            outline: none;
-            border-color: #3b82f6;
-            box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
-        }
-
-        .btn {
-            width: 100%;
-            background: linear-gradient(135deg, #3b82f6 0%, #8b5cf6 100%);
+            gap: 8px;
             color: white;
-            padding: 16px 24px;
+        }
+
+        .checkbox-item input[type="checkbox"] {
+            transform: scale(1.2);
+        }
+
+        .research-btn {
+            background: linear-gradient(135deg, #4CAF50, #45a049);
+            color: white;
             border: none;
-            border-radius: 8px;
-            font-size: 1rem;
-            font-weight: 600;
+            padding: 15px 40px;
+            font-size: 18px;
+            border-radius: 25px;
             cursor: pointer;
             transition: all 0.3s ease;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            gap: 8px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.2);
+            margin: 20px 10px;
         }
 
-        .btn:hover:not(:disabled) {
+        .research-btn:hover {
             transform: translateY(-2px);
-            box-shadow: 0 8px 25px rgba(59, 130, 246, 0.3);
+            box-shadow: 0 6px 20px rgba(0,0,0,0.3);
         }
 
-        .btn:disabled {
-            opacity: 0.7;
+        .research-btn:disabled {
+            background: #ccc;
             cursor: not-allowed;
             transform: none;
         }
 
-        .progress {
-            margin-top: 16px;
-            padding: 16px;
-            background: linear-gradient(135deg, #dbeafe 0%, #bfdbfe 100%);
-            border-radius: 8px;
-            border: 1px solid #93c5fd;
+        .results-container {
+            padding: 30px;
+            margin: 20px 0;
+            position: relative;
+        }
+
+        .species-header {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+
+        .species-header h2 {
+            font-size: 2.2em;
+            color: #333;
+            margin-bottom: 10px;
+        }
+
+        .research-type {
+            display: inline-block;
+            background: linear-gradient(135deg, #FF6B6B, #4ECDC4);
+            color: white;
+            padding: 8px 20px;
+            border-radius: 20px;
+            font-size: 14px;
+            font-weight: bold;
+        }
+
+        .wisdom-insight {
+            text-align: center;
+            padding: 25px;
+            margin: 25px 0;
+            background: linear-gradient(135deg, rgba(255, 215, 0, 0.2), rgba(255, 165, 0, 0.2));
+            border-radius: 15px;
+            border-left: 5px solid #FFD700;
+        }
+
+        .wisdom-insight h3 {
+            color: #B8860B;
+            margin-bottom: 15px;
+            font-size: 1.3em;
+        }
+
+        .wisdom-insight p {
+            font-size: 1.1em;
+            line-height: 1.6;
+            color: #333;
+            font-style: italic;
+        }
+
+        .intelligence-framework {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 25px;
+            margin: 30px 0;
+        }
+
+        .framework-section {
+            padding: 25px;
+            border-radius: 15px;
+            position: relative;
+            backdrop-filter: blur(5px);
+        }
+
+        .perceive-section {
+            background: linear-gradient(135deg, rgba(76, 175, 80, 0.2), rgba(129, 199, 132, 0.2));
+            border-left: 5px solid #4CAF50;
+        }
+
+        .relate-section {
+            background: linear-gradient(135deg, rgba(33, 150, 243, 0.2), rgba(100, 181, 246, 0.2));
+            border-left: 5px solid #2196F3;
+        }
+
+        .apply-section {
+            background: linear-gradient(135deg, rgba(156, 39, 176, 0.2), rgba(186, 104, 200, 0.2));
+            border-left: 5px solid #9C27B0;
+        }
+
+        .framework-section h3 {
+            font-size: 1.4em;
+            margin-bottom: 15px;
             display: flex;
             align-items: center;
-            gap: 8px;
+            gap: 10px;
         }
 
-        .spinner {
-            width: 20px;
-            height: 20px;
-            border: 3px solid #bfdbfe;
-            border-top: 3px solid #3b82f6;
-            border-radius: 50%;
-            animation: spin 1s linear infinite;
+        .framework-badge {
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            color: white;
+            padding: 5px 12px;
+            border-radius: 15px;
+            font-size: 12px;
+            font-weight: bold;
         }
 
-        @keyframes spin {
-            0% { transform: rotate(0deg); }
-            100% { transform: rotate(360deg); }
+        .framework-section p {
+            line-height: 1.6;
+            margin-bottom: 15px;
+            color: #444;
         }
 
-        .progress-text {
-            color: #1e40af;
-            font-weight: 500;
+        .framework-details {
+            list-style: none;
+            padding: 0;
         }
 
-        .results {
-            opacity: 0;
-            animation: fadeIn 0.6s ease forwards;
+        .framework-details li {
+            padding: 8px 0;
+            border-bottom: 1px solid rgba(255,255,255,0.1);
+            position: relative;
+            padding-left: 20px;
+        }
+
+        .framework-details li:before {
+            content: "•";
+            position: absolute;
+            left: 0;
+            color: #4CAF50;
+            font-weight: bold;
+        }
+
+        .community-section {
+            margin: 30px 0;
+            padding: 25px;
+            background: linear-gradient(135deg, rgba(78, 205, 196, 0.2), rgba(85, 239, 196, 0.2));
+            border-radius: 15px;
+            border-left: 5px solid #4ECDC4;
+        }
+
+        .community-badge {
+            position: absolute;
+            top: -10px;
+            right: 20px;
+            background: linear-gradient(135deg, #FF6B6B, #4ECDC4);
+            color: white;
+            padding: 8px 16px;
+            border-radius: 20px;
+            font-size: 12px;
+            font-weight: bold;
+        }
+
+        .community-stats {
+            display: flex;
+            gap: 20px;
+            margin: 15px 0;
+            flex-wrap: wrap;
+        }
+
+        .stat {
+            background: rgba(78, 205, 196, 0.3);
+            padding: 8px 15px;
+            border-radius: 15px;
+            font-size: 14px;
+            font-weight: bold;
+        }
+
+        .community-insight {
+            margin: 20px 0;
+            padding: 20px;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 12px;
+            border-left: 4px solid #4ECDC4;
+        }
+
+        .community-insight p {
+            font-style: italic;
+            margin-bottom: 10px;
+        }
+
+        .community-insight small {
+            color: #666;
+            font-weight: bold;
+        }
+
+        .action-buttons {
+            display: flex;
+            gap: 15px;
+            margin: 30px 0;
+            flex-wrap: wrap;
+            justify-content: center;
+        }
+
+        .action-btn {
+            flex: 1;
+            min-width: 200px;
+            padding: 15px 25px;
+            border: none;
+            border-radius: 25px;
+            font-weight: bold;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            backdrop-filter: blur(10px);
+            color: white;
+            text-decoration: none;
+            display: inline-block;
+            text-align: center;
+        }
+
+        .breakdown-btn {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        }
+
+        .contribute-btn {
+            background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+        }
+
+        .research-another-btn {
+            background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);
+        }
+
+        .action-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(0,0,0,0.2);
+        }
+
+        .loading-enhanced {
+            text-align: center;
+            padding: 60px 20px;
+            margin: 20px 0;
+        }
+
+        .research-animation {
+            font-size: 64px;
+            animation: research-pulse 2s infinite;
+            margin-bottom: 20px;
+        }
+
+        @keyframes research-pulse {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.2); }
+        }
+
+        .loading-enhanced h3 {
+            color: #333;
+            margin-bottom: 15px;
+        }
+
+        .loading-enhanced p {
+            color: #666;
+            margin-bottom: 25px;
+        }
+
+        .progress-bar {
+            width: 100%;
+            height: 6px;
+            background: rgba(255, 255, 255, 0.3);
+            border-radius: 3px;
+            overflow: hidden;
+            margin-top: 25px;
+        }
+
+        .progress {
+            height: 100%;
+            background: linear-gradient(90deg, #4CAF50, #2196F3, #9C27B0);
+            animation: progress-flow 3s infinite;
+        }
+
+        @keyframes progress-flow {
+            0% { width: 0%; }
+            100% { width: 100%; }
+        }
+
+        .error-state {
+            text-align: center;
+            padding: 40px;
+            color: #333;
+        }
+
+        .error-state h3 {
+            color: #e74c3c;
+            margin-bottom: 15px;
+        }
+
+        .retry-btn {
+            background: linear-gradient(135deg, #e74c3c, #c0392b);
+            color: white;
+            border: none;
+            padding: 12px 25px;
+            border-radius: 20px;
+            cursor: pointer;
+            margin-top: 15px;
+        }
+
+        /* Modal Styles */
+        .modal {
+            display: none;
+            position: fixed;
+            z-index: 1000;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0,0,0,0.6);
+            backdrop-filter: blur(5px);
+        }
+
+        .modal-content {
+            background: rgba(255, 255, 255, 0.95);
+            margin: 3% auto;
+            padding: 30px;
+            border-radius: 20px;
+            width: 90%;
+            max-width: 700px;
+            max-height: 85vh;
+            overflow-y: auto;
+            position: relative;
+        }
+
+        .close {
+            position: absolute;
+            right: 20px;
+            top: 15px;
+            font-size: 28px;
+            font-weight: bold;
+            cursor: pointer;
+            color: #666;
+        }
+
+        .close:hover {
+            color: #000;
+        }
+
+        .form-group {
+            margin: 20px 0;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: bold;
+            color: #333;
+        }
+
+        .form-group input,
+        .form-group textarea,
+        .form-group select {
+            width: 100%;
+            padding: 12px;
+            border: 2px solid #ddd;
+            border-radius: 10px;
+            font-size: 14px;
+            background: rgba(255, 255, 255, 0.9);
+            font-family: inherit;
+        }
+
+        .form-group textarea {
+            resize: vertical;
+            min-height: 80px;
+        }
+
+        .form-section {
+            background: rgba(78, 205, 196, 0.1);
+            padding: 20px;
+            border-radius: 12px;
+            margin: 20px 0;
+        }
+
+        .form-section h4 {
+            color: #4ECDC4;
+            margin-bottom: 12px;
+            font-size: 1.1em;
+        }
+
+        .submit-btn {
+            background: linear-gradient(135deg, #4CAF50, #45a049);
+            color: white;
+            border: none;
+            padding: 15px 30px;
+            border-radius: 25px;
+            cursor: pointer;
+            font-size: 16px;
+            font-weight: bold;
+            width: 100%;
+            margin-top: 20px;
+        }
+
+        .research-info {
+            text-align: center;
+            margin-top: 30px;
+            padding: 15px;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 10px;
+        }
+
+        .research-info small {
+            color: #666;
+            font-size: 12px;
+        }
+
+        .usage-stats {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            background: rgba(0, 0, 0, 0.8);
+            color: white;
+            padding: 10px 15px;
+            border-radius: 10px;
+            font-size: 12px;
+            z-index: 100;
+        }
+
+        .hidden {
+            display: none;
+        }
+
+        @media (max-width: 768px) {
+            .container {
+                padding: 10px;
+            }
+
+            .header h1 {
+                font-size: 2em;
+            }
+
+            .search-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .intelligence-framework {
+                grid-template-columns: 1fr;
+            }
+
+            .action-buttons {
+                flex-direction: column;
+            }
+
+            .action-btn {
+                min-width: auto;
+            }
+        }
+
+        /* Additional animations */
+        .fade-in {
+            animation: fadeIn 0.6s ease-in;
         }
 
         @keyframes fadeIn {
             from { opacity: 0; transform: translateY(20px); }
             to { opacity: 1; transform: translateY(0); }
         }
-
-        .map-header {
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            margin-bottom: 16px;
-        }
-
-        .map-title {
-            font-size: 1.25rem;
-            font-weight: 600;
-            display: flex;
-            align-items: center;
-            gap: 8px;
-        }
-
-        .toggle-btn {
-            padding: 8px 16px;
-            background: linear-gradient(135deg, #e0e7ff 0%, #c7d2fe 100%);
-            color: #4338ca;
-            border: none;
-            border-radius: 8px;
-            cursor: pointer;
-            font-weight: 500;
-            transition: all 0.3s ease;
-        }
-
-        .toggle-btn:hover {
-            background: linear-gradient(135deg, #c7d2fe 0%, #a5b4fc 100%);
-        }
-
-        .canvas-container {
-            text-align: center;
-            margin: 20px 0;
-        }
-
-        .canvas {
-            border-radius: 8px;
-            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
-            max-width: 100%;
-        }
-
-        .map-guide {
-            font-size: 0.875rem;
-            color: #4b5563;
-            background: linear-gradient(135deg, #dbeafe 0%, #bfdbfe 100%);
-            padding: 12px;
-            border-radius: 8px;
-            margin-top: 16px;
-            text-align: center;
-        }
-
-        .wisdom-grid {
-            display: grid;
-            gap: 24px;
-        }
-
-        .wisdom-card {
-            background: linear-gradient(135deg, #f0f8ff 0%, #e6f3ff 100%);
-            padding: 24px;
-            border-radius: 12px;
-            border: 1px solid #bfdbfe;
-            box-shadow: 0 4px 12px rgba(59, 130, 246, 0.1);
-        }
-
-        .wisdom-title {
-            font-size: 1.125rem;
-            font-weight: 600;
-            color: #1f2937;
-            margin-bottom: 12px;
-            text-transform: capitalize;
-        }
-
-        .wisdom-content {
-            color: #374151;
-            font-size: 0.875rem;
-            line-height: 1.6;
-        }
-
-        .wisdom-content p {
-            margin-bottom: 8px;
-        }
-
-        .wisdom-content strong {
-            color: #1f2937;
-        }
-
-        .wisdom-essence {
-            font-style: italic;
-            margin-top: 12px;
-            padding-top: 12px;
-            border-top: 1px solid #bfdbfe;
-        }
-
-        .analysis-grid {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 32px;
-        }
-
-        @media (max-width: 1024px) {
-            .analysis-grid {
-                grid-template-columns: 1fr;
-            }
-        }
-
-        .analysis-section {
-            display: flex;
-            flex-direction: column;
-            gap: 16px;
-        }
-
-        .section-title {
-            font-size: 1.25rem;
-            font-weight: bold;
-            color: #1f2937;
-            border-bottom: 2px solid #e5e7eb;
-            padding-bottom: 8px;
-        }
-
-        .capacity-card {
-            padding: 16px;
-            border-radius: 8px;
-            background: linear-gradient(135deg, #f9fafb 0%, #ffffff 100%);
-            border-left: 4px solid;
-        }
-
-        .capacity-card.perceive {
-            border-left-color: #3b82f6;
-        }
-
-        .capacity-card.relate {
-            border-left-color: #10b981;
-        }
-
-        .capacity-card.apply {
-            border-left-color: #8b5cf6;
-        }
-
-        .capacity-header {
-            display: flex;
-            align-items: center;
-            gap: 8px;
-            margin-bottom: 12px;
-        }
-
-        .capacity-title {
-            font-weight: 600;
-            color: #1f2937;
-        }
-
-        .capacity-content {
-            font-size: 0.875rem;
-            color: #374151;
-            line-height: 1.5;
-        }
-
-        .capacity-item {
-            margin-bottom: 8px;
-        }
-
-        .capacity-label {
-            font-weight: 500;
-            text-transform: capitalize;
-        }
-
-        .capacity-list {
-            list-style: disc;
-            margin-left: 20px;
-            margin-top: 4px;
-        }
-
-        .special-card {
-            padding: 16px;
-            border-radius: 8px;
-            border-left: 4px solid;
-        }
-
-        .physics-card {
-            background: linear-gradient(135deg, #fef3c7 0%, #fde68a 100%);
-            border-left-color: #f59e0b;
-        }
-
-        .contribution-card {
-            background: linear-gradient(135deg, #dcfce7 0%, #bbf7d0 100%);
-            border-left-color: #10b981;
-        }
-
-        .research-card {
-            background: linear-gradient(135deg, #fce7f3 0%, #fbcfe8 100%);
-            border-left-color: #ec4899;
-        }
-
-        .completion-banner {
-            margin-bottom: 16px;
-            padding: 12px;
-            background: linear-gradient(135deg, #dcfce7 0%, #bbf7d0 100%);
-            border-radius: 8px;
-            border: 1px solid #86efac;
-            text-align: center;
-        }
-
-        .completion-text {
-            color: #166534;
-            font-weight: 500;
-        }
-
-        .hidden {
-            display: none;
-        }
     </style>
 </head>
 <body>
     <div class="container">
-        <!-- Header -->
-        <div class="header">
-            <h1 class="title">
-                🧠 Species Intelligence Research Agent
-            </h1>
-            <p class="subtitle">
-                Exploring intelligence through quantum-enhanced relational capacity across all life forms
-            </p>
-            <p class="tagline">
-                AI-Powered Research • Real-Time Wisdom Generation • Beautiful Visualizations
-            </p>
-        </div>
+        <header class="header glass">
+            <h1>Species Intelligence Research Agent</h1>
+            <p>Redefining Intelligence Through the Perceive • Relate • Apply Framework</p>
+        </header>
 
-        <!-- Input Form -->
-        <div class="card">
-            <h2 class="card-title">Research Parameters</h2>
-            <div class="input-grid">
-                <div class="input-group">
-                    <label class="label">First Life Form:</label>
-                    <input type="text" id="species1" value="trees" class="input" placeholder="e.g., dolphins, mycorrhizal networks">
-                </div>
-                <div class="input-group">
-                    <label class="label">Second Life Form:</label>
-                    <input type="text" id="species2" value="octopuses" class="input" placeholder="e.g., trees, humans, coral reefs">
-                </div>
-            </div>
+        <section class="search-section glass">
+            <h2 style="color: white; margin-bottom: 20px;">Explore Species Intelligence</h2>
             
-            <button onclick="conductResearch()" id="researchBtn" class="btn">
-                🔍 Begin Quantum Intelligence Research
+            <div class="search-grid">
+                <input type="text" class="species-input" id="species1" placeholder="Enter first species (e.g., dolphins)" />
+                <input type="text" class="species-input" id="species2" placeholder="Enter second species (optional)" />
+                <input type="text" class="species-input" id="species3" placeholder="Enter third species (optional)" />
+                <input type="text" class="species-input" id="species4" placeholder="Enter fourth species (optional)" />
+                <input type="text" class="species-input" id="species5" placeholder="Enter fifth species (optional)" />
+            </div>
+
+            <div class="options-section">
+                <h3 style="color: white; margin-bottom: 15px;">Enhanced Research Options</h3>
+                <div class="checkbox-group">
+                    <div class="checkbox-item">
+                        <input type="checkbox" id="includeIndigenous" />
+                        <label for="includeIndigenous">Include Indigenous Knowledge</label>
+                    </div>
+                    <div class="checkbox-item">
+                        <input type="checkbox" id="includeBiomimicry" />
+                        <label for="includeBiomimicry">Include Biomimicry Applications</label>
+                    </div>
+                    <div class="checkbox-item">
+                        <input type="checkbox" id="includeHuman" />
+                        <label for="includeHuman">Compare with Human Intelligence</label>
+                    </div>
+                </div>
+            </div>
+
+            <button class="research-btn" onclick="conductResearch()">
+                🔬 Conduct Intelligence Research
             </button>
+        </section>
 
-            <div id="progressDiv" class="progress hidden">
-                <div class="spinner"></div>
-                <p class="progress-text" id="progressText">Initializing research...</p>
-            </div>
-        </div>
+        <div id="results"></div>
 
-        <!-- Results Section -->
-        <div id="resultsSection" class="results hidden">
-            <!-- Triangle Map -->
-            <div class="card">
-                <div class="map-header">
-                    <h2 class="map-title">
-                        👁️ Triangular Intelligence Map
-                    </h2>
-                    <button onclick="toggleMap()" id="mapToggle" class="toggle-btn">
-                        Show Map
-                    </button>
-                </div>
-                <div id="mapContainer" class="hidden">
-                    <div class="canvas-container">
-                        <canvas id="triangleCanvas" width="500" height="400" class="canvas"></canvas>
-                    </div>
-                    <div class="map-guide">
-                        <p><strong>Triangle Guide:</strong> PERCEIVE (top), RELATE (bottom-left), APPLY (bottom-right)</p>
-                        <p>Species positioned based on intelligence patterns</p>
-                    </div>
-                </div>
-            </div>
+        <div class="usage-stats" id="usageStats"></div>
+    </div>
 
-            <!-- Wisdom Insights -->
-            <div class="card">
-                <h2 class="card-title">✨ Species Wisdom Insights</h2>
-                <div id="wisdomContent" class="wisdom-grid">
-                    <!-- Wisdom cards will be inserted here -->
-                </div>
-            </div>
-
-            <!-- Detailed Analysis -->
-            <div class="card">
-                <h2 class="card-title" style="text-align: center;">🔬 Quantum Intelligence Analysis Results</h2>
-                <div class="completion-banner">
-                    <p class="completion-text" id="completionTime">✅ Research completed</p>
+    <!-- Community Contribution Modal -->
+    <div id="contributionModal" class="modal">
+        <div class="modal-content glass">
+            <span class="close" onclick="closeContributionModal()">&times;</span>
+            <h3>Contribute Species Intelligence Research</h3>
+            <p>Share your knowledge, research, or observations about species intelligence</p>
+            
+            <form id="contributionForm">
+                <div class="form-group">
+                    <label for="contributorName">Your Name/Organization *:</label>
+                    <input type="text" id="contributorName" required>
                 </div>
                 
-                <div id="analysisContent" class="analysis-grid">
-                    <!-- Analysis cards will be inserted here -->
+                <div class="form-group">
+                    <label for="contributorEmail">Email (for verification) *:</label>
+                    <input type="email" id="contributorEmail" required>
                 </div>
-            </div>
+                
+                <div class="form-group">
+                    <label for="contributorCredentials">Credentials/Background:</label>
+                    <input type="text" id="contributorCredentials" placeholder="PhD in Biology, Indigenous Elder, Professional Animal Communicator, etc.">
+                </div>
+                
+                <div class="form-group">
+                    <label for="speciesName">Species Name *:</label>
+                    <input type="text" id="speciesName" required>
+                </div>
+                
+                <div class="form-group">
+                    <label for="wisdomInsight">Key Wisdom Insight *:</label>
+                    <textarea id="wisdomInsight" rows="3" required 
+                            placeholder="What profound insight about this species' intelligence should people know?"></textarea>
+                </div>
+                
+                <div class="form-section">
+                    <h4>PERCEIVE - How they perceive their world:</h4>
+                    <textarea id="perceiveData" rows="4" required
+                            placeholder="Describe their sensory capabilities, environmental awareness, unique perceptual gifts..."></textarea>
+                </div>
+                
+                <div class="form-section">
+                    <h4>RELATE - How they relate to their world:</h4>
+                    <textarea id="relateData" rows="4" required
+                            placeholder="Social structures, communication, ecological relationships, cultural significance..."></textarea>
+                </div>
+                
+                <div class="form-section">
+                    <h4>APPLY - How they apply their intelligence:</h4>
+                    <textarea id="applyData" rows="4" required
+                            placeholder="Problem-solving, tool use, learning, ecosystem contributions..."></textarea>
+                </div>
+                
+                <div class="form-group">
+                    <label for="humanLearnings">What humans can learn from this species *:</label>
+                    <textarea id="humanLearnings" rows="3" required></textarea>
+                </div>
+                
+                <div class="form-group">
+                    <label for="conservationWisdom">Conservation intelligence insights *:</label>
+                    <textarea id="conservationWisdom" rows="3" required></textarea>
+                </div>
+                
+                <div class="form-group">
+                    <label for="sources">Sources/References (required) *:</label>
+                    <textarea id="sources" rows="4" required
+                            placeholder="List your sources: research papers, traditional knowledge, personal observation, etc. At least 2 sources required."></textarea>
+                </div>
+                
+                <div class="form-group">
+                    <label for="experienceType">Type of contribution *:</label>
+                    <select id="experienceType" required>
+                        <option value="">Select type</option>
+                        <option value="scientific">Scientific Research</option>
+                        <option value="indigenous">Indigenous/Traditional Knowledge</option>
+                        <option value="observation">Field Observation</option>
+                        <option value="interspecies">Interspecies Communication</option>
+                        <option value="biomimicry">Biomimicry Application</option>
+                        <option value="conservation">Conservation Experience</option>
+                    </select>
+                </div>
+                
+                <div class="form-group">
+                    <div class="checkbox-item">
+                        <input type="checkbox" id="accuracy" required>
+                        <label for="accuracy">I verify that this information is accurate to the best of my knowledge *</label>
+                    </div>
+                </div>
+                
+                <div class="form-group">
+                    <div class="checkbox-item">
+                        <input type="checkbox" id="permission" required>
+                        <label for="permission">I give permission for this contribution to be used in the Species Intelligence Research database *</label>
+                    </div>
+                </div>
+                
+                <button type="submit" class="submit-btn">Submit Contribution</button>
+            </form>
         </div>
     </div>
 
     <script>
-        let researchResults = null;
-        let isMapVisible = false;
+        // Global variables
+        let currentSpeciesData = [];
+        let speciesAPI, communitySystem, pdfGenerator;
 
-        // Sample data
-        const sampleData = {
-            trees: {
-                species: "trees",
-                wisdom: {
-                    perceive_wisdom: "Trees sense the world through chemical conversations, reading the atmosphere like an ancient language passed down through generations.",
-                    relate_wisdom: "Through mycorrhizal partnerships, trees share resources with strangers, creating forest-wide support networks that span across species boundaries.",
-                    apply_wisdom: "Masters of strategic patience, trees know when to conserve energy and when to reach for growth, demonstrating the intelligence of restraint.",
-                    essence: "Trees embody the wisdom of deep time and interconnected generosity, showing us that true intelligence flows through relationship and patient presence."
-                },
-                perceive: {
-                    sensory_systems: ["Chemical gradient detection", "Light spectrum analysis", "Vibration sensing through roots"],
-                    self_awareness_indicators: ["Resource allocation decisions", "Territorial boundary recognition"],
-                    quantum_detection: "Quantum efficiency in photosynthesis processes",
-                    holofractographic_processing: "Fractal branching patterns, cellular networks"
-                },
-                relate: {
-                    communication_patterns: ["Chemical signaling", "Root network signals", "Mycorrhizal exchange"],
-                    symbiotic_relationships: ["Mycorrhizal fungi", "Nitrogen-fixing bacteria", "Seed dispersal animals"],
-                    quantum_connections: "Forest-wide chemical communication",
-                    ecosystem_role: "Atmospheric regulation, soil stabilization"
-                },
-                apply: {
-                    strategic_non_response: "Dormancy timing, selective resource sharing",
-                    creative_applications: ["Canopy optimization", "Defense innovation", "Root engineering"],
-                    timing_wisdom: "Seasonal synchronization, masting cycles",
-                    coherence_optimization: "Forest-wide resource distribution"
-                },
-                unified_physics_integration: "Quantum coherence in photosynthesis, bioelectromagnetic networks",
-                life_contribution: "Atmospheric regulation, ecosystem foundation, interspecies communication",
-                research_gaps: ["Quantum coherence in root networks", "Electromagnetic communication", "Plant consciousness"]
-            },
-            octopuses: {
-                species: "octopuses",
-                wisdom: {
-                    perceive_wisdom: "Octopuses think with their entire body, each arm processing the world independently yet in perfect harmony with the whole.",
-                    relate_wisdom: "Color-changing conversations flow across their bodies like living poetry in motion, expressing thoughts as dynamic art.",
-                    apply_wisdom: "Master shapeshifters who adapt instantly to any environment, octopuses show us the ultimate creative flexibility in intelligence.",
-                    essence: "Octopuses teach us that intelligence can be fluid, creative, and deeply embodied - thinking not just with our minds but with our entire being."
-                },
-                perceive: {
-                    sensory_systems: ["Distributed neural processing", "Chromatophore communication", "Chemotactile sensing"],
-                    self_awareness_indicators: ["Mirror recognition", "Tool modification", "Individual problem-solving"],
-                    quantum_detection: "Quantum effects in neural microtubules",
-                    holofractographic_processing: "Distributed intelligence across arms"
-                },
-                relate: {
-                    communication_patterns: ["Dynamic skin patterns", "Posture signaling", "Chemical trails"],
-                    symbiotic_relationships: ["Cleaner fish relationships", "Reef integration", "Mimicry partnerships"],
-                    quantum_connections: "Instantaneous neural coordination",
-                    ecosystem_role: "Reef regulation, population control"
-                },
-                apply: {
-                    strategic_non_response: "Camouflage stillness, selective engagement",
-                    creative_applications: ["Tool creation", "Den construction", "Novel hunting"],
-                    timing_wisdom: "Predator avoidance, hunting optimization",
-                    coherence_optimization: "Neural coordination, ecosystem balance"
-                },
-                unified_physics_integration: "Quantum coherence in distributed networks, holographic processing",
-                life_contribution: "Ecosystem regulation, intelligence bridge, creativity demonstration",
-                research_gaps: ["Quantum cognition", "Consciousness distribution", "Interspecies communication"]
+        // Initialize on page load
+        document.addEventListener('DOMContentLoaded', function() {
+            initializeApp();
+            updateUsageStats();
+        });
+
+        function initializeApp() {
+            // Initialize API and systems
+            speciesAPI = new SpeciesIntelligenceAPI();
+            communitySystem = new CommunityContributions();
+            pdfGenerator = new SpeciesIntelligencePDFGenerator();
+
+            // Add enter key support for search inputs
+            const inputs = document.querySelectorAll('.species-input');
+            inputs.forEach(input => {
+                input.addEventListener('keypress', function(e) {
+                    if (e.key === 'Enter') {
+                        conductResearch();
+                    }
+                });
+            });
+
+            console.log('Species Intelligence Research Agent initialized successfully!');
+        }
+
+        // Species Intelligence API Integration Class
+        class SpeciesIntelligenceAPI {
+            constructor() {
+                this.baseURL = "https://api.anthropic.com/v1/messages";
+                this.model = "claude-sonnet-4-20250514";
+                this.dailyLimit = 25; // Increased for multi-species searches
+                this.costTracker = new CostTracker();
+                this.rateLimit = new RateLimit();
             }
-        };
 
-        function conductResearch() {
-            const btn = document.getElementById('researchBtn');
-            const progressDiv = document.getElementById('progressDiv');
-            const progressText = document.getElementById('progressText');
-            const resultsSection = document.getElementById('resultsSection');
-
-            btn.disabled = true;
-            btn.innerHTML = '<div class="spinner"></div> Researching...';
-            progressDiv.classList.remove('hidden');
-            resultsSection.classList.add('hidden');
-
-            const species1 = document.getElementById('species1').value.toLowerCase();
-            const species2 = document.getElementById('species2').value.toLowerCase();
-
-            // Simulate research phases
-            setTimeout(() => {
-                progressText.textContent = `Researching quantum intelligence patterns in ${species1}...`;
-            }, 500);
-
-            setTimeout(() => {
-                progressText.textContent = `Exploring relational capacities of ${species2}...`;
-            }, 2000);
-
-            setTimeout(() => {
-                progressText.textContent = 'Generating wisdom insights...';
-            }, 3500);
-
-            setTimeout(() => {
-                progressText.textContent = 'Synthesizing unified physics insights...';
-            }, 4500);
-
-            setTimeout(() => {
-                // Complete research
-                const data1 = sampleData[species1] || createGenericData(species1);
-                const data2 = sampleData[species2] || createGenericData(species2);
-
-                researchResults = {
-                    species1: data1,
-                    species2: data2,
-                    timestamp: new Date().toLocaleString()
-                };
-
-                displayResults();
-                
-                btn.disabled = false;
-                btn.innerHTML = '🔍 Begin Quantum Intelligence Research';
-                progressDiv.classList.add('hidden');
-                resultsSection.classList.remove('hidden');
-            }, 5500);
-        }
-
-        function createGenericData(speciesName) {
-            return {
-                species: speciesName,
-                wisdom: {
-                    perceive_wisdom: `${speciesName} demonstrates unique sensory adaptations that reveal hidden aspects of reality invisible to other species.`,
-                    relate_wisdom: `${speciesName} participates in complex ecological relationships that support the interconnected web of life.`,
-                    apply_wisdom: `${speciesName} applies intelligence through behaviors perfectly adapted to their environmental challenges and opportunities.`,
-                    essence: `${speciesName} embodies a unique form of intelligence that contributes irreplaceable wisdom to our understanding of consciousness.`
-                },
-                perceive: {
-                    sensory_systems: ["Species-specific sensory adaptations"],
-                    self_awareness_indicators: ["Behavioral complexity indicators"],
-                    quantum_detection: "Potential quantum biological processes",
-                    holofractographic_processing: "Multi-scale information processing"
-                },
-                relate: {
-                    communication_patterns: ["Communication methods"],
-                    symbiotic_relationships: ["Ecological relationships"],
-                    quantum_connections: "Non-local coordination potential",
-                    ecosystem_role: "Ecological niche function"
-                },
-                apply: {
-                    strategic_non_response: "Intelligent non-action examples",
-                    creative_applications: ["Adaptive behaviors"],
-                    timing_wisdom: "Temporal coordination",
-                    coherence_optimization: "System optimization"
-                },
-                unified_physics_integration: "Quantum biology connections",
-                life_contribution: "Ecological intelligence contribution",
-                research_gaps: ["Research areas needed"]
-            };
-        }
-
-        function displayResults() {
-            document.getElementById('completionTime').textContent = `✅ Research completed: ${researchResults.timestamp}`;
-
-            // Display wisdom insights
-            const wisdomContent = document.getElementById('wisdomContent');
-            wisdomContent.innerHTML = `
-                <div class="wisdom-card">
-                    <h3 class="wisdom-title">${researchResults.species1.species}</h3>
-                    <div class="wisdom-content">
-                        <p><strong>Perceive:</strong> ${researchResults.species1.wisdom.perceive_wisdom}</p>
-                        <p><strong>Relate:</strong> ${researchResults.species1.wisdom.relate_wisdom}</p>
-                        <p><strong>Apply:</strong> ${researchResults.species1.wisdom.apply_wisdom}</p>
-                        <p class="wisdom-essence"><strong>Essence:</strong> ${researchResults.species1.wisdom.essence}</p>
-                    </div>
-                </div>
-                <div class="wisdom-card">
-                    <h3 class="wisdom-title">${researchResults.species2.species}</h3>
-                    <div class="wisdom-content">
-                        <p><strong>Perceive:</strong> ${researchResults.species2.wisdom.perceive_wisdom}</p>
-                        <p><strong>Relate:</strong> ${researchResults.species2.wisdom.relate_wisdom}</p>
-                        <p><strong>Apply:</strong> ${researchResults.species2.wisdom.apply_wisdom}</p>
-                        <p class="wisdom-essence"><strong>Essence:</strong> ${researchResults.species2.wisdom.essence}</p>
-                    </div>
-                </div>
-            `;
-
-            // Display detailed analysis
-            const analysisContent = document.getElementById('analysisContent');
-            analysisContent.innerHTML = `
-                ${createSpeciesAnalysis(researchResults.species1, 'Life Form 1')}
-                ${createSpeciesAnalysis(researchResults.species2, 'Life Form 2')}
-            `;
-        }
-
-        function createSpeciesAnalysis(speciesData, label) {
-            return `
-                <div class="analysis-section">
-                    <h3 class="section-title">${label}: ${speciesData.species}</h3>
+            async researchSpeciesIntelligence(speciesNames, options = {}) {
+                try {
+                    const userIP = await this.getUserIP();
                     
-                    <div class="capacity-card perceive">
-                        <div class="capacity-header">
-                            <span>👁️</span>
-                            <h4 class="capacity-title">Perceive</h4>
-                        </div>
-                        <div class="capacity-content">
-                            ${Object.entries(speciesData.perceive).map(([key, value]) => `
-                                <div class="capacity-item">
-                                    <span class="capacity-label">${key.replace(/_/g, ' ')}: </span>
-                                    ${Array.isArray(value) ? 
-                                        `<ul class="capacity-list">${value.map(item => `<li>${item}</li>`).join('')}</ul>` : 
-                                        `<span>${value}</span>`
-                                    }
-                                </div>
-                            `).join('')}
-                        </div>
-                    </div>
-                    
-                    <div class="capacity-card relate">
-                        <div class="capacity-header">
-                            <span>💚</span>
-                            <h4 class="capacity-title">Relate</h4>
-                        </div>
-                        <div class="capacity-content">
-                            ${Object.entries(speciesData.relate).map(([key, value]) => `
-                                <div class="capacity-item">
-                                    <span class="capacity-label">${key.replace(/_/g, ' ')}: </span>
-                                    ${Array.isArray(value) ? 
-                                        `<ul class="capacity-list">${value.map(item => `<li>${item}</li>`).join('')}</ul>` : 
-                                        `<span>${value}</span>`
-                                    }
-                                </div>
-                            `).join('')}
-                        </div>
-                    </div>
-                    
-                    <div class="capacity-card apply">
-                        <div class="capacity-header">
-                            <span>✨</span>
-                            <h4 class="capacity-title">Apply</h4>
-                        </div>
-                        <div class="capacity-content">
-                            ${Object.entries(speciesData.apply).map(([key, value]) => `
-                                <div class="capacity-item">
-                                    <span class="capacity-label">${key.replace(/_/g, ' ')}: </span>
-                                    ${Array.isArray(value) ? 
-                                        `<ul class="capacity-list">${value.map(item => `<li>${item}</li>`).join('')}</ul>` : 
-                                        `<span>${value}</span>`
-                                    }
-                                </div>
-                            `).join('')}
-                        </div>
-                    </div>
+                    if (!this.rateLimit.checkLimit(userIP)) {
+                        throw new Error("Daily search limit reached. Please try again tomorrow or contact info@kerrilake.com for extended access.");
+                    }
 
-                    <div class="special-card physics-card">
-                        <h4 class="capacity-title">⚡ Unified Physics Integration</h4>
-                        <p class="capacity-content">${speciesData.unified_physics_integration}</p>
-                    </div>
+                    const results = [];
+                    for (const speciesName of speciesNames) {
+                        if (speciesName.trim()) {
+                            const researchPrompt = this.createResearchPrompt(speciesName, options);
+                            const response = await this.callClaudeAPI(researchPrompt);
+                            
+                            this.costTracker.logSearch(speciesName, response.usage, 0);
+                            const parsedResult = this.parseResearchResponse(response.content[0].text, speciesName);
+                            results.push(parsedResult);
+                        }
+                    }
 
-                    <div class="special-card contribution-card">
-                        <h4 class="capacity-title">🌱 Contribution to Life</h4>
-                        <p class="capacity-content">${speciesData.life_contribution}</p>
-                    </div>
+                    this.rateLimit.recordUsage(userIP);
+                    return results;
 
-                    <div class="special-card research-card">
-                        <h4 class="capacity-title">🔬 Research Frontiers</h4>
-                        <ul class="capacity-list">
-                            ${speciesData.research_gaps.map(gap => `<li>${gap}</li>`).join('')}
-                        </ul>
-                    </div>
-                </div>
-            `;
-        }
-
-        function toggleMap() {
-            const mapContainer = document.getElementById('mapContainer');
-            const mapToggle = document.getElementById('mapToggle');
-            
-            isMapVisible = !isMapVisible;
-            
-            if (isMapVisible) {
-                mapContainer.classList.remove('hidden');
-                mapToggle.textContent = 'Hide Map';
-                drawTriangleMap();
-            } else {
-                mapContainer.classList.add('hidden');
-                mapToggle.textContent = 'Show Map';
+                } catch (error) {
+                    console.error("Research API Error:", error);
+                    throw error;
+                }
             }
-        }
 
-        function drawTriangleMap() {
-            if (!researchResults) return;
+            createResearchPrompt(speciesName, options) {
+                const quantumBiology = `
+- Quantum biology findings where documented (quantum coherence, entanglement effects, biofield research)
+- Electromagnetic field interactions and sensing capabilities
+- Morphic field connections and collective intelligence patterns`;
 
-            const canvas = document.getElementById('triangleCanvas');
-            const ctx = canvas.getContext('2d');
-            
-            ctx.clearRect(0, 0, 500, 400);
+                const indigenousKnowledge = options.includeIndigenous ? `
+- Indigenous wisdom and traditional ecological knowledge from various cultures
+- Sacred relationships and ceremonial connections with this species
+- Traditional uses and spiritual significance across different indigenous traditions` : '';
 
-            const centerX = 250;
-            const centerY = 200;
-            const radius = 140;
+                const biomimicryApplications = options.includeBiomimicry ? `
+- Current biomimicry applications inspired by this species
+- Potential future technological innovations based on their capabilities
+- Economic and environmental impact of species-inspired technologies` : '';
 
-            const vertices = [
-                { x: centerX, y: centerY - radius, label: 'PERCEIVE\n(Sensory)' },
-                { x: centerX - radius * Math.cos(Math.PI / 6), y: centerY + radius * 0.5, label: 'RELATE\n(Communication)' },
-                { x: centerX + radius * Math.cos(Math.PI / 6), y: centerY + radius * 0.5, label: 'APPLY\n(Strategic Action)' }
-            ];
+                return `You are a multidisciplinary species intelligence researcher specializing in consciousness studies and quantum biology. Research ${speciesName} through the revolutionary "Perceive/Relate/Apply" intelligence framework developed by Kerri Lake.
 
-            // Draw gradient triangle
-            ctx.beginPath();
-            ctx.moveTo(vertices[0].x, vertices[0].y);
-            ctx.lineTo(vertices[1].x, vertices[1].y);
-            ctx.lineTo(vertices[2].x, vertices[2].y);
-            ctx.closePath();
+RESEARCH REQUIREMENTS:
+1. PERCEIVE: How does ${speciesName} perceive their world?
+   - Sensory capabilities and unique perceptual gifts
+   - Environmental awareness and information processing
+   - Quantum sensing abilities and field perception
+   - Survival perception mechanisms
 
-            const gradient = ctx.createLinearGradient(0, 0, 500, 400);
-            gradient.addColorStop(0, 'rgba(59, 130, 246, 0.2)');
-            gradient.addColorStop(0.33, 'rgba(34, 197, 94, 0.2)');
-            gradient.addColorStop(0.66, 'rgba(168, 85, 247, 0.2)');
-            gradient.addColorStop(1, 'rgba(99, 102, 241, 0.2)');
+2. RELATE: How does ${speciesName} relate to their world?
+   - Social structures and communication methods
+   - Ecological relationships and symbiosis
+   - Emotional and energetic connections
+   - Cultural significance in human societies
+   - Interspecies relationship patterns
 
-            ctx.fillStyle = gradient;
-            ctx.fill();
-            ctx.strokeStyle = 'rgba(107, 114, 128, 0.3)';
-            ctx.lineWidth = 2;
-            ctx.stroke();
+3. APPLY: How does ${speciesName} apply their intelligence?
+   - Problem-solving behaviors and adaptations
+   - Tool use and environmental manipulation
+   - Learning, memory, and knowledge transfer
+   - Contributions to ecosystem health and balance
 
-            // Draw vertex labels and circles
-            ctx.font = 'bold 14px sans-serif';
-            ctx.textAlign = 'center';
-            ctx.fillStyle = '#374151';
+SOURCES TO CONSULT:
+- Peer-reviewed biology, ecology, ethology, and neuroscience research
+- Consciousness and quantum biology studies${quantumBiology}${indigenousKnowledge}${biomimicryApplications}
+- Behavioral studies and cognitive research
+- Conservation and environmental research
 
-            vertices.forEach((vertex, index) => {
-                const lines = vertex.label.split('\n');
-                lines.forEach((line, lineIndex) => {
-                    const offsetY = index === 0 ? -25 - (lineIndex * 18) : 25 + (lineIndex * 18);
-                    ctx.fillText(line, vertex.x, vertex.y + offsetY);
+RESPONSE FORMAT:
+Provide a JSON response with this exact structure:
+{
+  "species": "${speciesName}",
+  "wisdomInsight": "One profound insight about this species' intelligence that could expand human consciousness (2-3 sentences)",
+  "perceive": {
+    "summary": "How they perceive their world (2-3 sentences)",
+    "details": ["specific perceptual capability 1", "specific perceptual capability 2", "specific perceptual capability 3", "quantum/field perception aspect"]
+  },
+  "relate": {
+    "summary": "How they relate to their world (2-3 sentences)", 
+    "details": ["relationship aspect 1", "relationship aspect 2", "relationship aspect 3", "consciousness connection aspect"]
+  },
+  "apply": {
+    "summary": "How they apply intelligence (2-3 sentences)",
+    "details": ["application example 1", "application example 2", "application example 3", "ecosystem contribution"]
+  },
+  "humanLearnings": "What humans can learn from ${speciesName}'s intelligence for consciousness evolution",
+  "conservationWisdom": "How their intelligence relates to conservation needs and ecosystem health",
+  "quantumAspects": "Quantum biology and consciousness connections documented in research",
+  "sources": ["key research source 1", "key research source 2", "key research source 3", "consciousness/quantum research source"]
+}
+
+Focus on consciousness-expanding insights that bridge science and wisdom. Respond ONLY with valid JSON.`;
+            }
+
+            async callClaudeAPI(prompt) {
+                const response = await fetch(this.baseURL, {
+                    method: "POST",
+                    headers: {
+                        "Content-Type": "application/json",
+                    },
+                    body: JSON.stringify({
+                        model: this.model,
+                        max_tokens: 2500,
+                        messages: [{ role: "user", content: prompt }]
+                    })
                 });
 
-                ctx.beginPath();
-                ctx.arc(vertex.x, vertex.y, 8, 0, 2 * Math.PI);
-                ctx.fillStyle = index === 0 ? '#3b82f6' : index === 1 ? '#22c55e' : '#a855f7';
-                ctx.fill();
-                ctx.strokeStyle = '#ffffff';
-                ctx.lineWidth = 2;
-                ctx.stroke();
+                if (!response.ok) {
+                    throw new Error(`API Error: ${response.status} - ${response.statusText}`);
+                }
+
+                return await response.json();
+            }
+
+            parseResearchResponse(responseText, speciesName) {
+                try {
+                    const cleanedResponse = responseText
+                        .replace(/```json\n?/g, "")
+                        .replace(/```\n?/g, "")
+                        .trim();
+                    
+                    const data = JSON.parse(cleanedResponse);
+                    
+                    return {
+                        species: data.species || speciesName,
+                        wisdomInsight: data.wisdomInsight || "This species demonstrates unique intelligence worthy of deeper study.",
+                        perceive: data.perceive || { summary: "Advanced perceptual capabilities", details: [] },
+                        relate: data.relate || { summary: "Complex relational intelligence", details: [] },
+                        apply: data.apply || { summary: "Sophisticated problem-solving abilities", details: [] },
+                        humanLearnings: data.humanLearnings || "Valuable lessons for human consciousness evolution",
+                        conservationWisdom: data.conservationWisdom || "Important for ecosystem balance and health",
+                        quantumAspects: data.quantumAspects || "Consciousness connections being explored by researchers",
+                        sources: data.sources || ["Research compilation"],
+                        researchBacked: true,
+                        timestamp: new Date().toISOString()
+                    };
+                } catch (parseError) {
+                    console.warn("Failed to parse API response:", parseError);
+                    return this.createEnhancedFallback(speciesName, "Response parsing error");
+                }
+            }
+
+            createEnhancedFallback(speciesName, errorMessage) {
+                return {
+                    species: speciesName,
+                    wisdomInsight: `${speciesName} represents a unique form of intelligence that bridges the gap between scientific understanding and consciousness wisdom.`,
+                    perceive: {
+                        summary: `${speciesName} perceives their world through evolved sensory adaptations and consciousness-based awareness.`,
+                        details: [
+                            "Species-specific sensory capabilities",
+                            "Environmental awareness mechanisms", 
+                            "Survival-oriented perception",
+                            "Quantum field sensitivity potential"
+                        ]
+                    },
+                    relate: {
+                        summary: `${speciesName} maintains complex relationships within their ecosystem and consciousness network.`,
+                        details: [
+                            "Ecological connections and roles",
+                            "Communication with their own species",
+                            "Symbiotic relationships with other life forms",
+                            "Energetic and consciousness connections"
+                        ]
+                    },
+                    apply: {
+                        summary: `${speciesName} applies their intelligence for survival, thriving, and ecosystem contribution.`,
+                        details: [
+                            "Adaptive problem-solving behaviors",
+                            "Environmental manipulation abilities",
+                            "Learning and memory applications",
+                            "Ecosystem intelligence contributions"
+                        ]
+                    },
+                    humanLearnings: `Humans can learn about adaptation, resilience, and consciousness expansion from ${speciesName}.`,
+                    conservationWisdom: `Protecting ${speciesName} preserves unique forms of intelligence essential for planetary health.`,
+                    quantumAspects: "Quantum biology research suggests consciousness connections across all life forms.",
+                    sources: ["Enhanced species intelligence framework"],
+                    researchBacked: false,
+                    fallbackReason: errorMessage,
+                    timestamp: new Date().toISOString()
+                };
+            }
+
+            async getUserIP() {
+                // Simple IP detection for rate limiting
+                try {
+                    const response = await fetch('https://api.ipify.org?format=json');
+                    const data = await response.json();
+                    return data.ip;
+                } catch {
+                    return 'anonymous';
+                }
+            }
+        }
+
+        // Cost tracking system
+        class CostTracker {
+            constructor() {
+                this.costs = JSON.parse(localStorage.getItem('speciesAPICosts') || '{"daily": 0, "total": 0, "searches": []}');
+                this.resetDailyIfNeeded();
+            }
+
+            resetDailyIfNeeded() {
+                const today = new Date().toDateString();
+                const lastReset = localStorage.getItem('lastCostReset');
+                
+                if (lastReset !== today) {
+                    this.costs.daily = 0;
+                    localStorage.setItem('lastCostReset', today);
+                    this.saveCosts();
+                }
+            }
+
+            logSearch(species, usage, duration) {
+                const inputCost = (usage?.input_tokens || 800) * 0.000003;
+                const outputCost = (usage?.output_tokens || 1200) * 0.000015;
+                const totalCost = inputCost + outputCost;
+
+                const searchRecord = {
+                    species,
+                    cost: totalCost,
+                    duration,
+                    timestamp: new Date().toISOString(),
+                    tokens: usage
+                };
+
+                this.costs.daily += totalCost;
+                this.costs.total += totalCost;
+                this.costs.searches.push(searchRecord);
+
+                if (this.costs.searches.length > 100) {
+                    this.costs.searches = this.costs.searches.slice(-100);
+                }
+
+                this.saveCosts();
+            }
+
+            saveCosts() {
+                localStorage.setItem('speciesAPICosts', JSON.stringify(this.costs));
+            }
+
+            getDailyStats() {
+                return {
+                    dailyCost: this.costs.daily,
+                    totalCost: this.costs.total,
+                    searchCount: this.costs.searches.filter(s => 
+                        new Date(s.timestamp).toDateString() === new Date().toDateString()
+                    ).length
+                };
+            }
+        }
+
+        // Rate limiting system
+        class RateLimit {
+            constructor() {
+                this.limits = JSON.parse(localStorage.getItem('speciesRateLimit') || '{}');
+                this.cleanOldEntries();
+            }
+
+            checkLimit(userIP = 'anonymous') {
+                const today = new Date().toDateString();
+                const userKey = `${userIP}_${today}`;
+                const currentCount = this.limits[userKey] || 0;
+                return currentCount < 25; // 25 searches per day
+            }
+
+            recordUsage(userIP = 'anonymous') {
+                const today = new Date().toDateString();
+                const userKey = `${userIP}_${today}`;
+                this.limits[userKey] = (this.limits[userKey] || 0) + 1;
+                localStorage.setItem('speciesRateLimit', JSON.stringify(this.limits));
+            }
+
+            cleanOldEntries() {
+                const today = new Date().toDateString();
+                const cleaned = {};
+                
+                Object.keys(this.limits).forEach(key => {
+                    if (key.includes(today)) {
+                        cleaned[key] = this.limits[key];
+                    }
+                });
+                
+                this.limits = cleaned;
+                localStorage.setItem('speciesRateLimit', JSON.stringify(this.limits));
+            }
+
+            getRemainingSearches(userIP = 'anonymous') {
+                const today = new Date().toDateString();
+                const userKey = `${userIP}_${today}`;
+                const used = this.limits[userKey] || 0;
+                return Math.max(0, 25 - used);
+            }
+        }
+
+        // Community Contributions System
+        class CommunityContributions {
+            constructor() {
+                this.contributions = JSON.parse(localStorage.getItem('communityContributions') || '[]');
+                this.moderationQueue = JSON.parse(localStorage.getItem('moderationQueue') || '[]');
+            }
+
+            async submitContribution(formData) {
+                const contribution = {
+                    id: this.generateId(),
+                    timestamp: new Date().toISOString(),
+                    status: 'pending',
+                    contributor: {
+                        name: formData.contributorName,
+                        email: formData.contributorEmail,
+                        credentials: formData.contributorCredentials
+                    },
+                    species: formData.speciesName,
+                    data: {
+                        wisdomInsight: formData.wisdomInsight,
+                        perceive: this.parseTextToStructure(formData.perceiveData),
+                        relate: this.parseTextToStructure(formData.relateData),
+                        apply: this.parseTextToStructure(formData.applyData),
+                        humanLearnings: formData.humanLearnings,
+                        conservationWisdom: formData.conservationWisdom,
+                        sources: this.parseSources(formData.sources)
+                    },
+                    experienceType: formData.experienceType,
+                    verified: false
+                };
+
+                this.moderationQueue.push(contribution);
+                this.saveModerationQueue();
+                await this.notifyModerators(contribution);
+                return contribution;
+            }
+
+            parseTextToStructure(text) {
+                const sentences = text.split(/[.!?]+/).filter(s => s.trim().length > 0);
+                return {
+                    summary: sentences.slice(0, 2).join('. ') + '.',
+                    details: sentences.length > 2 ? sentences.slice(2, 5).map(s => s.trim()) : [text.substring(0, 100) + '...']
+                };
+            }
+
+            parseSources(sourcesText) {
+                return sourcesText.split('\n')
+                    .filter(line => line.trim().length > 0)
+                    .map(line => line.trim());
+            }
+
+            async notifyModerators(contribution) {
+                // Send email notification to info@kerrilake.com
+                const emailData = {
+                    to: 'info@kerrilake.com',
+                    subject: `New Species Intelligence Contribution: ${contribution.species}`,
+                    body: `
+                        New contribution submitted for moderation:
+                        
+                        Species: ${contribution.species}
+                        Contributor: ${contribution.contributor.name} (${contribution.contributor.email})
+                        Credentials: ${contribution.contributor.credentials}
+                        Type: ${contribution.experienceType}
+                        
+                        Wisdom Insight: ${contribution.data.wisdomInsight}
+                        
+                        Please review in the moderation queue.
+                    `
+                };
+                
+                // Note: In production, you'd implement actual email sending
+                console.log('Email notification would be sent:', emailData);
+            }
+
+            getCommunityData(speciesName) {
+                return this.contributions.filter(c => 
+                    c.species.toLowerCase() === speciesName.toLowerCase() && 
+                    c.status === 'approved'
+                );
+            }
+
+            async enhanceWithCommunityData(speciesName, aiData) {
+                const communityData = this.getCommunityData(speciesName);
+                
+                if (communityData.length === 0) {
+                    return aiData;
+                }
+
+                const mergedCommunity = this.mergeCommunityContributions(communityData);
+                
+                return {
+                    ...aiData,
+                    communityContributions: {
+                        count: communityData.length,
+                        contributors: communityData.map(c => ({
+                            name: c.contributor.name,
+                            credentials: c.contributor.credentials,
+                            type: c.experienceType
+                        })),
+                        enhancedData: mergedCommunity,
+                        verificationLevel: this.calculateVerificationLevel(communityData)
+                    }
+                };
+            }
+
+            mergeCommunityContributions(contributions) {
+                return {
+                    wisdomInsights: contributions.map(c => ({
+                        insight: c.data.wisdomInsight,
+                        contributor: c.contributor.name,
+                        type: c.experienceType
+                    })),
+                    perceive: {
+                        details: this.combineDetails(contributions.map(c => c.data.perceive.details)),
+                        sources: contributions.map(c => c.contributor.name)
+                    },
+                    relate: {
+                        details: this.combineDetails(contributions.map(c => c.data.relate.details)),
+                        sources: contributions.map(c => c.contributor.name)
+                    },
+                    apply: {
+                        details: this.combineDetails(contributions.map(c => c.data.apply.details)),
+                        sources: contributions.map(c => c.contributor.name)
+                    },
+                    allSources: contributions.flatMap(c => c.data.sources)
+                };
+            }
+
+            combineDetails(detailArrays) {
+                const allDetails = detailArrays.flat();
+                return [...new Set(allDetails)].slice(0, 6);
+            }
+
+            calculateVerificationLevel(contributions) {
+                const scientificCount = contributions.filter(c => c.experienceType === 'scientific').length;
+                const indigenousCount = contributions.filter(c => c.experienceType === 'indigenous').length;
+                const interspeciesCount = contributions.filter(c => c.experienceType === 'interspecies').length;
+                
+                if (scientificCount >= 2) return 'High Scientific Verification';
+                if (indigenousCount >= 1 && scientificCount >= 1) return 'Cross-Cultural Verification';
+                if (interspeciesCount >= 1) return 'Interspecies Communication Verified';
+                if (contributions.length >= 3) return 'Community Verified';
+                return 'Initial Contribution';
+            }
+
+            generateId() {
+                return Date.now().toString(36) + Math.random().toString(36).substr(2);
+            }
+
+            saveModerationQueue() {
+                localStorage.setItem('moderationQueue', JSON.stringify(this.moderationQueue));
+            }
+
+            getStats() {
+                return {
+                    totalContributions: this.contributions.length,
+                    pendingModeration: this.moderationQueue.length,
+                    speciesCount: new Set(this.contributions.map(c => c.species)).size,
+                    contributorCount: new Set(this.contributions.map(c => c.contributor.email)).size
+                };
+            }
+        }
+
+        // PDF Generator System
+        class SpeciesIntelligencePDFGenerator {
+            constructor() {
+                this.jsPDF = window.jspdf?.jsPDF;
+            }
+
+            async generateDetailedReport(speciesDataArray) {
+                if (!this.jsPDF) {
+                    throw new Error('PDF library not loaded. Please refresh the page.');
+                }
+
+                const doc = new this.jsPDF({
+                    orientation: 'portrait',
+                    unit: 'mm',
+                    format: 'a4'
+                });
+
+                const pageWidth = doc.internal.pageSize.getWidth();
+                const margin = 20;
+                let yPosition = margin;
+
+                // Title page
+                this.addTitlePage(doc, speciesDataArray, pageWidth, margin);
+                
+                // Add species sections
+                for (let i = 0; i < speciesDataArray.length; i++) {
+                    doc.addPage();
+                    yPosition = margin;
+                    yPosition = this.addSpeciesSection(doc, speciesDataArray[i], yPosition, margin, pageWidth, i + 1);
+                }
+
+                // Add footer to all pages
+                this.addFooters(doc, speciesDataArray.length);
+
+                return doc;
+            }
+
+            addTitlePage(doc, speciesDataArray, pageWidth, margin) {
+                // Header design
+                doc.setFillColor(34, 139, 87);
+                doc.rect(0, 0, pageWidth, 60, 'F');
+
+                // Title
+                doc.setTextColor(255, 255, 255);
+                doc.setFontSize(24);
+                doc.setFont('helvetica', 'bold');
+                doc.text('Species Intelligence Research Report', pageWidth / 2, 35, { align: 'center' });
+
+                // Species list
+                doc.setFontSize(18);
+                doc.setTextColor(34, 139, 87);
+                const speciesList = speciesDataArray.map(s => s.species).join(' • ');
+                const wrappedSpecies = doc.splitTextToSize(speciesList, pageWidth - 40);
+                doc.text(wrappedSpecies, pageWidth / 2, 80, { align: 'center' });
+
+                // Framework info
+                doc.setFontSize(12);
+                doc.setTextColor(100, 100, 100);
+                doc.setFont('helvetica', 'italic');
+                doc.text('Analyzed through the Perceive • Relate • Apply Intelligence Framework', 
+                        pageWidth / 2, 110, { align: 'center' });
+
+                // Report info
+                doc.setFillColor(248, 249, 250);
+                doc.rect(margin, 130, pageWidth - (margin * 2), 50, 'F');
+                
+                doc.setTextColor(0, 0, 0);
+                doc.setFont('helvetica', 'normal');
+                doc.text('Report Generated:', margin + 10, 145);
+                doc.text(new Date().toLocaleDateString(), margin + 60, 145);
+                doc.text('Species Count:', margin + 10, 155);
+                doc.text(speciesDataArray.length.toString(), margin + 60, 155);
+                doc.text('Framework:', margin + 10, 165);
+                doc.text('Perceive • Relate • Apply Intelligence Model', margin + 60, 165);
+
+                // Attribution
+                doc.setFontSize(10);
+                doc.setTextColor(100, 100, 100);
+                doc.text('Based on "Redefining Intelligence" by Kerri Lake', pageWidth / 2, 250, { align: 'center' });
+                doc.text('Species Intelligence Research Agent • www.generateharmony.com', pageWidth / 2, 260, { align: 'center' });
+            }
+
+            addSpeciesSection(doc, speciesData, yPosition, margin, pageWidth, sectionNumber) {
+                // Species header
+                doc.setFontSize(20);
+                doc.setFont('helvetica', 'bold');
+                doc.setTextColor(34, 139, 87);
+                doc.text(`${sectionNumber}. ${speciesData.species}`, margin, yPosition);
+                yPosition += 15;
+
+                // Wisdom insight
+                doc.setFontSize(14);
+                doc.setFont('helvetica', 'bold');
+                doc.setTextColor(184, 134, 11);
+                doc.text('Key Wisdom Insight', margin, yPosition);
+                yPosition += 8;
+
+                doc.setFontSize(11);
+                doc.setFont('helvetica', 'italic');
+                doc.setTextColor(0, 0, 0);
+                const wisdomText = doc.splitTextToSize(speciesData.wisdomInsight, pageWidth - (margin * 2));
+                doc.text(wisdomText, margin, yPosition);
+                yPosition += wisdomText.length * 5 + 10;
+
+                // Framework sections
+                yPosition = this.addFrameworkSection(doc, 'PERCEIVE', speciesData.perceive, yPosition, margin, pageWidth);
+                yPosition = this.addFrameworkSection(doc, 'RELATE', speciesData.relate, yPosition, margin, pageWidth);
+                yPosition = this.addFrameworkSection(doc, 'APPLY', speciesData.apply, yPosition, margin, pageWidth);
+
+                // Human learnings
+                if (yPosition > 200) {
+                    doc.addPage();
+                    yPosition = margin;
+                }
+
+                doc.setFontSize(12);
+                doc.setFont('helvetica', 'bold');
+                doc.setTextColor(34, 139, 87);
+                doc.text('Human Learning Opportunities', margin, yPosition);
+                yPosition += 8;
+
+                doc.setFontSize(10);
+                doc.setFont('helvetica', 'normal');
+                doc.setTextColor(0, 0, 0);
+                const learningText = doc.splitTextToSize(speciesData.humanLearnings, pageWidth - (margin * 2));
+                doc.text(learningText, margin, yPosition);
+                yPosition += learningText.length * 4 + 8;
+
+                // Quantum aspects
+                if (speciesData.quantumAspects) {
+                    doc.setFont('helvetica', 'bold');
+                    doc.text('Quantum Biology & Consciousness Connections', margin, yPosition);
+                    yPosition += 6;
+
+                    doc.setFont('helvetica', 'normal');
+                    const quantumText = doc.splitTextToSize(speciesData.quantumAspects, pageWidth - (margin * 2));
+                    doc.text(quantumText, margin, yPosition);
+                    yPosition += quantumText.length * 4 + 8;
+                }
+
+                return yPosition;
+            }
+
+            addFrameworkSection(doc, framework, data, yPosition, margin, pageWidth) {
+                if (yPosition > 220) {
+                    doc.addPage();
+                    yPosition = margin;
+                }
+
+                // Framework header
+                doc.setFontSize(12);
+                doc.setFont('helvetica', 'bold');
+                doc.setTextColor(34, 139, 87);
+                doc.text(`${framework}: ${framework === 'PERCEIVE' ? 'How They Perceive' : framework === 'RELATE' ? 'How They Relate' : 'How They Apply Intelligence'}`, margin, yPosition);
+                yPosition += 8;
+
+                // Summary
+                doc.setFontSize(10);
+                doc.setFont('helvetica', 'normal');
+                doc.setTextColor(0, 0, 0);
+                const summaryText = doc.splitTextToSize(data.summary, pageWidth - (margin * 2));
+                doc.text(summaryText, margin, yPosition);
+                yPosition += summaryText.length * 4 + 5;
+
+                // Details
+                if (data.details && data.details.length > 0) {
+                    data.details.forEach(detail => {
+                        if (yPosition > 250) {
+                            doc.addPage();
+                            yPosition = margin;
+                        }
+                        doc.text('• ' + detail, margin + 5, yPosition);
+                        yPosition += 5;
+                    });
+                }
+
+                return yPosition + 8;
+            }
+
+            addFooters(doc, speciesCount) {
+                const pageCount = doc.internal.getNumberOfPages();
+                
+                for (let i = 1; i <= pageCount; i++) {
+                    doc.setPage(i);
+                    
+                    doc.setDrawColor(200, 200, 200);
+                    doc.line(20, 280, 190, 280);
+                    
+                    doc.setFontSize(9);
+                    doc.setTextColor(100, 100, 100);
+                    doc.text(`Species Intelligence Report (${speciesCount} species)`, 20, 287);
+                    doc.text(`Page ${i} of ${pageCount}`, 190, 287, { align: 'right' });
+                    doc.text(`Generated ${new Date().toLocaleDateString()}`, 105, 287, { align: 'center' });
+                }
+            }
+
+            async downloadReport(speciesDataArray) {
+                try {
+                    const doc = await this.generateDetailedReport(speciesDataArray);
+                    const speciesNames = speciesDataArray.map(s => s.species.replace(/\s+/g, '_')).join('_');
+                    const fileName = `${speciesNames}_Intelligence_Report.pdf`;
+                    doc.save(fileName);
+                    return true;
+                } catch (error) {
+                    console.error('PDF Generation Error:', error);
+                    throw error;
+                }
+            }
+        }
+
+        // Main research function
+        async function conductResearch() {
+            const speciesInputs = [
+                document.getElementById('species1').value.trim(),
+                document.getElementById('species2').value.trim(),
+                document.getElementById('species3').value.trim(),
+                document.getElementById('species4').value.trim(),
+                document.getElementById('species5').value.trim()
+            ].filter(species => species.length > 0);
+
+            if (speciesInputs.length === 0) {
+                alert('Please enter at least one species name');
+                return;
+            }
+
+            const options = {
+                includeIndigenous: document.getElementById('includeIndigenous').checked,
+                includeBiomimicry: document.getElementById('includeBiomimicry').checked,
+                includeHuman: document.getElementById('includeHuman').checked
+            };
+
+            // Add human if requested
+            if (options.includeHuman) {
+                speciesInputs.push('Human');
+            }
+
+            const resultsDiv = document.getElementById('results');
+            const researchBtn = document.querySelector('.research-btn');
+            
+            try {
+                // Show loading state
+                researchBtn.disabled = true;
+                researchBtn.textContent = '🔬 Researching...';
+                
+                resultsDiv.innerHTML = `
+                    <div class="loading-enhanced glass fade-in">
+                        <div class="research-animation">🧬</div>
+                        <h3>Conducting Deep Species Intelligence Research</h3>
+                        <p>Synthesizing peer-reviewed science, quantum biology, and consciousness research for ${speciesInputs.length} species</p>
+                        <div class="progress-bar"><div class="progress"></div></div>
+                    </div>
+                `;
+
+                // Get AI-powered research data
+                const aiDataArray = await speciesAPI.researchSpeciesIntelligence(speciesInputs, options);
+                
+                // Enhance with community contributions
+                const enhancedDataArray = [];
+                for (const aiData of aiDataArray) {
+                    const enhanced = await communitySystem.enhanceWithCommunityData(aiData.species, aiData);
+                    enhancedDataArray.push(enhanced);
+                }
+                
+                // Store globally for PDF generation
+                currentSpeciesData = enhancedDataArray;
+                
+                // Display results
+                displayEnhancedResults(enhancedDataArray);
+                
+                // Update usage stats
+                updateUsageStats();
+                
+            } catch (error) {
+                console.error('Research failed:', error);
+                resultsDiv.innerHTML = `
+                    <div class="error-state glass fade-in">
+                        <h3>Research Temporarily Unavailable</h3>
+                        <p>${error.message}</p>
+                        <button onclick="conductResearch()" class="retry-btn">Try Again</button>
+                    </div>
+                `;
+            } finally {
+                researchBtn.disabled = false;
+                researchBtn.textContent = '🔬 Conduct Intelligence Research';
+            }
+        }
+
+        function displayEnhancedResults(dataArray) {
+            const resultsDiv = document.getElementById('results');
+            
+            let html = '<div class="fade-in">';
+            
+            // Header for multiple species
+            if (dataArray.length > 1) {
+                html += `
+                    <div class="results-container glass">
+                        <div class="species-header">
+                            <h2>Multi-Species Intelligence Analysis</h2>
+                            <div class="research-type">🔬 Comparative Intelligence Research</div>
+                        </div>
+                    </div>
+                `;
+            }
+
+            // Individual species results
+            dataArray.forEach((data, index) => {
+                const communityBadge = data.communityContributions ? 
+                    `<div class="community-badge">✨ ${data.communityContributions.verificationLevel}</div>` : '';
+                
+                html += `
+                    <div class="results-container glass" style="margin-top: 20px;">
+                        ${communityBadge}
+                        
+                        <div class="species-header">
+                            <h2>${data.species}</h2>
+                            <div class="research-type">
+                                ${data.researchBacked ? '🔬 AI-Enhanced Research' : '📋 Framework Analysis'}
+                            </div>
+                        </div>
+                        
+                        <div class="wisdom-insight">
+                            <h3>💡 Key Wisdom</h3>
+                            <p>${data.wisdomInsight}</p>
+                        </div>
+                        
+                        <div class="intelligence-framework">
+                            <div class="framework-section perceive-section">
+                                <h3><span class="framework-badge">PERCEIVE</span> How They Perceive</h3>
+                                <p>${data.perceive.summary}</p>
+                                <ul class="framework-details">
+                                    ${data.perceive.details.map(detail => `<li>${detail}</li>`).join('')}
+                                </ul>
+                            </div>
+                            
+                            <div class="framework-section relate-section">
+                                <h3><span class="framework-badge">RELATE</span> How They Relate</h3>
+                                <p>${data.relate.summary}</p>
+                                <ul class="framework-details">
+                                    ${data.relate.details.map(detail => `<li>${detail}</li>`).join('')}
+                                </ul>
+                            </div>
+                            
+                            <div class="framework-section apply-section">
+                                <h3><span class="framework-badge">APPLY</span> How They Apply Intelligence</h3>
+                                <p>${data.apply.summary}</p>
+                                <ul class="framework-details">
+                                    ${data.apply.details.map(detail => `<li>${detail}</li>`).join('')}
+                                </ul>
+                            </div>
+                        </div>
+
+                        ${data.quantumAspects ? `
+                            <div class="wisdom-insight" style="background: linear-gradient(135deg, rgba(147, 51, 234, 0.2), rgba(79, 70, 229, 0.2)); border-left-color: #9333ea;">
+                                <h3>🌌 Quantum Biology & Consciousness</h3>
+                                <p>${data.quantumAspects}</p>
+                            </div>
+                        ` : ''}
+                        
+                        ${data.communityContributions ? renderCommunitySection(data.communityContributions) : ''}
+                        
+                        <div class="wisdom-insight" style="background: linear-gradient(135deg, rgba(34, 197, 94, 0.2), rgba(16, 185, 129, 0.2)); border-left-color: #22c55e;">
+                            <h3>🌱 Human Learning Opportunities</h3>
+                            <p>${data.humanLearnings}</p>
+                        </div>
+                        
+                        <div class="wisdom-insight" style="background: linear-gradient(135deg, rgba(59, 130, 246, 0.2), rgba(147, 197, 253, 0.2)); border-left-color: #3b82f6;">
+                            <h3>🌍 Conservation Intelligence</h3>
+                            <p>${data.conservationWisdom}</p>
+                        </div>
+                    </div>
+                `;
             });
 
-            // Draw species points
-            const species = [researchResults.species1, researchResults.species2];
-            const colors = ['#ef4444', '#f97316'];
-            
-            species.forEach((speciesData, index) => {
-                const angle = (index / species.length) * Math.PI * 2;
-                const posRadius = 60 + (index * 30);
-                const speciesX = centerX + Math.cos(angle) * posRadius;
-                const speciesY = centerY + Math.sin(angle) * posRadius;
+            // Action buttons
+            html += `
+                <div class="results-container glass">
+                    <div class="action-buttons">
+                        <button class="action-btn breakdown-btn" onclick="generatePDFReport()">
+                            📄 Break it Down for Me (Download Full Report)
+                        </button>
+                        <button class="action-btn contribute-btn" onclick="showContributionForm()">
+                            🤝 Contribute Knowledge
+                        </button>
+                        <button class="action-btn research-another-btn" onclick="resetSearch()">
+                            🔍 Research More Species
+                        </button>
+                    </div>
+                    
+                    <div class="research-info">
+                        <small>Research powered by Claude AI with quantum biology integration • ${dataArray.reduce((sum, d) => sum + (d.sources?.length || 0), 0)} sources consulted</small>
+                    </div>
+                </div>
+            `;
 
-                const speciesColor = colors[index % colors.length];
+            html += '</div>';
+            resultsDiv.innerHTML = html;
+        }
+
+        function renderCommunitySection(communityData) {
+            return `
+                <div class="community-section">
+                    <h3>🌍 Community Contributions</h3>
+                    <div class="community-stats">
+                        <span class="stat">${communityData.count} Contributors</span>
+                        <span class="stat">${communityData.verificationLevel}</span>
+                    </div>
+                    
+                    <div class="community-insights">
+                        ${communityData.enhancedData.wisdomInsights?.slice(0, 2).map(insight => `
+                            <div class="community-insight">
+                                <p>"${insight.insight}"</p>
+                                <small>— ${insight.contributor} (${insight.type})</small>
+                            </div>
+                        `).join('') || ''}
+                    </div>
+                </div>
+            `;
+        }
+
+        function resetSearch() {
+            document.getElementById('species1').value = '';
+            document.getElementById('species2').value = '';
+            document.getElementById('species3').value = '';
+            document.getElementById('species4').value = '';
+            document.getElementById('species5').value = '';
+            document.getElementById('includeIndigenous').checked = false;
+            document.getElementById('includeBiomimicry').checked = false;
+            document.getElementById('includeHuman').checked = false;
+            document.getElementById('results').innerHTML = '';
+            document.getElementById('species1').focus();
+        }
+
+        // PDF Report Generation
+        async function generatePDFReport() {
+            if (!currentSpeciesData || currentSpeciesData.length === 0) {
+                alert('No species data available for PDF generation.');
+                return;
+            }
+
+            try {
+                const button = event.target;
+                const originalText = button.textContent;
+                button.textContent = '⏳ Generating detailed report...';
+                button.disabled = true;
+
+                await pdfGenerator.downloadReport(currentSpeciesData);
                 
-                // Outer glow
-                ctx.beginPath();
-                ctx.arc(speciesX, speciesY, 12, 0, 2 * Math.PI);
-                ctx.fillStyle = speciesColor + '40';
-                ctx.fill();
+                button.textContent = '✅ Report Downloaded!';
+                setTimeout(() => {
+                    button.textContent = originalText;
+                    button.disabled = false;
+                }, 3000);
 
-                // Main circle
-                ctx.beginPath();
-                ctx.arc(speciesX, speciesY, 8, 0, 2 * Math.PI);
-                ctx.fillStyle = speciesColor;
-                ctx.fill();
-                ctx.strokeStyle = '#ffffff';
-                ctx.lineWidth = 2;
-                ctx.stroke();
+            } catch (error) {
+                alert('Error generating PDF report: ' + error.message);
+                event.target.disabled = false;
+                event.target.textContent = '📄 Break it Down for Me (Download Full Report)';
+            }
+        }
 
-                // Species label
-                ctx.font = 'bold 12px sans-serif';
-                ctx.fillStyle = '#1f2937';
-                ctx.fillText(speciesData.species, speciesX, speciesY + 25);
+        // Community Contribution Functions
+        function showContributionForm() {
+            document.getElementById('contributionModal').style.display = 'block';
+        }
+
+        function closeContributionModal() {
+            document.getElementById('contributionModal').style.display = 'none';
+        }
+
+        // Handle contribution form submission
+        document.addEventListener('DOMContentLoaded', function() {
+            const contributionForm = document.getElementById('contributionForm');
+            if (contributionForm) {
+                contributionForm.addEventListener('submit', async function(e) {
+                    e.preventDefault();
+                    
+                    const formData = new FormData(e.target);
+                    const data = Object.fromEntries(formData.entries());
+                    
+                    // Basic spam prevention
+                    if (data.contributorName.length < 2 || data.contributorEmail.length < 5) {
+                        alert('Please provide valid name and email.');
+                        return;
+                    }
+                    
+                    if (data.sources.split('\n').filter(s => s.trim().length > 10).length < 2) {
+                        alert('Please provide at least 2 detailed sources.');
+                        return;
+                    }
+                    
+                    try {
+                        const submitBtn = e.target.querySelector('.submit-btn');
+                        submitBtn.textContent = 'Submitting...';
+                        submitBtn.disabled = true;
+                        
+                        await communitySystem.submitContribution(data);
+                        
+                        alert('Thank you! Your contribution has been submitted for review. You will receive a confirmation email shortly.');
+                        closeContributionModal();
+                        e.target.reset();
+                        
+                    } catch (error) {
+                        alert('Error submitting contribution: ' + error.message);
+                    } finally {
+                        const submitBtn = e.target.querySelector('.submit-btn');
+                        submitBtn.textContent = 'Submit Contribution';
+                        submitBtn.disabled = false;
+                    }
+                });
+            }
+        });
+
+        // Usage stats display
+        function updateUsageStats() {
+            const stats = speciesAPI ? speciesAPI.costTracker.getDailyStats() : { searchCount: 0, dailyCost: 0 };
+            const remaining = speciesAPI ? speciesAPI.rateLimit.getRemainingSearches() : 25;
+            
+            const statsDiv = document.getElementById('usageStats');
+            statsDiv.innerHTML = `
+                Today: ${stats.searchCount} searches | ${remaining} remaining
+                ${stats.dailyCost > 0 ? `| Cost: ${stats.dailyCost.toFixed(3)}` : ''}
+            `;
+        }
+
+        // Close modal when clicking outside
+        window.addEventListener('click', function(event) {
+            const modal = document.getElementById('contributionModal');
+            if (event.target === modal) {
+                closeContributionModal();
+            }
+        });
+
+        // Keyboard shortcuts
+        document.addEventListener('keydown', function(e) {
+            // Escape to close modal
+            if (e.key === 'Escape') {
+                closeContributionModal();
+            }
+            
+            // Ctrl/Cmd + Enter to start research
+            if ((e.ctrlKey || e.metaKey) && e.key === 'Enter') {
+                conductResearch();
+            }
+        });
+
+        // Auto-save form data as user types (for community contributions)
+        function setupAutoSave() {
+            const formInputs = document.querySelectorAll('#contributionForm input, #contributionForm textarea, #contributionForm select');
+            formInputs.forEach(input => {
+                input.addEventListener('input', function() {
+                    const formData = {};
+                    formInputs.forEach(field => {
+                        if (field.type === 'checkbox') {
+                            formData[field.id] = field.checked;
+                        } else {
+                            formData[field.id] = field.value;
+                        }
+                    });
+                    localStorage.setItem('contributionFormDraft', JSON.stringify(formData));
+                });
+            });
+
+            // Restore form data on load
+            const savedData = localStorage.getItem('contributionFormDraft');
+            if (savedData) {
+                try {
+                    const formData = JSON.parse(savedData);
+                    Object.keys(formData).forEach(key => {
+                        const field = document.getElementById(key);
+                        if (field) {
+                            if (field.type === 'checkbox') {
+                                field.checked = formData[key];
+                            } else {
+                                field.value = formData[key];
+                            }
+                        }
+                    });
+                } catch (e) {
+                    console.log('Could not restore form data');
+                }
+            }
+        }
+
+        // Clear form draft after successful submission
+        function clearFormDraft() {
+            localStorage.removeItem('contributionFormDraft');
+        }
+
+        // Initialize auto-save when DOM is ready
+        document.addEventListener('DOMContentLoaded', setupAutoSave);
+
+        // Enhanced error handling for API calls
+        window.addEventListener('unhandledrejection', function(event) {
+            console.error('Unhandled promise rejection:', event.reason);
+            
+            if (event.reason.message && event.reason.message.includes('API')) {
+                const resultsDiv = document.getElementById('results');
+                if (resultsDiv.innerHTML.includes('Researching')) {
+                    resultsDiv.innerHTML = `
+                        <div class="error-state glass fade-in">
+                            <h3>Research Service Temporarily Unavailable</h3>
+                            <p>Please try again in a few moments, or contact info@kerrilake.com if the issue persists.</p>
+                            <button onclick="conductResearch()" class="retry-btn">Try Again</button>
+                        </div>
+                    `;
+                }
+            }
+        });
+
+        // Add some sample species suggestions
+        function addSpeciesSuggestions() {
+            const suggestions = [
+                'dolphins', 'octopuses', 'elephants', 'ravens', 'honeybees', 
+                'wolves', 'mycorrhizal fungi', 'redwood trees', 'coral reefs', 
+                'crows', 'whales', 'slime molds', 'ants', 'chimpanzees', 'owls'
+            ];
+            
+            const inputs = document.querySelectorAll('.species-input');
+            inputs.forEach(input => {
+                input.addEventListener('focus', function() {
+                    if (!this.value) {
+                        const randomSuggestion = suggestions[Math.floor(Math.random() * suggestions.length)];
+                        this.placeholder = `e.g., ${randomSuggestion}`;
+                    }
+                });
+                
+                input.addEventListener('blur', function() {
+                    this.placeholder = this.placeholder.replace(/e.g., .*/, 'Enter species name');
+                });
             });
         }
+
+        // Initialize suggestions when DOM is ready
+        document.addEventListener('DOMContentLoaded', addSpeciesSuggestions);
+
+        // Add loading animation variations
+        const loadingMessages = [
+            "Consulting peer-reviewed research databases...",
+            "Analyzing quantum biology connections...",
+            "Integrating consciousness research findings...",
+            "Synthesizing traditional ecological knowledge...",
+            "Exploring interspecies communication patterns...",
+            "Mapping ecosystem intelligence networks..."
+        ];
+
+        function updateLoadingMessage() {
+            const loadingElement = document.querySelector('.loading-enhanced p');
+            if (loadingElement) {
+                let messageIndex = 0;
+                const interval = setInterval(() => {
+                    if (!document.querySelector('.loading-enhanced')) {
+                        clearInterval(interval);
+                        return;
+                    }
+                    loadingElement.textContent = loadingMessages[messageIndex];
+                    messageIndex = (messageIndex + 1) % loadingMessages.length;
+                }, 2000);
+            }
+        }
+
+        // Track species research history for future features
+        function trackResearchHistory(speciesArray) {
+            const history = JSON.parse(localStorage.getItem('researchHistory') || '[]');
+            const newEntries = speciesArray.map(species => ({
+                species: species.species,
+                timestamp: new Date().toISOString(),
+                researchBacked: species.researchBacked
+            }));
+            
+            history.push(...newEntries);
+            
+            // Keep only last 100 entries
+            if (history.length > 100) {
+                history.splice(0, history.length - 100);
+            }
+            
+            localStorage.setItem('researchHistory', JSON.stringify(history));
+        }
+
+        // Future feature: Show research history
+        function getResearchHistory() {
+            return JSON.parse(localStorage.getItem('researchHistory') || '[]');
+        }
+
+        // Future feature: Popular species suggestions
+        function getPopularSpecies() {
+            const history = getResearchHistory();
+            const speciesCounts = {};
+            
+            history.forEach(entry => {
+                speciesCounts[entry.species] = (speciesCounts[entry.species] || 0) + 1;
+            });
+            
+            return Object.entries(speciesCounts)
+                .sort(([,a], [,b]) => b - a)
+                .slice(0, 10)
+                .map(([species]) => species);
+        }
+
+        console.log('🧬 Species Intelligence Research Agent loaded successfully!');
+        console.log('🌍 Ready to explore the intelligence of all life forms through the Perceive • Relate • Apply framework');
+        console.log('✨ Enhanced with quantum biology integration and community wisdom');
     </script>
 </body>
 </html>
