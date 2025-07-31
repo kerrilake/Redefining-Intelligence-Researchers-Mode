@@ -1,965 +1,820 @@
-<!-- Species Intelligence Research Tool - No Cart Conflicts -->
-<div id="species-wisdom-tool" style="font-family: Arial, sans-serif; background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); min-height: 80vh; padding: 20px; color: #333; position: relative;">
+<script>
+// Immediate execution to avoid any DOM timing issues
+(function() {
     
-    <style>
-        #species-wisdom-tool * {
-            box-sizing: border-box;
-        }
+    // Create the entire app as a string and inject it
+    const appHTML = `
+    <div id="species-intelligence-container" style="font-family: Arial, sans-serif; background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); min-height: 80vh; padding: 20px; color: #333; position: relative; overflow: hidden; width: 100%; box-sizing: border-box;">
         
-        .wisdom-panel {
-            background: rgba(255, 255, 255, 0.15) !important;
-            backdrop-filter: blur(15px) !important;
-            border-radius: 20px !important;
-            border: 1px solid rgba(255, 255, 255, 0.25) !important;
-            box-shadow: 0 8px 32px rgba(31, 38, 135, 0.4) !important;
-            padding: 30px !important;
-            margin: 20px 0 !important;
-        }
-        
-        .main-header {
-            text-align: center;
-            margin-bottom: 30px;
-        }
-        
-        .main-header h1 {
-            font-size: 2.2em !important;
-            color: white !important;
-            margin: 0 0 10px 0 !important;
-            text-shadow: 2px 2px 4px rgba(0,0,0,0.3) !important;
-            font-weight: bold !important;
-        }
-        
-        .main-header p {
-            color: rgba(255, 255, 255, 0.9) !important;
-            font-size: 1.1em !important;
-            font-style: italic !important;
-            margin: 0 !important;
-        }
-        
-        .species-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-            gap: 15px;
-            margin-bottom: 25px;
-        }
-        
-        .species-textbox {
-            padding: 15px !important;
-            font-size: 16px !important;
-            border: none !important;
-            border-radius: 15px !important;
-            background: rgba(255, 255, 255, 0.9) !important;
-            color: #333 !important;
-            width: 100% !important;
-            outline: none !important;
-        }
-        
-        .species-textbox:focus {
-            transform: scale(1.02) !important;
-            box-shadow: 0 5px 15px rgba(0,0,0,0.2) !important;
-            transition: all 0.3s ease !important;
-        }
-        
-        .enhancement-options {
-            margin: 25px 0;
-            text-align: left;
-        }
-        
-        .enhancement-options h3 {
-            color: white !important;
-            margin-bottom: 15px !important;
-            font-size: 1.2em !important;
-        }
-        
-        .option-toggles {
-            display: flex;
-            flex-wrap: wrap;
-            gap: 20px;
-            margin: 15px 0;
-        }
-        
-        .toggle-option {
-            display: flex;
-            align-items: center;
-            gap: 8px;
-            color: white !important;
-        }
-        
-        .toggle-option input {
-            transform: scale(1.2) !important;
-        }
-        
-        .wisdom-button {
-            background: linear-gradient(135deg, #4CAF50, #45a049) !important;
-            color: white !important;
-            border: none !important;
-            padding: 15px 30px !important;
-            font-size: 16px !important;
-            border-radius: 25px !important;
-            cursor: pointer !important;
-            margin: 15px 10px !important;
-            font-weight: bold !important;
-            box-shadow: 0 4px 15px rgba(0,0,0,0.2) !important;
-            transition: all 0.3s ease !important;
-        }
-        
-        .wisdom-button:hover {
-            transform: translateY(-2px) !important;
-            box-shadow: 0 6px 20px rgba(0,0,0,0.3) !important;
-        }
-        
-        .community-button {
-            background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%) !important;
-        }
-        
-        .analysis-loading {
-            text-align: center;
-            padding: 60px 20px;
-            margin: 20px 0;
-        }
-        
-        .spinning-icon {
-            font-size: 64px;
-            animation: spin-pulse 2s infinite;
-            margin-bottom: 20px;
-        }
-        
-        @keyframes spin-pulse {
-            0%, 100% { transform: scale(1) rotate(0deg); }
-            50% { transform: scale(1.2) rotate(180deg); }
-        }
-        
-        .species-analysis {
-            margin: 25px 0;
-        }
-        
-        .species-title {
-            text-align: center;
-            margin-bottom: 25px;
-        }
-        
-        .species-title h2 {
-            font-size: 2.2em !important;
-            color: #333 !important;
-            margin-bottom: 10px !important;
-        }
-        
-        .analysis-badge {
-            display: inline-block;
-            background: linear-gradient(135deg, #FF6B6B, #4ECDC4);
-            color: white;
-            padding: 8px 20px;
-            border-radius: 20px;
-            font-size: 14px;
-            font-weight: bold;
-        }
-        
-        .insight-panel {
-            text-align: center;
-            padding: 25px;
-            margin: 25px 0;
-            background: linear-gradient(135deg, rgba(255, 215, 0, 0.25), rgba(255, 165, 0, 0.25)) !important;
-            border-radius: 15px !important;
-            border-left: 5px solid #FFD700 !important;
-        }
-        
-        .insight-panel h3 {
-            color: #B8860B !important;
-            margin-bottom: 15px !important;
-            font-size: 1.3em !important;
-        }
-        
-        .insight-panel p {
-            font-size: 1.1em !important;
-            line-height: 1.6 !important;
-            color: #333 !important;
-            font-style: italic !important;
-            margin: 0 !important;
-        }
-        
-        .framework-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-            gap: 25px;
-            margin: 30px 0;
-        }
-        
-        .framework-panel {
-            padding: 25px;
-            border-radius: 15px !important;
-            position: relative;
-        }
-        
-        .perceive-panel {
-            background: linear-gradient(135deg, rgba(76, 175, 80, 0.25), rgba(129, 199, 132, 0.25)) !important;
-            border-left: 5px solid #4CAF50 !important;
-        }
-        
-        .relate-panel {
-            background: linear-gradient(135deg, rgba(33, 150, 243, 0.25), rgba(100, 181, 246, 0.25)) !important;
-            border-left: 5px solid #2196F3 !important;
-        }
-        
-        .apply-panel {
-            background: linear-gradient(135deg, rgba(156, 39, 176, 0.25), rgba(186, 104, 200, 0.25)) !important;
-            border-left: 5px solid #9C27B0 !important;
-        }
-        
-        .framework-panel h3 {
-            font-size: 1.4em !important;
-            margin-bottom: 15px !important;
-            display: flex;
-            align-items: center;
-            gap: 10px;
-        }
-        
-        .framework-tag {
-            background: linear-gradient(135deg, #667eea, #764ba2);
-            color: white;
-            padding: 5px 12px;
-            border-radius: 15px;
-            font-size: 12px;
-            font-weight: bold;
-        }
-        
-        .framework-panel p {
-            line-height: 1.6 !important;
-            margin-bottom: 15px !important;
-            color: #444 !important;
-        }
-        
-        .wisdom-list {
-            list-style: none !important;
-            padding: 0 !important;
-            margin: 0 !important;
-        }
-        
-        .wisdom-list li {
-            padding: 8px 0 !important;
-            border-bottom: 1px solid rgba(255,255,255,0.15) !important;
-            position: relative;
-            padding-left: 20px !important;
-        }
-        
-        .wisdom-list li:before {
-            content: "•";
-            position: absolute;
-            left: 0;
-            color: #4CAF50;
-            font-weight: bold;
-        }
-        
-        .final-actions {
-            text-align: center;
-            margin: 40px 0;
-        }
-        
-        .action-grid {
-            display: flex;
-            gap: 15px;
-            justify-content: center;
-            flex-wrap: wrap;
-            margin: 30px 0;
-        }
-        
-        .secondary-button {
-            flex: 1;
-            min-width: 200px;
-            padding: 15px 25px !important;
-            border: none !important;
-            border-radius: 25px !important;
-            font-weight: bold !important;
-            cursor: pointer !important;
-            color: white !important;
-            text-decoration: none !important;
-            display: inline-block !important;
-            text-align: center !important;
-            margin: 10px !important;
-            transition: all 0.3s ease !important;
-        }
-        
-        .report-button {
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%) !important;
-        }
-        
-        .reset-button {
-            background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%) !important;
-        }
-        
-        .tool-info {
-            text-align: center;
-            margin-top: 30px;
-            padding: 15px;
-            background: rgba(255, 255, 255, 0.1);
-            border-radius: 10px;
-        }
-        
-        .tool-info small {
-            color: #666;
-            font-size: 12px;
-        }
-        
-        /* Community Modal */
-        .modal-overlay {
-            display: none;
-            position: fixed;
-            z-index: 10000;
-            left: 0;
-            top: 0;
-            width: 100%;
-            height: 100%;
-            background-color: rgba(0,0,0,0.6);
-        }
-        
-        .modal-panel {
-            background: rgba(255, 255, 255, 0.95);
-            margin: 3% auto;
-            padding: 30px;
-            border-radius: 20px;
-            width: 90%;
-            max-width: 700px;
-            max-height: 85vh;
-            overflow-y: auto;
-            position: relative;
-        }
-        
-        .close-modal {
-            position: absolute;
-            right: 20px;
-            top: 15px;
-            font-size: 28px;
-            font-weight: bold;
-            cursor: pointer;
-            color: #666;
-        }
-        
-        .form-field {
-            margin: 20px 0;
-        }
-        
-        .form-field label {
-            display: block;
-            margin-bottom: 8px;
-            font-weight: bold;
-            color: #333 !important;
-        }
-        
-        .form-field input,
-        .form-field textarea,
-        .form-field select {
-            width: 100% !important;
-            padding: 12px !important;
-            border: 2px solid #ddd !important;
-            border-radius: 10px !important;
-            font-size: 14px !important;
-            background: rgba(255, 255, 255, 0.9) !important;
-            font-family: inherit !important;
-        }
-        
-        .submit-form-button {
-            background: linear-gradient(135deg, #4CAF50, #45a049) !important;
-            color: white !important;
-            border: none !important;
-            padding: 15px 30px !important;
-            border-radius: 25px !important;
-            cursor: pointer !important;
-            font-size: 16px !important;
-            font-weight: bold !important;
-            width: 100% !important;
-            margin-top: 20px !important;
-        }
-    </style>
-    
-    <div class="wisdom-panel">
-        <div class="main-header">
-            <h1>Species Intelligence Research Tool</h1>
-            <p>Redefining Intelligence Through the Perceive • Relate • Apply Framework</p>
-        </div>
-
-        <div style="text-align: center; margin-bottom: 30px;">
-            <h2 style="color: white; margin-bottom: 20px; font-size: 1.5em;">Explore Species Intelligence</h2>
+        <style>
+            #species-intelligence-container * {
+                box-sizing: border-box;
+            }
             
-            <div class="species-grid">
-                <input type="text" class="species-textbox" id="speciesField1" placeholder="Enter first species (e.g., horses)" />
-                <input type="text" class="species-textbox" id="speciesField2" placeholder="Enter second species (optional)" />
-                <input type="text" class="species-textbox" id="speciesField3" placeholder="Enter third species (optional)" />
-                <input type="text" class="species-textbox" id="speciesField4" placeholder="Enter fourth species (optional)" />
-                <input type="text" class="species-textbox" id="speciesField5" placeholder="Enter fifth species (optional)" />
+            #species-intelligence-container .wisdom-panel {
+                background: rgba(255, 255, 255, 0.15) !important;
+                backdrop-filter: blur(15px) !important;
+                border-radius: 20px !important;
+                border: 1px solid rgba(255, 255, 255, 0.25) !important;
+                box-shadow: 0 8px 32px rgba(31, 38, 135, 0.4) !important;
+                padding: 30px !important;
+                margin: 20px 0 !important;
+            }
+            
+            #species-intelligence-container .main-header {
+                text-align: center;
+                margin-bottom: 30px;
+            }
+            
+            #species-intelligence-container .main-header h1 {
+                font-size: 2.2em !important;
+                color: white !important;
+                margin: 0 0 10px 0 !important;
+                text-shadow: 2px 2px 4px rgba(0,0,0,0.3) !important;
+                font-weight: bold !important;
+            }
+            
+            #species-intelligence-container .main-header p {
+                color: rgba(255, 255, 255, 0.9) !important;
+                font-size: 1.1em !important;
+                font-style: italic !important;
+                margin: 0 !important;
+            }
+            
+            #species-intelligence-container .species-grid {
+                display: grid;
+                grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+                gap: 15px;
+                margin-bottom: 25px;
+            }
+            
+            #species-intelligence-container .species-textbox {
+                padding: 15px !important;
+                font-size: 16px !important;
+                border: none !important;
+                border-radius: 15px !important;
+                background: rgba(255, 255, 255, 0.9) !important;
+                color: #333 !important;
+                width: 100% !important;
+                outline: none !important;
+            }
+            
+            #species-intelligence-container .species-textbox:focus {
+                transform: scale(1.02) !important;
+                box-shadow: 0 5px 15px rgba(0,0,0,0.2) !important;
+                transition: all 0.3s ease !important;
+            }
+            
+            #species-intelligence-container .enhancement-options {
+                margin: 25px 0;
+                text-align: left;
+            }
+            
+            #species-intelligence-container .enhancement-options h3 {
+                color: white !important;
+                margin-bottom: 15px !important;
+                font-size: 1.2em !important;
+            }
+            
+            #species-intelligence-container .option-toggles {
+                display: flex;
+                flex-wrap: wrap;
+                gap: 20px;
+                margin: 15px 0;
+            }
+            
+            #species-intelligence-container .toggle-option {
+                display: flex;
+                align-items: center;
+                gap: 8px;
+                color: white !important;
+            }
+            
+            #species-intelligence-container .toggle-option input {
+                transform: scale(1.2) !important;
+            }
+            
+            #species-intelligence-container .wisdom-button {
+                background: linear-gradient(135deg, #4CAF50, #45a049) !important;
+                color: white !important;
+                border: none !important;
+                padding: 15px 30px !important;
+                font-size: 16px !important;
+                border-radius: 25px !important;
+                cursor: pointer !important;
+                margin: 15px 10px !important;
+                font-weight: bold !important;
+                box-shadow: 0 4px 15px rgba(0,0,0,0.2) !important;
+                transition: all 0.3s ease !important;
+            }
+            
+            #species-intelligence-container .wisdom-button:hover {
+                transform: translateY(-2px) !important;
+                box-shadow: 0 6px 20px rgba(0,0,0,0.3) !important;
+            }
+            
+            #species-intelligence-container .community-button {
+                background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%) !important;
+            }
+            
+            #species-intelligence-container .analysis-loading {
+                text-align: center;
+                padding: 60px 20px;
+                margin: 20px 0;
+            }
+            
+            #species-intelligence-container .spinning-icon {
+                font-size: 64px;
+                animation: spin-pulse-unique 2s infinite;
+                margin-bottom: 20px;
+            }
+            
+            @keyframes spin-pulse-unique {
+                0%, 100% { transform: scale(1) rotate(0deg); }
+                50% { transform: scale(1.2) rotate(180deg); }
+            }
+            
+            #species-intelligence-container .species-analysis {
+                margin: 25px 0;
+            }
+            
+            #species-intelligence-container .species-title {
+                text-align: center;
+                margin-bottom: 25px;
+            }
+            
+            #species-intelligence-container .species-title h2 {
+                font-size: 2.2em !important;
+                color: #333 !important;
+                margin-bottom: 10px !important;
+            }
+            
+            #species-intelligence-container .analysis-badge {
+                display: inline-block;
+                background: linear-gradient(135deg, #FF6B6B, #4ECDC4);
+                color: white;
+                padding: 8px 20px;
+                border-radius: 20px;
+                font-size: 14px;
+                font-weight: bold;
+            }
+            
+            #species-intelligence-container .insight-panel {
+                text-align: center;
+                padding: 25px;
+                margin: 25px 0;
+                background: linear-gradient(135deg, rgba(255, 215, 0, 0.25), rgba(255, 165, 0, 0.25)) !important;
+                border-radius: 15px !important;
+                border-left: 5px solid #FFD700 !important;
+            }
+            
+            #species-intelligence-container .insight-panel h3 {
+                color: #B8860B !important;
+                margin-bottom: 15px !important;
+                font-size: 1.3em !important;
+            }
+            
+            #species-intelligence-container .insight-panel p {
+                font-size: 1.1em !important;
+                line-height: 1.6 !important;
+                color: #333 !important;
+                font-style: italic !important;
+                margin: 0 !important;
+            }
+            
+            #species-intelligence-container .framework-grid {
+                display: grid;
+                grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+                gap: 25px;
+                margin: 30px 0;
+            }
+            
+            #species-intelligence-container .framework-panel {
+                padding: 25px;
+                border-radius: 15px !important;
+                position: relative;
+            }
+            
+            #species-intelligence-container .perceive-panel {
+                background: linear-gradient(135deg, rgba(76, 175, 80, 0.25), rgba(129, 199, 132, 0.25)) !important;
+                border-left: 5px solid #4CAF50 !important;
+            }
+            
+            #species-intelligence-container .relate-panel {
+                background: linear-gradient(135deg, rgba(33, 150, 243, 0.25), rgba(100, 181, 246, 0.25)) !important;
+                border-left: 5px solid #2196F3 !important;
+            }
+            
+            #species-intelligence-container .apply-panel {
+                background: linear-gradient(135deg, rgba(156, 39, 176, 0.25), rgba(186, 104, 200, 0.25)) !important;
+                border-left: 5px solid #9C27B0 !important;
+            }
+            
+            #species-intelligence-container .framework-panel h3 {
+                font-size: 1.4em !important;
+                margin-bottom: 15px !important;
+                display: flex;
+                align-items: center;
+                gap: 10px;
+                color: white !important;
+            }
+            
+            #species-intelligence-container .framework-tag {
+                background: linear-gradient(135deg, #667eea, #764ba2);
+                color: white;
+                padding: 5px 12px;
+                border-radius: 15px;
+                font-size: 12px;
+                font-weight: bold;
+            }
+            
+            #species-intelligence-container .framework-panel p {
+                line-height: 1.6 !important;
+                margin-bottom: 15px !important;
+                color: white !important;
+                font-weight: 500 !important;
+            }
+            
+            #species-intelligence-container .wisdom-list {
+                list-style: none !important;
+                padding: 0 !important;
+                margin: 0 !important;
+            }
+            
+            #species-intelligence-container .wisdom-list li {
+                padding: 8px 0 !important;
+                border-bottom: 1px solid rgba(255,255,255,0.2) !important;
+                position: relative;
+                padding-left: 20px !important;
+                color: white !important;
+                font-weight: 500 !important;
+            }
+            
+            #species-intelligence-container .wisdom-list li:before {
+                content: "•";
+                position: absolute;
+                left: 0;
+                color: white;
+                font-weight: bold;
+            }
+            
+            #species-intelligence-container .final-actions {
+                text-align: center;
+                margin: 40px 0;
+            }
+            
+            #species-intelligence-container .action-grid {
+                display: flex;
+                gap: 15px;
+                justify-content: center;
+                flex-wrap: wrap;
+                margin: 30px 0;
+            }
+            
+            #species-intelligence-container .secondary-button {
+                flex: 1;
+                min-width: 200px;
+                padding: 15px 25px !important;
+                border: none !important;
+                border-radius: 25px !important;
+                font-weight: bold !important;
+                cursor: pointer !important;
+                color: white !important;
+                text-decoration: none !important;
+                display: inline-block !important;
+                text-align: center !important;
+                margin: 10px !important;
+                transition: all 0.3s ease !important;
+            }
+            
+            #species-intelligence-container .report-button {
+                background: linear-gradient(135deg, #667eea 0%, #764ba2 100%) !important;
+            }
+            
+            #species-intelligence-container .reset-button {
+                background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%) !important;
+            }
+            
+            #species-intelligence-container .tool-info {
+                text-align: center;
+                margin-top: 30px;
+                padding: 15px;
+                background: rgba(255, 255, 255, 0.1);
+                border-radius: 10px;
+            }
+            
+            #species-intelligence-container .tool-info small {
+                color: #666;
+                font-size: 12px;
+            }
+        </style>
+        
+        <div class="wisdom-panel">
+            <div class="main-header">
+                <h1>Species Intelligence Research Tool</h1>
+                <p>Redefining Intelligence Through the Perceive • Relate • Apply Framework</p>
             </div>
 
-            <div class="enhancement-options">
-                <h3>Enhanced Analysis Options</h3>
-                <div class="option-toggles">
-                    <div class="toggle-option">
-                        <input type="checkbox" id="indigenousToggle" />
-                        <label for="indigenousToggle">Include Indigenous Knowledge</label>
-                    </div>
-                    <div class="toggle-option">
-                        <input type="checkbox" id="biomimicryToggle" />
-                        <label for="biomimicryToggle">Include Biomimicry Applications</label>
-                    </div>
-                    <div class="toggle-option">
-                        <input type="checkbox" id="humanToggle" />
-                        <label for="humanToggle">Compare with Human Intelligence</label>
-                    </div>
+            <div style="text-align: center; margin-bottom: 30px;">
+                <h2 style="color: white; margin-bottom: 20px; font-size: 1.5em;">Explore Species Intelligence</h2>
+                
+                <div class="species-grid">
+                    <input type="text" class="species-textbox" id="speciesField1" placeholder="Enter first species (e.g., horses)" />
+                    <input type="text" class="species-textbox" id="speciesField2" placeholder="Enter second species (optional)" />
+                    <input type="text" class="species-textbox" id="speciesField3" placeholder="Enter third species (optional)" />
+                    <input type="text" class="species-textbox" id="speciesField4" placeholder="Enter fourth species (optional)" />
+                    <input type="text" class="species-textbox" id="speciesField5" placeholder="Enter fifth species (optional)" />
                 </div>
-            </div>
 
-            <div style="text-align: center;">
-                <button class="wisdom-button" id="analyzeButton">
-                    🔬 Reveal Intelligence
-                </button>
-                
-                <button class="wisdom-button community-button" id="shareButton">
-                    🤝 Share Knowledge
-                </button>
-            </div>
-        </div>
-    </div>
-
-    <div id="analysisResults"></div>
-
-    <!-- Community Modal -->
-    <div id="communityModal" class="modal-overlay">
-        <div class="modal-panel">
-            <span class="close-modal" id="closeModal">&times;</span>
-            <h3>Share Species Intelligence Knowledge</h3>
-            <p>Share your knowledge, observations, or insights about species intelligence</p>
-            
-            <form id="knowledgeForm">
-                <div class="form-field">
-                    <label for="contributorName">Your Name/Organization *:</label>
-                    <input type="text" id="contributorName" required>
-                </div>
-                
-                <div class="form-field">
-                    <label for="contributorEmail">Email (for verification) *:</label>
-                    <input type="email" id="contributorEmail" required>
-                </div>
-                
-                <div class="form-field">
-                    <label for="contributorCredentials">Credentials/Background:</label>
-                    <input type="text" id="contributorCredentials" placeholder="PhD in Biology, Indigenous Elder, Professional Animal Communicator, etc.">
-                </div>
-                
-                <div class="form-field">
-                    <label for="speciesName">Species Name *:</label>
-                    <input type="text" id="speciesName" required>
-                </div>
-                
-                <div class="form-field">
-                    <label for="wisdomInsight">Key Wisdom Insight *:</label>
-                    <textarea id="wisdomInsight" rows="3" required 
-                            placeholder="What profound insight about this species' intelligence should people know?"></textarea>
-                </div>
-                
-                <div style="background: rgba(78, 205, 196, 0.1); padding: 20px; border-radius: 12px; margin: 20px 0;">
-                    <h4 style="color: #4ECDC4; margin-bottom: 12px;">PERCEIVE - How they perceive their world:</h4>
-                    <textarea id="perceiveData" rows="4" required
-                            placeholder="Describe their sensory capabilities, environmental awareness, unique perceptual gifts..."></textarea>
-                </div>
-                
-                <div style="background: rgba(78, 205, 196, 0.1); padding: 20px; border-radius: 12px; margin: 20px 0;">
-                    <h4 style="color: #4ECDC4; margin-bottom: 12px;">RELATE - How they relate to their world:</h4>
-                    <textarea id="relateData" rows="4" required
-                            placeholder="Social structures, communication, ecological relationships, cultural significance..."></textarea>
-                </div>
-                
-                <div style="background: rgba(78, 205, 196, 0.1); padding: 20px; border-radius: 12px; margin: 20px 0;">
-                    <h4 style="color: #4ECDC4; margin-bottom: 12px;">APPLY - How they apply their intelligence:</h4>
-                    <textarea id="applyData" rows="4" required
-                            placeholder="Problem-solving, tool use, learning, ecosystem contributions..."></textarea>
-                </div>
-                
-                <div class="form-field">
-                    <label for="humanLearnings">What humans can learn from this species *:</label>
-                    <textarea id="humanLearnings" rows="3" required></textarea>
-                </div>
-                
-                <div class="form-field">
-                    <label for="conservationWisdom">Conservation intelligence insights *:</label>
-                    <textarea id="conservationWisdom" rows="3" required></textarea>
-                </div>
-                
-                <div class="form-field">
-                    <label for="sources">Sources/References (required) *:</label>
-                    <textarea id="sources" rows="4" required
-                            placeholder="List your sources: studies, traditional knowledge, personal observation, etc. At least 2 sources required."></textarea>
-                </div>
-                
-                <div class="form-field">
-                    <label for="experienceType">Type of knowledge *:</label>
-                    <select id="experienceType" required>
-                        <option value="">Select type</option>
-                        <option value="scientific">Scientific Studies</option>
-                        <option value="indigenous">Indigenous/Traditional Knowledge</option>
-                        <option value="observation">Field Observation</option>
-                        <option value="interspecies">Interspecies Communication</option>
-                        <option value="biomimicry">Biomimicry Application</option>
-                        <option value="conservation">Conservation Experience</option>
-                    </select>
-                </div>
-                
-                <div class="form-field">
-                    <div style="display: flex; align-items: center; gap: 8px;">
-                        <input type="checkbox" id="accuracy" required>
-                        <label for="accuracy">I verify that this information is accurate to the best of my knowledge *</label>
-                    </div>
-                </div>
-                
-                <div class="form-field">
-                    <div style="display: flex; align-items: center; gap: 8px;">
-                        <input type="checkbox" id="permission" required>
-                        <label for="permission">I give permission for this knowledge to be used in the Species Intelligence database *</label>
-                    </div>
-                </div>
-                
-                <button type="submit" class="submit-form-button">Share Knowledge</button>
-            </form>
-        </div>
-    </div>
-
-    <script>
-        // Wait for DOM to be fully loaded
-        document.addEventListener('DOMContentLoaded', function() {
-            console.log('Species Intelligence Analysis Tool initializing...');
-            
-            // Add event listeners
-            document.getElementById('analyzeButton').addEventListener('click', beginAnalysis);
-            document.getElementById('shareButton').addEventListener('click', openKnowledgeForm);
-            document.getElementById('closeModal').addEventListener('click', closeKnowledgeForm);
-            
-            // Add enter key support
-            const inputs = document.querySelectorAll('.species-textbox');
-            inputs.forEach(input => {
-                input.addEventListener('keypress', function(e) {
-                    if (e.key === 'Enter') {
-                        beginAnalysis();
-                    }
-                });
-            });
-            
-            // Form submission
-            document.getElementById('knowledgeForm').addEventListener('submit', handleKnowledgeSubmission);
-            
-            console.log('Species Intelligence Analysis Tool ready!');
-        });
-
-        async function beginAnalysis() {
-            console.log('Beginning intelligence analysis...');
-            
-            const speciesInputs = [
-                document.getElementById('speciesField1').value.trim(),
-                document.getElementById('speciesField2').value.trim(),
-                document.getElementById('speciesField3').value.trim(),
-                document.getElementById('speciesField4').value.trim(),
-                document.getElementById('speciesField5').value.trim()
-            ].filter(species => species.length > 0);
-
-            if (speciesInputs.length === 0) {
-                alert('Please enter at least one species name');
-                return;
-            }
-
-            const options = {
-                includeIndigenous: document.getElementById('indigenousToggle').checked,
-                includeBiomimicry: document.getElementById('biomimicryToggle').checked,
-                includeHuman: document.getElementById('humanToggle').checked
-            };
-
-            if (options.includeHuman) {
-                speciesInputs.push('Human');
-            }
-
-            const resultsDiv = document.getElementById('analysisResults');
-            
-            // Show loading
-            resultsDiv.innerHTML = `
-                <div class="wisdom-panel">
-                    <div class="analysis-loading">
-                        <div class="spinning-icon">🧬</div>
-                        <h3 style="color: #333; margin-bottom: 15px;">Conducting Deep Species Intelligence Analysis</h3>
-                        <p style="color: #666; margin-bottom: 25px;">Synthesizing consciousness data for ${speciesInputs.length} species</p>
-                    </div>
-                </div>
-            `;
-
-            // Simulate analysis delay and then generate results
-            setTimeout(() => {
-                console.log('Generating analysis for species:', speciesInputs);
-                const results = [];
-                for (const species of speciesInputs) {
-                    const analysis = generateSpeciesAnalysis(species, options);
-                    console.log('Generated analysis for', species, ':', analysis);
-                    results.push(analysis);
-                }
-
-                console.log('All results generated:', results);
-                displayAnalysisResults(results);
-            }, 2500);
-        }
-
-        function generateSpeciesAnalysis(speciesName, options) {
-            const species = speciesName.toLowerCase();
-            
-            // Rich species-specific data
-            const speciesDatabase = {
-                horse: {
-                    wisdomInsight: "Horses demonstrate profound emotional intelligence and the ability to mirror human consciousness, teaching us about authentic presence and energetic communication.",
-                    perceive: {
-                        summary: "Horses perceive through heightened sensory awareness, electromagnetic field sensitivity, and intuitive emotional resonance with other beings.",
-                        details: [
-                            "Acute electromagnetic field detection for weather and emotional states",
-                            "Sophisticated body language interpretation across species",
-                            "Seismic vibration sensing through hooves and body",
-                            "Energetic boundary awareness and empathic perception"
-                        ]
-                    },
-                    relate: {
-                        summary: "Horses relate through complex herd dynamics, interspecies emotional bonding, and energetic communication that transcends verbal language.",
-                        details: [
-                            "Intricate herd hierarchy based on trust and respect rather than dominance",
-                            "Cross-species therapeutic relationships with humans",
-                            "Energetic mirroring and emotional regulation of other beings",
-                            "Collective decision-making through subtle body language"
-                        ]
-                    },
-                    apply: {
-                        summary: "Horses apply their intelligence through adaptive problem-solving, environmental navigation, and therapeutic healing applications with humans.",
-                        details: [
-                            "Complex spatial memory and route optimization",
-                            "Therapeutic facilitation for human emotional healing",
-                            "Environmental adaptation and resource management",
-                            "Social mediation and conflict resolution within herds"
-                        ]
-                    },
-                    humanLearnings: "Humans can learn authentic presence, emotional transparency, and the power of non-verbal communication from horses. Their ability to live fully in the present moment while maintaining deep social bonds offers profound lessons for human relationships and consciousness.",
-                    conservationWisdom: "Protecting horses and their natural habitats preserves ancient forms of emotional intelligence that serve as bridges between human and wild consciousness. Their intelligence is essential for understanding mammalian emotional evolution.",
-                    quantumAspects: "Recent studies suggest horses may detect subtle electromagnetic fields and quantum fluctuations, potentially explaining their ability to sense emotions and predict weather changes before humans can detect them."
-                },
-                
-                dolphin: {
-                    wisdomInsight: "Dolphins embody the synthesis of intelligence, play, and consciousness, demonstrating that advanced cognition naturally includes joy, creativity, and interspecies communication.",
-                    perceive: {
-                        summary: "Dolphins perceive through echolocation, electromagnetic sensing, and quantum field awareness that creates a three-dimensional sonic picture of their world.",
-                        details: [
-                            "Biosonar echolocation creating detailed internal imagery",
-                            "Electromagnetic field navigation for long-distance migration", 
-                            "Quantum entanglement in pod communication systems",
-                            "Multi-dimensional acoustic processing of environmental information"
-                        ]
-                    },
-                    relate: {
-                        summary: "Dolphins relate through complex pod societies, interspecies play, and sophisticated communication that includes signature whistles and telepathic connections.",
-                        details: [
-                            "Individual signature whistles functioning as names",
-                            "Cross-species play and communication with humans",
-                            "Cooperative hunting strategies across pod networks",
-                            "Grief rituals and emotional support systems"
-                        ]
-                    },
-                    apply: {
-                        summary: "Dolphins apply intelligence through problem-solving, tool use, cultural transmission, and healing interactions with other species including humans.",
-                        details: [
-                            "Tool use with sponges for foraging protection",
-                            "Cultural transmission of hunting techniques across generations",
-                            "Therapeutic interactions with humans and other injured animals",
-                            "Creative play that serves cognitive development"
-                        ]
-                    },
-                    humanLearnings: "Dolphins teach humans that intelligence without joy is incomplete. Their integration of play, cooperation, and problem-solving offers a model for conscious evolution that includes both wisdom and delight.",
-                    conservationWisdom: "Dolphin intelligence represents millions of years of oceanic consciousness evolution. Protecting them preserves forms of communication and awareness that could unlock understanding of planetary consciousness networks.",
-                    quantumAspects: "Marine biologists are investigating quantum coherence in dolphin echolocation systems, suggesting their sonic abilities may utilize quantum mechanical principles for enhanced perception and communication."
-                },
-                
-                human: {
-                    wisdomInsight: "Humans represent a unique form of consciousness that bridges linear thinking with intuitive awareness, capable of both technological innovation and spiritual evolution.",
-                    perceive: {
-                        summary: "Humans perceive through sensory integration, pattern recognition, and consciousness-based awareness that extends beyond physical senses.",
-                        details: [
-                            "Multi-sensory integration creating unified perceptual experiences",
-                            "Abstract pattern recognition and symbolic thinking",
-                            "Intuitive and psychic perception beyond ordinary senses",
-                            "Cultural and linguistic filtering of perceptual experience"
-                        ]
-                    },
-                    relate: {
-                        summary: "Humans relate through language, empathy, cultural systems, and expanding consciousness connections with all life forms.",
-                        details: [
-                            "Complex linguistic communication and storytelling",
-                            "Empathic resonance and emotional mirroring",
-                            "Cultural meaning-making and shared belief systems",
-                            "Expanding interspecies communication and nature connection"
-                        ]
-                    },
-                    apply: {
-                        summary: "Humans apply intelligence through technology, creativity, conscious choice-making, and potential co-evolution with all life on Earth.",
-                        details: [
-                            "Technological innovation and environmental manipulation",
-                            "Artistic and creative expression across multiple mediums",
-                            "Conscious evolution and spiritual development practices",
-                            "Collaborative problem-solving and collective intelligence"
-                        ]
-                    },
-                    humanLearnings: "Humans are learning to integrate their unique gifts of abstract thinking and creativity with the wisdom of other species, potentially leading to a new form of planetary consciousness.",
-                    conservationWisdom: "Human intelligence carries the responsibility of protecting and honoring all forms of life, recognizing that human consciousness evolution depends on the health of the entire planetary ecosystem.",
-                    quantumAspects: "Emerging analysis in human consciousness suggests quantum processes in microtubules may be fundamental to human awareness, connecting individual consciousness to universal information fields."
-                }
-            };
-            
-            let baseData = speciesDatabase[species] || {
-                wisdomInsight: `${speciesName} represents a unique form of intelligence that bridges scientific understanding with consciousness wisdom, offering humanity profound lessons about life and awareness.`,
-                perceive: {
-                    summary: `${speciesName} applies their intelligence for survival, thriving, and ecosystem contribution while maintaining harmony with natural systems.`,
-                    details: [
-                        "Adaptive problem-solving behaviors",
-                        "Environmental manipulation and habitat optimization",
-                        "Learning and memory applications across generations",
-                        "Ecosystem intelligence contributions and balance maintenance"
-                    ]
-                },
-                humanLearnings: `Humans can learn about adaptation, resilience, consciousness expansion, and natural harmony from ${speciesName}. Their approach to life offers insights into sustainable living and authentic relationship with the natural world.`,
-                conservationWisdom: `Protecting ${speciesName} preserves unique forms of intelligence essential for planetary health and consciousness evolution. Each species represents irreplaceable wisdom about life's creative intelligence.`,
-                quantumAspects: "Quantum biology analysis suggests consciousness connections across all life forms, with emerging studies on biofield interactions and morphic resonance patterns."
-            };
-            
-            // Add enhanced details based on options
-            if (options.includeIndigenous) {
-                baseData.perceive.details.push("Traditional ecological knowledge recognizes their unique perceptual gifts");
-                baseData.relate.details.push("Sacred relationships with this species across indigenous cultures");
-            }
-            
-            if (options.includeBiomimicry) {
-                baseData.apply.details.push("Biomimicry applications inspired by their unique capabilities");
-                baseData.apply.details.push("Technological innovations emerging from studying their intelligence");
-            }
-            
-            return {
-                species: speciesName,
-                ...baseData,
-                analysisComplete: true,
-                timestamp: new Date().toISOString()
-            };
-        }
-
-        function displayAnalysisResults(dataArray) {
-            const resultsDiv = document.getElementById('analysisResults');
-            
-            // Validate data
-            if (!dataArray || dataArray.length === 0) {
-                console.error('No analysis data to display');
-                resultsDiv.innerHTML = `
-                    <div class="wisdom-panel">
-                        <div style="text-align: center; padding: 40px;">
-                            <h3 style="color: #333;">Analysis Error</h3>
-                            <p style="color: #666;">No analysis data generated. Please try again.</p>
-                            <button class="wisdom-button" onclick="beginAnalysis()">Retry Analysis</button>
+                <div class="enhancement-options">
+                    <h3>Enhanced Analysis Options</h3>
+                    <div class="option-toggles">
+                        <div class="toggle-option">
+                            <input type="checkbox" id="indigenousToggle" />
+                            <label for="indigenousToggle">Include Indigenous Knowledge</label>
                         </div>
-                    </div>
-                `;
-                return;
-            }
-            
-            console.log('Displaying analysis results for', dataArray.length, 'species');
-            
-            let html = '';
-            
-            // Clear any previous results first
-            resultsDiv.innerHTML = '';
-            
-            dataArray.forEach((data, index) => {
-                console.log('Processing species data:', data.species);
-                html += `
-                    <div class="wisdom-panel species-analysis">
-                        <div class="species-title">
-                            <h2>${data.species}</h2>
-                            <div class="analysis-badge">
-                                🧬 Consciousness-Enhanced Analysis
-                            </div>
+                        <div class="toggle-option">
+                            <input type="checkbox" id="biomimicryToggle" />
+                            <label for="biomimicryToggle">Include Biomimicry Applications</label>
                         </div>
-                        
-                        <div class="insight-panel">
-                            <h3>💡 Key Wisdom</h3>
-                            <p>${data.wisdomInsight}</p>
-                        </div>
-                        
-                        <div class="framework-grid">
-                            <div class="framework-panel perceive-panel">
-                                <h3><span class="framework-tag">PERCEIVE</span> How They Perceive</h3>
-                                <p>${data.perceive.summary}</p>
-                                <ul class="wisdom-list">
-                                    ${data.perceive.details.map(detail => `<li>${detail}</li>`).join('')}
-                                </ul>
-                            </div>
-                            
-                            <div class="framework-panel relate-panel">
-                                <h3><span class="framework-tag">RELATE</span> How They Relate</h3>
-                                <p>${data.relate.summary}</p>
-                                <ul class="wisdom-list">
-                                    ${data.relate.details.map(detail => `<li>${detail}</li>`).join('')}
-                                </ul>
-                            </div>
-                            
-                            <div class="framework-panel apply-panel">
-                                <h3><span class="framework-tag">APPLY</span> How They Apply Intelligence</h3>
-                                <p>${data.apply.summary}</p>
-                                <ul class="wisdom-list">
-                                    ${data.apply.details.map(detail => `<li>${detail}</li>`).join('')}
-                                </ul>
-                            </div>
-                        </div>
-
-                        <div class="insight-panel" style="background: linear-gradient(135deg, rgba(147, 51, 234, 0.25), rgba(79, 70, 229, 0.25)) !important; border-left-color: #9333ea !important;">
-                            <h3>🌌 Quantum Biology & Consciousness</h3>
-                            <p>${data.quantumAspects}</p>
-                        </div>
-                        
-                        <div class="insight-panel" style="background: linear-gradient(135deg, rgba(34, 197, 94, 0.25), rgba(16, 185, 129, 0.25)) !important; border-left-color: #22c55e !important;">
-                            <h3>🌱 Human Learning Opportunities</h3>
-                            <p>${data.humanLearnings}</p>
-                        </div>
-                        
-                        <div class="insight-panel" style="background: linear-gradient(135deg, rgba(59, 130, 246, 0.25), rgba(147, 197, 253, 0.25)) !important; border-left-color: #3b82f6 !important;">
-                            <h3>🌍 Conservation Intelligence</h3>
-                            <p>${data.conservationWisdom}</p>
-                        </div>
-                    </div>
-                `;
-            });
-
-            html += `
-                <div class="wisdom-panel">
-                    <div class="final-actions">
-                        <div class="action-grid">
-                            <button class="secondary-button report-button" onclick="generateReport()">
-                                📄 Generate Detailed Report
-                            </button>
-                            <button class="secondary-button community-button" onclick="openKnowledgeForm()">
-                                🤝 Share Your Knowledge
-                            </button>
-                            <button class="secondary-button reset-button" onclick="resetAnalysis()">
-                                🔍 Analyze More Species
-                            </button>
-                        </div>
-                        
-                        <div class="tool-info">
-                            <small>Demo version with consciousness-enhanced framework • Full API integration coming soon</small>
+                        <div class="toggle-option">
+                            <input type="checkbox" id="humanToggle" />
+                            <label for="humanToggle">Compare with Human Intelligence</label>
                         </div>
                     </div>
                 </div>
-            `;
 
-            console.log('Setting HTML content...');
-            resultsDiv.innerHTML = html;
-            console.log('Analysis results displayed successfully');
-            
-            // Scroll to results
-            setTimeout(() => {
-                resultsDiv.scrollIntoView({ behavior: 'smooth', block: 'start' });
-            }, 100);
-        }
-
-        function resetAnalysis() {
-            document.getElementById('speciesField1').value = '';
-            document.getElementById('speciesField2').value = '';
-            document.getElementById('speciesField3').value = '';
-            document.getElementById('speciesField4').value = '';
-            document.getElementById('speciesField5').value = '';
-            document.getElementById('indigenousToggle').checked = false;
-            document.getElementById('biomimicryToggle').checked = false;
-            document.getElementById('humanToggle').checked = false;
-            document.getElementById('analysisResults').innerHTML = '';
-            document.getElementById('speciesField1').focus();
-        }
-
-        function generateReport() {
-            alert('Detailed report generation coming in full version! For now, you can copy and paste the analysis results.');
-        }
-
-        function openKnowledgeForm() {
-            document.getElementById('communityModal').style.display = 'block';
-        }
-
-        function closeKnowledgeForm() {
-            document.getElementById('communityModal').style.display = 'none';
-        }
-
-        function handleKnowledgeSubmission(e) {
-            e.preventDefault();
-            
-            const formData = new FormData(e.target);
-            const data = Object.fromEntries(formData.entries());
-            
-            // Basic validation
-            if (data.contributorName.length < 2 || data.contributorEmail.length < 5) {
-                alert('Please provide valid name and email.');
-                return;
-            }
-            
-            if (data.sources.split('\n').filter(s => s.trim().length > 10).length < 2) {
-                alert('Please provide at least 2 detailed sources.');
-                return;
-            }
-            
-            try {
-                const submitBtn = e.target.querySelector('.submit-form-button');
-                submitBtn.textContent = 'Submitting...';
-                submitBtn.disabled = true;
-                
-                // Simulate submission
-                setTimeout(() => {
-                    alert('Thank you! Your knowledge has been submitted for review. You will receive a confirmation email at info@kerrilake.com shortly.');
-                    closeKnowledgeForm();
-                    e.target.reset();
+                <div style="text-align: center;">
+                    <button class="wisdom-button" id="revealBtn">
+                        🔬 Reveal Intelligence
+                    </button>
                     
-                    submitBtn.textContent = 'Share Knowledge';
-                    submitBtn.disabled = false;
-                }, 1500);
-                
-            } catch (error) {
-                alert('Demo mode: Knowledge would be submitted to info@kerrilake.com for review.');
-                closeKnowledgeForm();
-                e.target.reset();
-            }
+                    <button class="wisdom-button community-button" id="shareBtn">
+                        🤝 Share Knowledge
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <div id="analysisResults"></div>
+    </div>
+    `;
+
+    // Insert the app HTML
+    document.currentScript.insertAdjacentHTML('afterend', appHTML);
+
+    // Species data
+    const speciesDatabase = {
+        horse: {
+            wisdomInsight: "Horses demonstrate profound emotional intelligence and the ability to mirror human consciousness, teaching us about authentic presence and energetic communication.",
+            perceive: {
+                summary: "Horses perceive through heightened sensory awareness, electromagnetic field sensitivity, and intuitive emotional resonance with other beings.",
+                details: [
+                    "Acute electromagnetic field detection for weather and emotional states",
+                    "Sophisticated body language interpretation across species",
+                    "Seismic vibration sensing through hooves and body",
+                    "Energetic boundary awareness and empathic perception"
+                ]
+            },
+            relate: {
+                summary: "Horses relate through complex herd dynamics, interspecies emotional bonding, and energetic communication that transcends verbal language.",
+                details: [
+                    "Intricate herd hierarchy based on trust and respect rather than dominance",
+                    "Cross-species therapeutic relationships with humans",
+                    "Energetic mirroring and emotional regulation of other beings",
+                    "Collective decision-making through subtle body language"
+                ]
+            },
+            apply: {
+                summary: "Horses apply their intelligence through adaptive problem-solving, environmental navigation, and therapeutic healing applications with humans.",
+                details: [
+                    "Complex spatial memory and route optimization",
+                    "Therapeutic facilitation for human emotional healing",
+                    "Environmental adaptation and resource management",
+                    "Social mediation and conflict resolution within herds"
+                ]
+            },
+            humanLearnings: "Humans can learn authentic presence, emotional transparency, and the power of non-verbal communication from horses. Their ability to live fully in the present moment while maintaining deep social bonds offers profound lessons for human relationships and consciousness.",
+            conservationWisdom: "Protecting horses and their natural habitats preserves ancient forms of emotional intelligence that serve as bridges between human and wild consciousness. Their intelligence is essential for understanding mammalian emotional evolution.",
+            quantumAspects: "Recent studies suggest horses may detect subtle electromagnetic fields and quantum fluctuations, potentially explaining their ability to sense emotions and predict weather changes before humans can detect them."
+        },
+        
+        butterfly: {
+            wisdomInsight: "Butterflies embody the intelligence of transformation, demonstrating that radical metamorphosis and delicate beauty can coexist with profound ecological wisdom.",
+            perceive: {
+                summary: "Butterflies perceive through ultraviolet vision, magnetic field navigation, and chemical communication that spans vast distances.",
+                details: [
+                    "Ultraviolet spectrum vision revealing hidden flower patterns",
+                    "Magnetic field detection for migration navigation",
+                    "Chemical pheromone communication across miles",
+                    "Metamorphic transformation intelligence across life stages"
+                ]
+            },
+            relate: {
+                summary: "Butterflies relate through pollination partnerships, migration communities, and essential ecosystem flowering relationships.",
+                details: [
+                    "Co-evolutionary partnerships with flowering plants",
+                    "Multi-generational migration coordination",
+                    "Pollination networks supporting ecosystem diversity",
+                    "Seasonal community formation and dissolution"
+                ]
+            },
+            apply: {
+                summary: "Butterflies apply their intelligence through precision navigation, ecosystem service provision, and transformation mastery.",
+                details: [
+                    "Thousand-mile migration navigation using celestial and magnetic cues",
+                    "Efficient pollination maximizing ecosystem fertility",
+                    "Complete metamorphosis demonstrating transformation intelligence",
+                    "Resource optimization through lifecycle adaptation"
+                ]
+            },
+            humanLearnings: "Butterflies teach humans about the beauty and necessity of transformation, the power of delicate strength, and the importance of pollinating the world with our unique gifts.",
+            conservationWisdom: "Butterfly intelligence represents the delicate interconnectedness of ecosystems. Their decline signals broader environmental disruption, making their protection essential for planetary health.",
+            quantumAspects: "Butterfly navigation may involve quantum compass mechanisms in their antennae, allowing them to detect Earth's magnetic field variations with extraordinary precision."
+        },
+        
+        human: {
+            wisdomInsight: "Humans represent a unique form of consciousness that bridges linear thinking with intuitive awareness, capable of both technological innovation and spiritual evolution.",
+            perceive: {
+                summary: "Humans perceive through sensory integration, pattern recognition, and consciousness-based awareness that extends beyond physical senses.",
+                details: [
+                    "Multi-sensory integration creating unified perceptual experiences",
+                    "Abstract pattern recognition and symbolic thinking",
+                    "Intuitive and psychic perception beyond ordinary senses",
+                    "Cultural and linguistic filtering of perceptual experience"
+                ]
+            },
+            relate: {
+                summary: "Humans relate through language, empathy, cultural systems, and expanding consciousness connections with all life forms.",
+                details: [
+                    "Complex linguistic communication and storytelling",
+                    "Empathic resonance and emotional mirroring",
+                    "Cultural meaning-making and shared belief systems",
+                    "Expanding interspecies communication and nature connection"
+                ]
+            },
+            apply: {
+                summary: "Humans apply intelligence through technology, creativity, conscious choice-making, and potential co-evolution with all life on Earth.",
+                details: [
+                    "Technological innovation and environmental manipulation",
+                    "Artistic and creative expression across multiple mediums",
+                    "Conscious evolution and spiritual development practices",
+                    "Collaborative problem-solving and collective intelligence"
+                ]
+            },
+            humanLearnings: "Humans are learning to integrate their unique gifts of abstract thinking and creativity with the wisdom of other species, potentially leading to a new form of planetary consciousness.",
+            conservationWisdom: "Human intelligence carries the responsibility of protecting and honoring all forms of life, recognizing that human consciousness evolution depends on the health of the entire planetary ecosystem.",
+            quantumAspects: "Emerging research in human consciousness suggests quantum processes in microtubules may be fundamental to human awareness, connecting individual consciousness to universal information fields."
+        }
+    };
+
+    // Functions
+    function generateSpeciesData(speciesName, options) {
+        const species = speciesName.toLowerCase();
+        
+        let baseData = speciesDatabase[species] || speciesDatabase[species + 's'] || speciesDatabase[species.slice(0, -1)] || {
+            wisdomInsight: `${speciesName} represents a unique form of intelligence that bridges scientific understanding with consciousness wisdom, offering humanity profound lessons about life and awareness.`,
+            perceive: {
+                summary: `${speciesName} perceives their world through evolved sensory adaptations and consciousness-based awareness that extends beyond current scientific understanding.`,
+                details: [
+                    "Species-specific sensory capabilities adapted to their environment",
+                    "Environmental awareness mechanisms for survival and thriving",
+                    "Social and emotional perception within their community",
+                    "Potential quantum field sensitivity and morphic resonance"
+                ]
+            },
+            relate: {
+                summary: `${speciesName} maintains complex relationships within their ecosystem and consciousness network, contributing to the web of planetary intelligence.`,
+                details: [
+                    "Ecological connections and symbiotic relationships",
+                    "Intraspecies communication and social structures",
+                    "Interspecies relationships and ecosystem contributions",
+                    "Energetic and consciousness connections with other life forms"
+                ]
+            },
+            apply: {
+                summary: `${speciesName} applies their intelligence for survival, thriving, and ecosystem contribution while maintaining harmony with natural systems.`,
+                details: [
+                    "Adaptive problem-solving behaviors",
+                    "Environmental manipulation and habitat optimization",
+                    "Learning and memory applications across generations",
+                    "Ecosystem intelligence contributions and balance maintenance"
+                ]
+            },
+            humanLearnings: `Humans can learn about adaptation, resilience, consciousness expansion, and natural harmony from ${speciesName}. Their approach to life offers insights into sustainable living and authentic relationship with the natural world.`,
+            conservationWisdom: `Protecting ${speciesName} preserves unique forms of intelligence essential for planetary health and consciousness evolution. Each species represents irreplaceable wisdom about life's creative intelligence.`,
+            quantumAspects: "Quantum biology research suggests consciousness connections across all life forms, with emerging studies on biofield interactions and morphic resonance patterns."
+        };
+        
+        // Add enhanced details based on options
+        if (options.includeIndigenous) {
+            baseData.perceive.details.push("Traditional ecological knowledge recognizes their unique perceptual gifts");
+            baseData.relate.details.push("Sacred relationships with this species across indigenous cultures");
+        }
+        
+        if (options.includeBiomimicry) {
+            baseData.apply.details.push("Biomimicry applications inspired by their unique capabilities");
+            baseData.apply.details.push("Technological innovations emerging from studying their intelligence");
+        }
+        
+        return {
+            species: speciesName,
+            ...baseData
+        };
+    }
+
+    function generateComparative(dataArray) {
+        if (dataArray.length < 2) return null;
+        
+        const speciesNames = dataArray.map(d => d.species);
+        
+        return {
+            sharedPatterns: {
+                perceive: [
+                    "All demonstrate sophisticated environmental awareness beyond human scientific understanding",
+                    "Electromagnetic and quantum field sensitivity appears across multiple species"
+                ],
+                relate: [
+                    "Each contributes to the web of planetary consciousness and ecosystem intelligence", 
+                    "Complex communication systems unite these life forms"
+                ],
+                apply: [
+                    "All apply their intelligence to maintain balance within natural systems",
+                    "Adaptive learning and problem-solving intelligence spans all these species"
+                ]
+            },
+            uniqueTraits: speciesNames.reduce((acc, species) => {
+                if (species.toLowerCase() === 'horse') {
+                    acc[species] = {
+                        perceive: "Unique empathic mirroring of human emotional states",
+                        relate: "Therapeutic relationship capacity with humans", 
+                        apply: "Healing facilitation through energetic presence"
+                    };
+                } else if (species.toLowerCase().includes('butterfly')) {
+                    acc[species] = {
+                        perceive: "Metamorphic transformation intelligence across life stages",
+                        relate: "Pollination partnerships essential for ecosystem flowering",
+                        apply: "Migration navigation across vast distances using magnetic fields"
+                    };
+                } else if (species.toLowerCase() === 'human') {
+                    acc[species] = {
+                        perceive: "Abstract symbolic thinking and pattern recognition",
+                        relate: "Complex linguistic and cultural meaning-making systems",
+                        apply: "Technological innovation and conscious evolution potential"
+                    };
+                } else {
+                    acc[species] = {
+                        perceive: `Species-specific sensory adaptations unique to ${species}`,
+                        relate: `Distinctive ecological relationships that ${species} alone can fulfill`,
+                        apply: `Specialized intelligence applications that make ${species} irreplaceable`
+                    };
+                }
+                return acc;
+            }, {}),
+            speciesNames
+        };
+    }
+
+    function revealIntelligence() {
+        console.log('🔬 Reveal Intelligence activated!');
+        
+        const speciesInputs = [
+            document.getElementById('speciesField1').value.trim(),
+            document.getElementById('speciesField2').value.trim(),
+            document.getElementById('speciesField3').value.trim(),
+            document.getElementById('speciesField4').value.trim(),
+            document.getElementById('speciesField5').value.trim()
+        ].filter(species => species.length > 0);
+
+        if (speciesInputs.length === 0) {
+            alert('Please enter at least one species name');
+            return;
         }
 
-        // Close modal when clicking outside
-        window.addEventListener('click', function(event) {
-            const modal = document.getElementById('communityModal');
-            if (event.target === modal) {
-                closeKnowledgeForm();
-            }
-        });
+        const options = {
+            includeIndigenous: document.getElementById('indigenousToggle').checked,
+            includeBiomimicry: document.getElementById('biomimicryToggle').checked,
+            includeHuman: document.getElementById('humanToggle').checked
+        };
 
-        // Keyboard shortcuts
-        document.addEventListener('keydown', function(e) {
-            if (e.key === 'Escape') {
-                closeKnowledgeForm();
-            }
+        if (options.includeHuman) {
+            speciesInputs.push('Human');
+        }
+
+        const resultsDiv = document.getElementById('analysisResults');
+        
+        // Show loading immediately
+        resultsDiv.innerHTML = `
+            <div class="wisdom-panel">
+                <div class="analysis-loading">
+                    <div class="spinning-icon">🧬</div>
+                    <h3 style="color: #333; margin-bottom: 15px;">Conducting Deep Species Intelligence Analysis</h3>
+                    <p style="color: #666; margin-bottom: 25px;">Synthesizing consciousness data for ${speciesInputs.length} species</p>
+                </div>
+            </div>
+        `;
+
+        // Generate results after delay
+        setTimeout(function() {
+            const results = [];
             
-            if ((e.ctrlKey || e.metaKey) && e.key === 'Enter') {
-                beginAnalysis();
+            for (let i = 0; i < speciesInputs.length; i++) {
+                results.push(generateSpeciesData(speciesInputs[i], options));
             }
+
+            displayResults(results);
+        }, 2500);
+    }
+
+    function displayResults(dataArray) {
+        const resultsDiv = document.getElementById('analysisResults');
+        
+        let html = '';
+        
+        // Individual species results
+        dataArray.forEach((data, index) => {
+            html += `
+                <div class="wisdom-panel species-analysis">
+                    <div class="species-title">
+                        <h2>${data.species}</h2>
+                        <div class="analysis-badge">
+                            🧬 Consciousness-Enhanced Analysis
+                        </div>
+                    </div>
+                    
+                    <div class="insight-panel">
+                        <h3>💡 Key Wisdom</h3>
+                        <p>${data.wisdomInsight}</p>
+                    </div>
+                    
+                    <div class="framework-grid">
+                        <div class="framework-panel perceive-panel">
+                            <h3><span class="framework-tag">PERCEIVE</span> How They Perceive</h3>
+                            <p>${data.perceive.summary}</p>
+                            <ul class="wisdom-list">
+                                ${data.perceive.details.map(detail => `<li>${detail}</li>`).join('')}
+                            </ul>
+                        </div>
+                        
+                        <div class="framework-panel relate-panel">
+                            <h3><span class="framework-tag">RELATE</span> How They Relate</h3>
+                            <p>${data.relate.summary}</p>
+                            <ul class="wisdom-list">
+                                ${data.relate.details.map(detail => `<li>${detail}</li>`).join('')}
+                            </ul>
+                        </div>
+                        
+                        <div class="framework-panel apply-panel">
+                            <h3><span class="framework-tag">APPLY</span> How They Apply Intelligence</h3>
+                            <p>${data.apply.summary}</p>
+                            <ul class="wisdom-list">
+                                ${data.apply.details.map(detail => `<li>${detail}</li>`).join('')}
+                            </ul>
+                        </div>
+                    </div>
+
+                    <div class="insight-panel" style="background: linear-gradient(135deg, rgba(147, 51, 234, 0.25), rgba(79, 70, 229, 0.25)) !important; border-left-color: #9333ea !important;">
+                        <h3>🌌 Quantum Biology & Consciousness</h3>
+                        <p>${data.quantumAspects}</p>
+                    </div>
+                    
+                    <div class="insight-panel" style="background: linear-gradient(135deg, rgba(34, 197, 94, 0.25), rgba(16, 185, 129, 0.25)) !important; border-left-color: #22c55e !important;">
+                        <h3>🌱 Human Learning Opportunities</h3>
+                        <p>${data.humanLearnings}</p>
+                    </div>
+                    
+                    <div class="insight-panel" style="background: linear-gradient(135deg, rgba(59, 130, 246, 0.25), rgba(147, 197, 253, 0.25)) !important; border-left-color: #3b82f6 !important;">
+                        <h3>🌍 Conservation Intelligence</h3>
+                        <p>${data.conservationWisdom}</p>
+                    </div>
+                </div>
+            `;
         });
 
-        console.log('🧬 Species Intelligence Analysis Tool (Cart-Free Version) loaded successfully!');
-    </script>
-</div>} perceives their world through evolved sensory adaptations and consciousness-based awareness that extends beyond current scientific understanding.`,
-                    details: [
-                        "Species-specific sensory capabilities adapted to their environment",
-                        "Environmental awareness mechanisms for survival and thriving",
-                        "Social and emotional perception within their community",
-                        "Potential quantum field sensitivity and morphic resonance"
-                    ]
-                },
-                relate: {
-                    summary: `${speciesName} maintains complex relationships within their ecosystem and consciousness network, contributing to the web of planetary intelligence.`,
-                    details: [
-                        "Ecological connections and symbiotic relationships",
-                        "Intraspecies communication and social structures",
-                        "Interspecies relationships and ecosystem contributions",
-                        "Energetic and consciousness connections with other life forms"
-                    ]
-                },
-                apply: {
-                    summary: `${speciesName
+        // Add comparative analysis if multiple species
+        const comparative = generateComparative(dataArray);
+        if (comparative) {
+            html += `
+                <div class="wisdom-panel species-analysis">
+                    <div class="species-title">
+                        <h2>Relational Intelligence Patterns</h2>
+                        <div class="analysis-badge" style="background: linear-gradient(135deg, #8B5CF6, #A78BFA);">
+                            🔗 Comparative Consciousness Analysis
+                        </div>
+                    </div>
+                    
+                    <div class="insight-panel" style="background: linear-gradient(135deg, rgba(139, 92, 246, 0.25), rgba(167, 139, 250, 0.25)) !important; border-left-color: #8B5CF6 !important;">
+                        <h3>🤝 Shared Intelligence Patterns</h3>
+                        <p style="font-style: normal; margin-bottom: 20px;">Where these life forms unite in consciousness:</p>
+                        <div style="text-align: left;">
+                            <div style="margin-bottom: 15px;">
+                                <strong style="color: #8B5CF6;">PERCEIVE:</strong> ${comparative.sharedPatterns.perceive.join(' • ')}
+                            </div>
+                            <div style="margin-bottom: 15px;">
+                                <strong style="color: #8B5CF6;">RELATE:</strong> ${comparative.sharedPatterns.relate.join(' • ')}
+                            </div>
+                            <div>
+                                <strong style="color: #8B5CF6;">APPLY:</strong> ${comparative.sharedPatterns.apply.join(' • ')}
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="insight-panel" style="background: linear-gradient(135deg, rgba(236, 72, 153, 0.25), rgba(251, 113, 133, 0.25)) !important; border-left-color: #EC4899 !important;">
+                        <h3>✨ Unique Intelligence Expressions</h3>
+                        <p style="font-style: normal; margin-bottom: 20px;">Where each life form offers irreplaceable gifts:</p>
+                        <div style="text-align: left;">
+                            ${comparative.speciesNames.map(species => `
+                                <div style="margin-bottom: 20px; padding: 15px; background: rgba(255, 255, 255, 0.1); border-radius: 10px;">
+                                    <h4 style="color: #EC4899; margin-bottom: 10px; font-size: 1.1em;">${species}</h4>
+                                    <div style="font-size: 0.9em; line-height: 1.5; color: white;">
+                                        <div style="margin-bottom: 8px;"><strong>Perceive:</strong> ${comparative.uniqueTraits[species].perceive}</div>
+                                        <div style="margin-bottom: 8px;"><strong>Relate:</strong> ${comparative.uniqueTraits[species].relate}</div>
+                                        <div><strong>Apply:</strong> ${comparative.uniqueTraits[species].apply}</div>
+                                    </div>
+                                </div>
+                            `).join('')}
+                        </div>
+                    </div>
+                    
+                    <div class="insight-panel" style="background: linear-gradient(135deg, rgba(45, 212, 191, 0.25), rgba(34, 197, 94, 0.25)) !important; border-left-color: #2DD4BF !important;">
+                        <h3>🌐 Collective Intelligence Wisdom</h3>
+                        <p>Together, these ${comparative.speciesNames.length} life forms demonstrate that intelligence is not a hierarchy but a symphony. Each contributes irreplaceable notes to the greater composition of planetary consciousness. Human intelligence finds its highest expression not in dominance, but in recognizing and honoring the unique gifts that each form of life brings to our shared evolutionary journey.</p>
+                    </div>
+                </div>
+            `;
+        }
+
+        html += `
+            <div class="wisdom-panel">
+                <div class="final-actions">
+                    <div class="action-grid">
+                        <button class="secondary-button report-button" onclick="alert('PDF report generation coming in full version!')">
+                            📄 Generate Detailed Report
+                        </button>
+                        <button class="secondary-button community-button" onclick="alert('Community sharing coming soon! Email contributions to info@kerrilake.com')">
+                            🤝 Share Your Knowledge
+                        </button>
+                        <button class="secondary-button reset-button" onclick="resetAnalysis()">
+                            🔍 Analyze More Species
+                        </button>
+                    </div>
+                    
+                    <div class="tool-info">
+                        <small>Demo version with consciousness-enhanced framework • Full API integration coming soon</small>
+                    </div>
+                </div>
+            </div>
+        `;
+
+        resultsDiv.innerHTML = html;
+        
+        // Smooth scroll to results
+        setTimeout(function() {
+            resultsDiv.scrollIntoView({ behavior: 'smooth', block: 'start' });
+        }, 100);
+    }
+
+    function resetAnalysis() {
+        document.getElementById('speciesField1').value = '';
+        document.getElementById('speciesField2').value = '';
+        document.getElementById('speciesField3').value = '';
+        document.getElementById('speciesField4').value = '';
+        document.getElementById('speciesField5').value = '';
+        document.getElementById('indigenousToggle').checked = false;
+        document.getElementById('biomimicryToggle').checked = false;
+        document.getElementById('humanToggle').checked = false;
+        document.getElementById('analysisResults').innerHTML = '';
+        document.getElementById('speciesField1').focus();
+    }
+
+    // Event listeners
+    setTimeout(function() {
+        const revealBtn = document.getElementById('revealBtn');
+        const shareBtn = document.getElementById('shareBtn');
+        
+        if (revealBtn) {
+            revealBtn.addEventListener('click', revealIntelligence);
+            console.log('✅ Reveal Intelligence button ready!');
+        }
+        
+        if (shareBtn) {
+            shareBtn.addEventListener('click', function() {
+                alert('Community sharing system coming soon! Please email contributions to info@kerrilake.com for now.');
+            });
+        }
+
+        // Add enter key support
+        const inputs = document.querySelectorAll('#species-intelligence-container .species-textbox');
+        inputs.forEach(function(input) {
+            input.addEventListener('keypress', function(e) {
+                if (e.key === 'Enter') {
+                    revealIntelligence();
+                }
+            });
+        });
+        
+        console.log('🧬 Species Intelligence Tool fully loaded and ready!');
+    }, 500);
+
+})();
+</script>
