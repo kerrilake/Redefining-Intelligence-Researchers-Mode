@@ -463,26 +463,35 @@
             ));
         };
 
-        // Intelligence metrics calculation
+        // Intelligence metrics calculation - Enhanced with new relational factors
         const calculateIntelligenceMetrics = (speciesData) => {
             let perceiveScore = 0;
             let relateScore = 0;
             let applyScore = 0;
 
-            perceiveScore += speciesData.perceive.sensory_systems.length * 0.25;
-            perceiveScore += speciesData.perceive.self_awareness_indicators.length * 0.25;
-            perceiveScore += speciesData.perceive.quantum_detection ? 0.3 : 0;
-            perceiveScore += speciesData.perceive.holofractographic_processing ? 0.2 : 0;
+            // PERCEIVE dimension
+            perceiveScore += speciesData.perceive.sensory_systems.length * 0.2;
+            perceiveScore += speciesData.perceive.self_awareness_indicators.length * 0.2;
+            perceiveScore += speciesData.perceive.quantum_detection ? 0.25 : 0;
+            perceiveScore += speciesData.perceive.holofractographic_processing ? 0.15 : 0;
+            perceiveScore += (speciesData.perceive.adaptive_learning_speed || 0) * 0.2; // New factor
 
-            relateScore += speciesData.relate.communication_patterns.length * 0.25;
-            relateScore += speciesData.relate.symbiotic_relationships.length * 0.25;
-            relateScore += speciesData.relate.quantum_connections ? 0.3 : 0;
-            relateScore += speciesData.relate.ecosystem_role ? 0.2 : 0;
+            // RELATE dimension - Enhanced with new factors
+            relateScore += speciesData.relate.communication_patterns.length * 0.15;
+            relateScore += speciesData.relate.symbiotic_relationships.length * 0.15;
+            relateScore += speciesData.relate.quantum_connections ? 0.2 : 0;
+            relateScore += speciesData.relate.ecosystem_role ? 0.15 : 0;
+            relateScore += (speciesData.relate.temporal_coordination || 0) * 0.15; // New factor
+            relateScore += (speciesData.relate.cross_species_communication || 0) * 0.1; // New factor
+            relateScore += (speciesData.relate.ecosystem_impact_radius || 0) * 0.1; // New factor
 
-            applyScore += speciesData.apply.strategic_non_response ? 0.3 : 0;
-            applyScore += speciesData.apply.creative_applications.length * 0.25;
-            applyScore += speciesData.apply.timing_wisdom ? 0.25 : 0;
-            applyScore += speciesData.apply.coherence_optimization ? 0.2 : 0;
+            // APPLY dimension - Enhanced
+            applyScore += speciesData.apply.strategic_non_response ? 0.25 : 0;
+            applyScore += speciesData.apply.creative_applications.length * 0.2;
+            applyScore += speciesData.apply.timing_wisdom ? 0.2 : 0;
+            applyScore += speciesData.apply.coherence_optimization ? 0.15 : 0;
+            applyScore += (speciesData.apply.collective_decision_making || 0) * 0.1; // New factor
+            applyScore += (speciesData.apply.energy_efficiency || 0) * 0.1; // New factor
 
             return {
                 perceive: Math.min(perceiveScore, 1.0),
@@ -503,19 +512,25 @@
                         sensory_systems: ["Chemical gradient detection", "Light spectrum analysis", "Vibration sensing through roots", "Electromagnetic field sensitivity"],
                         self_awareness_indicators: ["Resource allocation decisions", "Territorial root boundary recognition", "Stress response communication"],
                         quantum_detection: true,
-                        holofractographic_processing: true
+                        holofractographic_processing: true,
+                        adaptive_learning_speed: 0.3 // Slow but persistent adaptation to environmental changes
                     },
                     relate: {
                         communication_patterns: ["Chemical signaling through air and soil", "Root network electrical signals", "Mycorrhizal network information exchange"],
                         symbiotic_relationships: ["Mycorrhizal fungi partnerships", "Nitrogen-fixing bacteria collaboration", "Animal seed dispersal relationships"],
                         quantum_connections: true,
-                        ecosystem_role: true
+                        ecosystem_role: true,
+                        temporal_coordination: 0.9, // Excellent synchronization with seasonal cycles
+                        cross_species_communication: 0.8, // Strong chemical communication with many species
+                        ecosystem_impact_radius: 0.9 // Massive influence through root networks and atmosphere
                     },
                     apply: {
                         strategic_non_response: true,
                         creative_applications: ["Architectural canopy optimization", "Chemical defense innovation", "Root system engineering"],
                         timing_wisdom: true,
-                        coherence_optimization: true
+                        coherence_optimization: true,
+                        collective_decision_making: 0.7, // Forest-level coordinated responses
+                        energy_efficiency: 0.9 // Extremely efficient solar energy conversion
                     },
                     unified_physics_integration: "Quantum coherence in photosynthesis, bioelectromagnetic communication networks, holofractographic scaling",
                     life_contribution: "Atmospheric regulation, foundation for terrestrial ecosystems, interspecies communication networks",
@@ -530,19 +545,25 @@
                         sensory_systems: ["Distributed neural processing", "Chromatophore color-pattern detection", "Tactile arm sensing", "Chemical taste-smell integration"],
                         self_awareness_indicators: ["Mirror self-recognition", "Individual problem-solving styles", "Emotional color expression"],
                         quantum_detection: true,
-                        holofractographic_processing: true
+                        holofractographic_processing: true,
+                        adaptive_learning_speed: 0.9 // Rapid learning and adaptation to new environments
                     },
                     relate: {
                         communication_patterns: ["Dynamic color communication", "Tactile arm signaling", "Body posture messaging"],
                         symbiotic_relationships: ["Protective shell relationships", "Cleaning station interactions", "Prey-sharing behaviors"],
                         quantum_connections: true,
-                        ecosystem_role: true
+                        ecosystem_role: true,
+                        temporal_coordination: 0.6, // Moderate synchronization with tidal cycles
+                        cross_species_communication: 0.4, // Limited direct communication with other species
+                        ecosystem_impact_radius: 0.5 // Localized but significant marine ecosystem impact
                     },
                     apply: {
                         strategic_non_response: true,
                         creative_applications: ["Tool use and modification", "Camouflage innovation", "Problem-solving creativity"],
                         timing_wisdom: true,
-                        coherence_optimization: true
+                        coherence_optimization: true,
+                        collective_decision_making: 0.2, // Primarily individual intelligence
+                        energy_efficiency: 0.7 // Efficient but high-energy neural processing
                     },
                     unified_physics_integration: "Distributed neural quantum processing, chromatophore quantum coherence, arm-brain integration",
                     life_contribution: "Marine ecosystem balance, problem-solving innovation, distributed intelligence modeling",
@@ -557,19 +578,25 @@
                         sensory_systems: ["Visual pattern recognition", "Auditory language processing", "Spatial awareness", "Social emotional sensing"],
                         self_awareness_indicators: ["Metacognitive reflection", "Future planning", "Abstract thinking"],
                         quantum_detection: true,
-                        holofractographic_processing: true
+                        holofractographic_processing: true,
+                        adaptive_learning_speed: 0.8 // Very rapid cultural and technological adaptation
                     },
                     relate: {
                         communication_patterns: ["Language and symbols", "Emotional expression", "Cultural transmission", "Digital networking"],
                         symbiotic_relationships: ["Agricultural partnerships", "Domestic animal bonds", "Microbiome integration"],
                         quantum_connections: true,
-                        ecosystem_role: true
+                        ecosystem_role: true,
+                        temporal_coordination: 0.4, // Poor synchronization with natural cycles
+                        cross_species_communication: 0.6, // Moderate ability to communicate across species
+                        ecosystem_impact_radius: 1.0 // Global impact through technology and civilization
                     },
                     apply: {
                         strategic_non_response: true,
                         creative_applications: ["Technology development", "Artistic expression", "Scientific innovation", "Social organizing"],
                         timing_wisdom: true,
-                        coherence_optimization: true
+                        coherence_optimization: true,
+                        collective_decision_making: 0.6, // Variable group intelligence capabilities
+                        energy_efficiency: 0.3 // Relatively inefficient energy use compared to other species
                     },
                     unified_physics_integration: "Neural quantum coherence, collective consciousness, technological augmentation",
                     life_contribution: "Global communication networks, scientific understanding, cultural evolution",
@@ -577,26 +604,32 @@
                 };
             }
 
-            // Generic fallback
+            // Generic fallback with enhanced factors
             return {
                 species: speciesName,
                 perceive: {
                     sensory_systems: ["Species-specific sensory adaptations"],
                     self_awareness_indicators: ["Behavioral complexity indicators"],
                     quantum_detection: true,
-                    holofractographic_processing: true
+                    holofractographic_processing: true,
+                    adaptive_learning_speed: 0.5 // Moderate adaptation rate
                 },
                 relate: {
                     communication_patterns: ["Communication methods"],
                     symbiotic_relationships: ["Ecological relationships"],
                     quantum_connections: true,
-                    ecosystem_role: true
+                    ecosystem_role: true,
+                    temporal_coordination: 0.5, // Moderate natural cycle synchronization
+                    cross_species_communication: 0.3, // Basic cross-species interaction
+                    ecosystem_impact_radius: 0.4 // Local ecosystem influence
                 },
                 apply: {
                     strategic_non_response: true,
                     creative_applications: ["Adaptive behaviors"],
                     timing_wisdom: true,
-                    coherence_optimization: true
+                    coherence_optimization: true,
+                    collective_decision_making: 0.4, // Some group coordination
+                    energy_efficiency: 0.6 // Moderate energy optimization
                 },
                 unified_physics_integration: "Quantum biology connections",
                 life_contribution: "Ecological intelligence contribution",
