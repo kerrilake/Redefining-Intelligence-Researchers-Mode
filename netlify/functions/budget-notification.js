@@ -1,3 +1,4 @@
+// netlify/functions/budget-notification.js
 exports.handler = async (event, context) => {
   const headers = {
     'Access-Control-Allow-Origin': '*',
