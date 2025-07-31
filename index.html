@@ -3,134 +3,24 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta name="description" content="Multi-species intelligence research tool using triangular visualization mapping">
-    <meta name="author" content="Kerri Lake">
     <title>Species Intelligence Research Agent v24</title>
     
-    <!-- Tailwind CSS -->
     <script src="https://cdn.tailwindcss.com"></script>
-    
-    <!-- React 18 - Production Version for Stability -->
     <script crossorigin src="https://unpkg.com/react@18/umd/react.production.min.js"></script>
     <script crossorigin src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js"></script>
-    
-    <!-- Babel Standalone -->
     <script src="https://unpkg.com/@babel/standalone@7.23.6/babel.min.js"></script>
     
     <style>
-        body {
-            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
-            line-height: 1.6;
-        }
-
-        .fade-in {
-            animation: fadeIn 0.6s ease-out;
-        }
-
-        @keyframes fadeIn {
-            from {
-                opacity: 0;
-                transform: translateY(20px);
-            }
-            to {
-                opacity: 1;
-                transform: translateY(0);
-            }
-        }
-
-        .spinner {
-            border: 3px solid #f3f3f3;
-            border-top: 3px solid #3b82f6;
-            border-radius: 50%;
-            width: 20px;
-            height: 20px;
-            animation: spin 1s linear infinite;
-            display: inline-block;
-            margin-right: 10px;
-        }
-
-        @keyframes spin {
-            0% { transform: rotate(0deg); }
-            100% { transform: rotate(360deg); }
-        }
-
-        .species-input {
-            transition: all 0.3s ease;
-        }
-
-        .species-input:focus {
-            box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
-            border-color: #3b82f6;
-        }
-
-        button {
-            transition: all 0.2s ease;
-        }
-
-        button:hover:not(:disabled) {
-            transform: translateY(-1px);
-            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-        }
-
-        button:active {
-            transform: translateY(0);
-        }
-
-        button:disabled {
-            transform: none !important;
-            box-shadow: none !important;
-            cursor: not-allowed;
-        }
-
-        .toggle-slider {
-            transition: transform 0.3s ease;
-        }
-
-        #intelligence-map {
-            border: 2px solid #e5e7eb;
-            transition: border-color 0.3s ease;
-            background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%);
-        }
-
-        #intelligence-map:hover {
-            border-color: #6366f1;
-        }
-
-        .legend-item {
-            transition: all 0.3s ease;
-        }
-
-        .legend-item:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
-            background-color: #f9fafb;
-        }
-
-        @media (max-width: 768px) {
-            .container {
-                margin: 0 1rem !important;
-            }
-            
-            h1 {
-                font-size: 2rem !important;
-                line-height: 1.2 !important;
-            }
-            
-            #intelligence-map {
-                max-width: 100%;
-                height: auto;
-            }
-        }
-
-        .gradient-triangle {
-            filter: drop-shadow(0 4px 8px rgba(0, 0, 0, 0.1));
-        }
-
-        .species-legend {
-            background: rgba(255, 255, 255, 0.95);
-            backdrop-filter: blur(10px);
-            border: 1px solid rgba(255, 255, 255, 0.2);
-        }
+        .fade-in { animation: fadeIn 0.6s ease-out; }
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
+        .spinner { border: 3px solid #f3f3f3; border-top: 3px solid #3b82f6; border-radius: 50%; width: 20px; height: 20px; animation: spin 1s linear infinite; display: inline-block; margin-right: 10px; }
+        @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
+        .species-input { transition: all 0.3s ease; }
+        .species-input:focus { box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1); border-color: #3b82f6; }
+        button { transition: all 0.2s ease; }
+        button:hover:not(:disabled) { transform: translateY(-1px); box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); }
+        .wisdom-card { background: linear-gradient(135deg, #fefefe 0%, #f8fafc 100%); transition: all 0.3s ease; }
+        .wisdom-card:hover { transform: translateY(-2px); box-shadow: 0 8px 25px rgba(0, 0, 0, 0.1); }
     </style>
 </head>
 <body>
@@ -139,476 +29,32 @@
     <script type="text/babel">
     const { useState, useRef, useEffect } = React;
 
-    // Icon Components
-    const Search = ({ className = "", size = 20 }) => (
-        <svg className={className} width={size} height={size} fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
-        </svg>
-    );
+    // Simple Icon Components
+    const Search = () => <svg width="20" height="20" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" /></svg>;
+    const Brain = () => <svg width="20" height="20" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9.663 17h4.673M12 3v1m6.364 1.636l-.707.707M21 12h-1M4 12H3m3.343-5.657l-.707-.707m2.828 9.9a5 5 0 117.072 0l-.548.547A3.374 3.374 0 0014 18.469V19a2 2 0 11-4 0v-.531c0-.895-.356-1.754-.988-2.386l-.548-.547z" /></svg>;
+    const Plus = () => <svg width="20" height="20" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 6v6m0 0v6m0-6h6m-6 0H6" /></svg>;
+    const X = () => <svg width="20" height="20" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" /></svg>;
+    const Heart = () => <svg width="20" height="20" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z" /></svg>;
+    const Sparkles = () => <svg width="20" height="20" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 3a2 2 0 00-2 2v1c0 8.284 6.716 15 15 15h1a2 2 0 002-2v-3.28a1 1 0 00-.684-.948l-4.493-1.498a1 1 0 00-1.21.502l-1.13 2.257a11.042 11.042 0 01-5.516-5.517l2.257-1.128a1 1 0 00.502-1.21L9.228 3.683A1 1 0 008.279 3H5z" /></svg>;
+    const Eye = () => <svg width="20" height="20" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" /><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" /></svg>;
 
-    const Brain = ({ className = "", size = 20 }) => (
-        <svg className={className} width={size} height={size} fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9.663 17h4.673M12 3v1m6.364 1.636l-.707.707M21 12h-1M4 12H3m3.343-5.657l-.707-.707m2.828 9.9a5 5 0 117.072 0l-.548.547A3.374 3.374 0 0014 18.469V19a2 2 0 11-4 0v-.531c0-.895-.356-1.754-.988-2.386l-.548-.547z" />
-        </svg>
-    );
-
-    const Plus = ({ className = "", size = 20 }) => (
-        <svg className={className} width={size} height={size} fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 6v6m0 0v6m0-6h6m-6 0H6" />
-        </svg>
-    );
-
-    const X = ({ className = "", size = 20 }) => (
-        <svg className={className} width={size} height={size} fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
-        </svg>
-    );
-
-    const Loader = ({ className = "", size = 20 }) => (
-        <div className={`spinner ${className}`}></div>
-    );
-
-    const Heart = ({ className = "", size = 20 }) => (
-        <svg className={className} width={size} height={size} fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z" />
-        </svg>
-    );
-
-    const Sparkles = ({ className = "", size = 20 }) => (
-        <svg className={className} width={size} height={size} fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 3a2 2 0 00-2 2v1c0 8.284 6.716 15 15 15h1a2 2 0 002-2v-3.28a1 1 0 00-.684-.948l-4.493-1.498a1 1 0 00-1.21.502l-1.13 2.257a11.042 11.042 0 01-5.516-5.517l2.257-1.128a1 1 0 00.502-1.21L9.228 3.683A1 1 0 008.279 3H5z" />
-        </svg>
-    );
-
-    const Zap = ({ className = "", size = 20 }) => (
-        <svg className={className} width={size} height={size} fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 10V3L4 14h7v7l9-11h-7z" />
-        </svg>
-    );
-
-    const Eye = ({ className = "", size = 20 }) => (
-        <svg className={className} width={size} height={size} fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
-            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" />
-        </svg>
-    );
-
-    const Camera = ({ className = "", size = 20 }) => (
-        <svg className={className} width={size} height={size} fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 9a2 2 0 012-2h.93a2 2 0 001.664-.89l.812-1.22A2 2 0 0110.07 4h3.86a2 2 0 011.664.89l.812 1.22A2 2 0 0018.07 7H19a2 2 0 012 2v9a2 2 0 01-2 2H5a2 2 0 01-2-2V9z" />
-            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 13a3 3 0 11-6 0 3 3 0 016 0z" />
-        </svg>
-    );
-
-    // Triangle Interpretation Component
-    const TriangleInterpretation = ({ speciesData, metrics }) => {
-        const [selectedSpecies, setSelectedSpecies] = useState(null);
-
-        if (!speciesData || !metrics) return null;
-
-        const interpretSpeciesPosition = (species, metric, index) => {
-            const perceiveScore = metric.perceive || 0;
-            const relateScore = metric.relate || 0;
-            const applyScore = metric.apply || 0;
-            
-            // Determine dominant dimension
-            const scores = { perceive: perceiveScore, relate: relateScore, apply: applyScore };
-            const dominant = Object.keys(scores).reduce((a, b) => scores[a] > scores[b] ? a : b);
-            const secondHighest = Object.keys(scores).filter(k => k !== dominant).reduce((a, b) => scores[a] > scores[b] ? a : b);
-            
-            let interpretation = "";
-            let strengthAreas = [];
-            let uniqueTraits = [];
-
-            // Analyze positioning
-            if (dominant === 'perceive') {
-                interpretation = `${species.species} shows exceptional sensory and environmental awareness abilities.`;
-                strengthAreas.push("Advanced sensory processing", "Environmental sensitivity", "Adaptive learning");
-            } else if (dominant === 'relate') {
-                interpretation = `${species.species} excels in communication and relational intelligence.`;
-                strengthAreas.push("Communication systems", "Ecosystem integration", "Collaborative networks");
-            } else {
-                interpretation = `${species.species} demonstrates superior strategic action and application abilities.`;
-                strengthAreas.push("Strategic decision-making", "Creative problem-solving", "Energy optimization");
-            }
-
-            // Add secondary strength
-            if (scores[secondHighest] > 0.6) {
-                const secondaryMap = {
-                    'perceive': 'with strong sensory awareness',
-                    'relate': 'with excellent relational capacities', 
-                    'apply': 'with sophisticated strategic abilities'
-                };
-                interpretation += ` This species also shows ${secondaryMap[secondHighest]}.`;
-            }
-
-            // Special insights based on specific metrics
-            if (species.relate?.temporal_coordination > 0.8) {
-                uniqueTraits.push("Exceptional synchronization with natural cycles");
-            }
-            if (species.relate?.ecosystem_impact_radius > 0.8) {
-                uniqueTraits.push("Wide-reaching ecosystem influence");
-            }
-            if (species.apply?.energy_efficiency > 0.8) {
-                uniqueTraits.push("Highly efficient resource utilization");
-            }
-            if (species.apply?.collective_decision_making > 0.7) {
-                uniqueTraits.push("Strong collective intelligence capabilities");
-            }
-
-            return { interpretation, strengthAreas, uniqueTraits, dominant, scores };
-        };
-
-        return (
-            <div className="bg-gradient-to-r from-indigo-50 to-purple-50 rounded-xl p-6 mb-6">
-                <h4 className="text-lg font-semibold text-gray-800 mb-4 flex items-center gap-2">
-                    <Sparkles className="text-indigo-600" />
-                    Intelligence Pattern Analysis
-                </h4>
-                
-                <div className="grid gap-4">
-                    {speciesData.map((species, index) => {
-                        const metric = metrics[`species${index + 1}`] || {};
-                        const analysis = interpretSpeciesPosition(species, metric, index);
-                        const isSelected = selectedSpecies === index;
-                        
-                        return (
-                            <div 
-                                key={index}
-                                className={`p-4 rounded-lg border cursor-pointer transition-all ${
-                                    isSelected 
-                                        ? 'border-indigo-300 bg-white shadow-md' 
-                                        : 'border-gray-200 bg-white/70 hover:bg-white hover:shadow-sm'
-                                }`}
-                                onClick={() => setSelectedSpecies(isSelected ? null : index)}
-                            >
-                                <div className="flex items-center justify-between mb-2">
-                                    <h5 className="font-semibold text-gray-800 capitalize flex items-center gap-2">
-                                        <div className={`w-3 h-3 rounded-full ${
-                                            analysis.dominant === 'perceive' ? 'bg-blue-500' :
-                                            analysis.dominant === 'relate' ? 'bg-green-500' : 'bg-purple-500'
-                                        }`}></div>
-                                        {species.species}
-                                    </h5>
-                                    <div className="text-sm text-gray-500">
-                                        {isSelected ? 'Click to collapse' : 'Click for detailed analysis'}
-                                    </div>
-                                </div>
-                                
-                                <p className="text-gray-700 text-sm mb-2">{analysis.interpretation}</p>
-                                
-                                {isSelected && (
-                                    <div className="mt-3 space-y-3 border-t pt-3">
-                                        <div>
-                                            <h6 className="font-medium text-gray-800 text-sm mb-1">Key Strengths:</h6>
-                                            <ul className="text-sm text-gray-600 space-y-1">
-                                                {analysis.strengthAreas.map((strength, i) => (
-                                                    <li key={i} className="flex items-center gap-2">
-                                                        <div className="w-1.5 h-1.5 bg-indigo-400 rounded-full"></div>
-                                                        {strength}
-                                                    </li>
-                                                ))}
-                                            </ul>
-                                        </div>
-                                        
-                                        {analysis.uniqueTraits.length > 0 && (
-                                            <div>
-                                                <h6 className="font-medium text-gray-800 text-sm mb-1">Unique Traits:</h6>
-                                                <ul className="text-sm text-gray-600 space-y-1">
-                                                    {analysis.uniqueTraits.map((trait, i) => (
-                                                        <li key={i} className="flex items-center gap-2">
-                                                            <div className="w-1.5 h-1.5 bg-green-400 rounded-full"></div>
-                                                            {trait}
-                                                        </li>
-                                                    ))}
-                                                </ul>
-                                            </div>
-                                        )}
-                                        
-                                        <div className="grid grid-cols-3 gap-3 text-center">
-                                            <div className="bg-blue-50 p-2 rounded">
-                                                <div className="text-xs text-blue-600 font-medium">PERCEIVE</div>
-                                                <div className="text-sm font-bold text-blue-800">
-                                                    {Math.round((analysis.scores.perceive || 0) * 100)}%
-                                                </div>
-                                            </div>
-                                            <div className="bg-green-50 p-2 rounded">
-                                                <div className="text-xs text-green-600 font-medium">RELATE</div>
-                                                <div className="text-sm font-bold text-green-800">
-                                                    {Math.round((analysis.scores.relate || 0) * 100)}%
-                                                </div>
-                                            </div>
-                                            <div className="bg-purple-50 p-2 rounded">
-                                                <div className="text-xs text-purple-600 font-medium">APPLY</div>
-                                                <div className="text-sm font-bold text-purple-800">
-                                                    {Math.round((analysis.scores.apply || 0) * 100)}%
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </div>
-                                )}
-                            </div>
-                        );
-                    })}
-                </div>
-                
-                <div className="mt-4 p-3 bg-white/80 rounded-lg border border-indigo-200">
-                    <p className="text-sm text-gray-600">
-                        <strong>How to read the triangle:</strong> Each species' position shows their intelligence balance. 
-                        Species closer to a corner excel in that dimension. Species near the center show balanced intelligence 
-                        across all three areas. Connected species share similar intelligence patterns.
-                    </p>
-                </div>
-            </div>
-        );
-    };
-    const IntelligenceTriangle = ({ speciesData, metrics }) => {
-        const canvasRef = useRef(null);
-
-        useEffect(() => {
-            if (!canvasRef.current || !speciesData || !metrics) return;
-
-            const canvas = canvasRef.current;
-            const ctx = canvas.getContext('2d');
-            const width = canvas.width;
-            const height = canvas.height;
-
-            // Clear canvas
-            ctx.clearRect(0, 0, width, height);
-
-            // Triangle dimensions
-            const centerX = width / 2;
-            const centerY = height / 2;
-            const radius = Math.min(width, height) * 0.35;
-
-            // Triangle vertices (equilateral)
-            const vertices = [
-                { x: centerX, y: centerY - radius, label: 'PERCEIVE\n(Sensory)' }, // Top
-                { x: centerX - radius * Math.cos(Math.PI / 6), y: centerY + radius * 0.5, label: 'RELATE\n(Communication)' }, // Bottom left
-                { x: centerX + radius * Math.cos(Math.PI / 6), y: centerY + radius * 0.5, label: 'APPLY\n(Strategic Action)' } // Bottom right
-            ];
-
-            // Create gradient triangle background
-            const createTriangleGradient = () => {
-                // Create a beautiful color-blended triangle
-                ctx.beginPath();
-                ctx.moveTo(vertices[0].x, vertices[0].y);
-                ctx.lineTo(vertices[1].x, vertices[1].y);
-                ctx.lineTo(vertices[2].x, vertices[2].y);
-                ctx.closePath();
-
-                // Create radial gradients for each vertex
-                const gradientPerceive = ctx.createRadialGradient(vertices[0].x, vertices[0].y, 0, vertices[0].x, vertices[0].y, radius);
-                gradientPerceive.addColorStop(0, 'rgba(59, 130, 246, 0.4)'); // Blue
-                gradientPerceive.addColorStop(1, 'rgba(59, 130, 246, 0.1)');
-
-                const gradientRelate = ctx.createRadialGradient(vertices[1].x, vertices[1].y, 0, vertices[1].x, vertices[1].y, radius);
-                gradientRelate.addColorStop(0, 'rgba(34, 197, 94, 0.4)'); // Green
-                gradientRelate.addColorStop(1, 'rgba(34, 197, 94, 0.1)');
-
-                const gradientApply = ctx.createRadialGradient(vertices[2].x, vertices[2].y, 0, vertices[2].x, vertices[2].y, radius);
-                gradientApply.addColorStop(0, 'rgba(168, 85, 247, 0.4)'); // Purple
-                gradientApply.addColorStop(1, 'rgba(168, 85, 247, 0.1)');
-
-                // Create a multi-stop gradient that blends all three colors
-                const masterGradient = ctx.createLinearGradient(0, 0, width, height);
-                masterGradient.addColorStop(0, 'rgba(59, 130, 246, 0.2)');
-                masterGradient.addColorStop(0.33, 'rgba(34, 197, 94, 0.2)');
-                masterGradient.addColorStop(0.66, 'rgba(168, 85, 247, 0.2)');
-                masterGradient.addColorStop(1, 'rgba(99, 102, 241, 0.2)');
-
-                ctx.fillStyle = masterGradient;
-                ctx.fill();
-
-                // Add a subtle border
-                ctx.strokeStyle = 'rgba(107, 114, 128, 0.3)';
-                ctx.lineWidth = 2;
-                ctx.stroke();
-            };
-
-            createTriangleGradient();
-
-            // Draw vertex labels
-            ctx.font = 'bold 14px -apple-system, BlinkMacSystemFont, sans-serif';
-            ctx.textAlign = 'center';
-            ctx.fillStyle = '#374151';
-
-            vertices.forEach((vertex, index) => {
-                const lines = vertex.label.split('\n');
-                lines.forEach((line, lineIndex) => {
-                    const offsetY = index === 0 ? -25 - (lineIndex * 18) : 25 + (lineIndex * 18);
-                    ctx.fillText(line, vertex.x, vertex.y + offsetY);
-                });
-
-                // Draw vertex circles
-                ctx.beginPath();
-                ctx.arc(vertex.x, vertex.y, 8, 0, 2 * Math.PI);
-                ctx.fillStyle = index === 0 ? '#3b82f6' : index === 1 ? '#22c55e' : '#a855f7';
-                ctx.fill();
-                ctx.strokeStyle = '#ffffff';
-                ctx.lineWidth = 2;
-                ctx.stroke();
-            });
-
-            // Position species based on their intelligence metrics
-            const colors = ['#ef4444', '#f97316', '#eab308', '#84cc16', '#06b6d4', '#8b5cf6', '#ec4899'];
-            
-            speciesData.forEach((species, index) => {
-                const metric = metrics[`species${index + 1}`];
-                if (!metric) return;
-
-                // Convert intelligence scores to triangle coordinates
-                const perceiveWeight = metric.perceive || 0;
-                const relateWeight = metric.relate || 0;
-                const applyWeight = metric.apply || 0;
-
-                // Normalize weights so they sum to 1
-                const total = perceiveWeight + relateWeight + applyWeight;
-                const normalizedPerceive = total > 0 ? perceiveWeight / total : 0.33;
-                const normalizedRelate = total > 0 ? relateWeight / total : 0.33;
-                const normalizedApply = total > 0 ? applyWeight / total : 0.33;
-
-                // Calculate position using barycentric coordinates
-                const speciesX = normalizedPerceive * vertices[0].x + 
-                               normalizedRelate * vertices[1].x + 
-                               normalizedApply * vertices[2].x;
-                const speciesY = normalizedPerceive * vertices[0].y + 
-                               normalizedRelate * vertices[1].y + 
-                               normalizedApply * vertices[2].y;
-
-                // Draw species point with larger, more visible circle
-                const speciesColor = colors[index % colors.length];
-                
-                // Outer glow
-                ctx.beginPath();
-                ctx.arc(speciesX, speciesY, 12, 0, 2 * Math.PI);
-                ctx.fillStyle = speciesColor + '40'; // Semi-transparent
-                ctx.fill();
-
-                // Main circle
-                ctx.beginPath();
-                ctx.arc(speciesX, speciesY, 8, 0, 2 * Math.PI);
-                ctx.fillStyle = speciesColor;
-                ctx.fill();
-                ctx.strokeStyle = '#ffffff';
-                ctx.lineWidth = 2;
-                ctx.stroke();
-
-                // Species label
-                ctx.font = 'bold 12px -apple-system, BlinkMacSystemFont, sans-serif';
-                ctx.fillStyle = '#1f2937';
-                ctx.textAlign = 'center';
-                ctx.fillText(species.species, speciesX, speciesY + 25);
-
-                // Draw connection lines between similar species
-                for (let j = index + 1; j < speciesData.length; j++) {
-                    const otherMetric = metrics[`species${j + 1}`];
-                    if (!otherMetric) continue;
-
-                    const otherPerceiveWeight = otherMetric.perceive || 0;
-                    const otherRelateWeight = otherMetric.relate || 0;
-                    const otherApplyWeight = otherMetric.apply || 0;
-                    const otherTotal = otherPerceiveWeight + otherRelateWeight + otherApplyWeight;
-                    
-                    const otherNormalizedPerceive = otherTotal > 0 ? otherPerceiveWeight / otherTotal : 0.33;
-                    const otherNormalizedRelate = otherTotal > 0 ? otherRelateWeight / otherTotal : 0.33;
-                    const otherNormalizedApply = otherTotal > 0 ? otherApplyWeight / otherTotal : 0.33;
-
-                    const otherX = otherNormalizedPerceive * vertices[0].x + 
-                                  otherNormalizedRelate * vertices[1].x + 
-                                  otherNormalizedApply * vertices[2].x;
-                    const otherY = otherNormalizedPerceive * vertices[0].y + 
-                                  otherNormalizedRelate * vertices[1].y + 
-                                  otherNormalizedApply * vertices[2].y;
-
-                    // Calculate similarity (closer species have stronger connections)
-                    const distance = Math.sqrt((speciesX - otherX) ** 2 + (speciesY - otherY) ** 2);
-                    const maxDistance = radius;
-                    const similarity = Math.max(0, 1 - (distance / maxDistance));
-
-                    if (similarity > 0.3) { // Only draw lines for similar species
-                        ctx.beginPath();
-                        ctx.moveTo(speciesX, speciesY);
-                        ctx.lineTo(otherX, otherY);
-                        ctx.strokeStyle = `rgba(107, 114, 128, ${similarity * 0.4})`;
-                        ctx.lineWidth = similarity * 3;
-                        ctx.stroke();
-                    }
-                }
-            });
-
-        }, [speciesData, metrics]);
-
-        return (
-            <div className="bg-white rounded-xl shadow-lg p-6 mb-8 fade-in">
-                <h3 className="text-xl font-semibold text-gray-800 mb-4 flex items-center gap-2">
-                    <Eye className="text-indigo-600" />
-                    Intelligence Relationship Mapping
-                </h3>
-                <div className="flex flex-col lg:flex-row gap-6">
-                    <div className="flex-1">
-                        <canvas
-                            ref={canvasRef}
-                            id="intelligence-map"
-                            width={500}
-                            height={400}
-                            className="w-full max-w-lg mx-auto rounded-lg gradient-triangle"
-                        />
-                    </div>
-                    <div className="lg:w-80">
-                        <div className="species-legend rounded-lg p-4">
-                            <h4 className="font-semibold text-gray-800 mb-3">Understanding the Map</h4>
-                            <div className="space-y-2 text-sm text-gray-600">
-                                <p><strong>Position:</strong> Shows each species' intelligence balance across the three dimensions</p>
-                                <p><strong>Connections:</strong> Lines indicate intelligence pattern similarities</p>
-                                <p><strong>Colors:</strong> Blend to show relationship gradients</p>
-                                <p><strong>Distance:</strong> Closer species share more intelligence traits</p>
-                            </div>
-                            <div className="mt-4 space-y-1">
-                                <div className="flex items-center gap-2">
-                                    <div className="w-3 h-3 bg-blue-500 rounded-full"></div>
-                                    <span className="text-xs">PERCEIVE - Sensory awareness</span>
-                                </div>
-                                <div className="flex items-center gap-2">
-                                    <div className="w-3 h-3 bg-green-500 rounded-full"></div>
-                                    <span className="text-xs">RELATE - Communication & connection</span>
-                                </div>
-                                <div className="flex items-center gap-2">
-                                    <div className="w-3 h-3 bg-purple-500 rounded-full"></div>
-                                    <span className="text-xs">APPLY - Strategic action</span>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        );
-    };
-
-    // Main React Component
     const SpeciesIntelligenceResearcher = () => {
         const [speciesList, setSpeciesList] = useState([
-            { id: 1, name: 'trees', label: 'First Life Form' },
-            { id: 2, name: 'octopuses', label: 'Second Life Form' }
+            { id: 'species-1', name: 'trees', label: 'First Life Form' },
+            { id: 'species-2', name: 'octopuses', label: 'Second Life Form' }
         ]);
         const [includeHumans, setIncludeHumans] = useState(false);
         const [researchResults, setResearchResults] = useState(null);
         const [isResearching, setIsResearching] = useState(false);
         const [researchProgress, setResearchProgress] = useState('');
-        const [shareUrl, setShareUrl] = useState('');
 
-        // Multi-species management
         const addSpecies = () => {
             if (speciesList.length < 5) {
-                const newId = Math.max(...speciesList.map(s => s.id)) + 1;
-                setSpeciesList([
-                    ...speciesList,
-                    {
-                        id: newId,
-                        name: '',
-                        label: `Life Form ${speciesList.length + 1}`
-                    }
-                ]);
+                setSpeciesList([...speciesList, {
+                    id: `species-${Date.now()}`,
+                    name: '',
+                    label: `Life Form ${speciesList.length + 1}`
+                }]);
             }
         };
 
@@ -619,40 +65,37 @@
         };
 
         const updateSpecies = (id, name) => {
-            setSpeciesList(speciesList.map(s =>
-                s.id === id ? { ...s, name } : s
-            ));
+            setSpeciesList(speciesList.map(s => s.id === id ? { ...s, name } : s));
         };
 
-        // Intelligence metrics calculation - Enhanced with new relational factors
         const calculateIntelligenceMetrics = (speciesData) => {
             let perceiveScore = 0;
             let relateScore = 0;
             let applyScore = 0;
 
             // PERCEIVE dimension
-            perceiveScore += speciesData.perceive.sensory_systems.length * 0.2;
-            perceiveScore += speciesData.perceive.self_awareness_indicators.length * 0.2;
+            perceiveScore += (speciesData.perceive.sensory_systems?.length || 0) * 0.2;
+            perceiveScore += (speciesData.perceive.self_awareness_indicators?.length || 0) * 0.2;
             perceiveScore += speciesData.perceive.quantum_detection ? 0.25 : 0;
             perceiveScore += speciesData.perceive.holofractographic_processing ? 0.15 : 0;
-            perceiveScore += (speciesData.perceive.adaptive_learning_speed || 0) * 0.2; // New factor
+            perceiveScore += (speciesData.perceive.adaptive_learning_speed || 0) * 0.2;
 
             // RELATE dimension - Enhanced with new factors
-            relateScore += speciesData.relate.communication_patterns.length * 0.15;
-            relateScore += speciesData.relate.symbiotic_relationships.length * 0.15;
+            relateScore += (speciesData.relate.communication_patterns?.length || 0) * 0.15;
+            relateScore += (speciesData.relate.symbiotic_relationships?.length || 0) * 0.15;
             relateScore += speciesData.relate.quantum_connections ? 0.2 : 0;
             relateScore += speciesData.relate.ecosystem_role ? 0.15 : 0;
-            relateScore += (speciesData.relate.temporal_coordination || 0) * 0.15; // New factor
-            relateScore += (speciesData.relate.cross_species_communication || 0) * 0.1; // New factor
-            relateScore += (speciesData.relate.ecosystem_impact_radius || 0) * 0.1; // New factor
+            relateScore += (speciesData.relate.temporal_coordination || 0) * 0.15;
+            relateScore += (speciesData.relate.cross_species_communication || 0) * 0.1;
+            relateScore += (speciesData.relate.ecosystem_impact_radius || 0) * 0.1;
 
             // APPLY dimension - Enhanced
             applyScore += speciesData.apply.strategic_non_response ? 0.25 : 0;
-            applyScore += speciesData.apply.creative_applications.length * 0.2;
+            applyScore += (speciesData.apply.creative_applications?.length || 0) * 0.2;
             applyScore += speciesData.apply.timing_wisdom ? 0.2 : 0;
             applyScore += speciesData.apply.coherence_optimization ? 0.15 : 0;
-            applyScore += (speciesData.apply.collective_decision_making || 0) * 0.1; // New factor
-            applyScore += (speciesData.apply.energy_efficiency || 0) * 0.1; // New factor
+            applyScore += (speciesData.apply.collective_decision_making || 0) * 0.1;
+            applyScore += (speciesData.apply.energy_efficiency || 0) * 0.1;
 
             return {
                 perceive: Math.min(perceiveScore, 1.0),
@@ -662,7 +105,6 @@
             };
         };
 
-        // Research species intelligence
         const researchSpeciesIntelligence = async (speciesName) => {
             await new Promise(resolve => setTimeout(resolve, 800));
             
@@ -674,28 +116,26 @@
                         self_awareness_indicators: ["Resource allocation decisions", "Territorial root boundary recognition", "Stress response communication"],
                         quantum_detection: true,
                         holofractographic_processing: true,
-                        adaptive_learning_speed: 0.3 // Slow but persistent adaptation to environmental changes
+                        adaptive_learning_speed: 0.3
                     },
                     relate: {
                         communication_patterns: ["Chemical signaling through air and soil", "Root network electrical signals", "Mycorrhizal network information exchange"],
                         symbiotic_relationships: ["Mycorrhizal fungi partnerships", "Nitrogen-fixing bacteria collaboration", "Animal seed dispersal relationships"],
                         quantum_connections: true,
                         ecosystem_role: true,
-                        temporal_coordination: 0.9, // Excellent synchronization with seasonal cycles
-                        cross_species_communication: 0.8, // Strong chemical communication with many species
-                        ecosystem_impact_radius: 0.9 // Massive influence through root networks and atmosphere
+                        temporal_coordination: 0.9,
+                        cross_species_communication: 0.8,
+                        ecosystem_impact_radius: 0.9
                     },
                     apply: {
                         strategic_non_response: true,
                         creative_applications: ["Architectural canopy optimization", "Chemical defense innovation", "Root system engineering"],
                         timing_wisdom: true,
                         coherence_optimization: true,
-                        collective_decision_making: 0.7, // Forest-level coordinated responses
-                        energy_efficiency: 0.9 // Extremely efficient solar energy conversion
+                        collective_decision_making: 0.7,
+                        energy_efficiency: 0.9
                     },
-                    unified_physics_integration: "Quantum coherence in photosynthesis, bioelectromagnetic communication networks, holofractographic scaling",
-                    life_contribution: "Atmospheric regulation, foundation for terrestrial ecosystems, interspecies communication networks",
-                    research_gaps: ["Quantum coherence in root networks", "Electromagnetic communication mechanisms", "Consciousness in plant systems"]
+                    life_contribution: "Atmospheric regulation, foundation for terrestrial ecosystems, interspecies communication networks"
                 };
             }
 
@@ -707,65 +147,30 @@
                         self_awareness_indicators: ["Mirror self-recognition", "Individual problem-solving styles", "Emotional color expression"],
                         quantum_detection: true,
                         holofractographic_processing: true,
-                        adaptive_learning_speed: 0.9 // Rapid learning and adaptation to new environments
+                        adaptive_learning_speed: 0.9
                     },
                     relate: {
                         communication_patterns: ["Dynamic color communication", "Tactile arm signaling", "Body posture messaging"],
                         symbiotic_relationships: ["Protective shell relationships", "Cleaning station interactions", "Prey-sharing behaviors"],
                         quantum_connections: true,
                         ecosystem_role: true,
-                        temporal_coordination: 0.6, // Moderate synchronization with tidal cycles
-                        cross_species_communication: 0.4, // Limited direct communication with other species
-                        ecosystem_impact_radius: 0.5 // Localized but significant marine ecosystem impact
+                        temporal_coordination: 0.6,
+                        cross_species_communication: 0.4,
+                        ecosystem_impact_radius: 0.5
                     },
                     apply: {
                         strategic_non_response: true,
                         creative_applications: ["Tool use and modification", "Camouflage innovation", "Problem-solving creativity"],
                         timing_wisdom: true,
                         coherence_optimization: true,
-                        collective_decision_making: 0.2, // Primarily individual intelligence
-                        energy_efficiency: 0.7 // Efficient but high-energy neural processing
+                        collective_decision_making: 0.2,
+                        energy_efficiency: 0.7
                     },
-                    unified_physics_integration: "Distributed neural quantum processing, chromatophore quantum coherence, arm-brain integration",
-                    life_contribution: "Marine ecosystem balance, problem-solving innovation, distributed intelligence modeling",
-                    research_gaps: ["Quantum neural processing", "Chromatophore quantum mechanics", "Consciousness distribution"]
+                    life_contribution: "Marine ecosystem balance, problem-solving innovation, distributed intelligence modeling"
                 };
             }
 
-            if (speciesName.toLowerCase().includes('human')) {
-                return {
-                    species: speciesName,
-                    perceive: {
-                        sensory_systems: ["Visual pattern recognition", "Auditory language processing", "Spatial awareness", "Social emotional sensing"],
-                        self_awareness_indicators: ["Metacognitive reflection", "Future planning", "Abstract thinking"],
-                        quantum_detection: true,
-                        holofractographic_processing: true,
-                        adaptive_learning_speed: 0.8 // Very rapid cultural and technological adaptation
-                    },
-                    relate: {
-                        communication_patterns: ["Language and symbols", "Emotional expression", "Cultural transmission", "Digital networking"],
-                        symbiotic_relationships: ["Agricultural partnerships", "Domestic animal bonds", "Microbiome integration"],
-                        quantum_connections: true,
-                        ecosystem_role: true,
-                        temporal_coordination: 0.4, // Poor synchronization with natural cycles
-                        cross_species_communication: 0.6, // Moderate ability to communicate across species
-                        ecosystem_impact_radius: 1.0 // Global impact through technology and civilization
-                    },
-                    apply: {
-                        strategic_non_response: true,
-                        creative_applications: ["Technology development", "Artistic expression", "Scientific innovation", "Social organizing"],
-                        timing_wisdom: true,
-                        coherence_optimization: true,
-                        collective_decision_making: 0.6, // Variable group intelligence capabilities
-                        energy_efficiency: 0.3 // Relatively inefficient energy use compared to other species
-                    },
-                    unified_physics_integration: "Neural quantum coherence, collective consciousness, technological augmentation",
-                    life_contribution: "Global communication networks, scientific understanding, cultural evolution",
-                    research_gaps: ["Consciousness emergence", "Collective intelligence", "Technology-biology integration"]
-                };
-            }
-
-            // Generic fallback with enhanced factors
+            // Generic fallback
             return {
                 species: speciesName,
                 perceive: {
@@ -773,32 +178,287 @@
                     self_awareness_indicators: ["Behavioral complexity indicators"],
                     quantum_detection: true,
                     holofractographic_processing: true,
-                    adaptive_learning_speed: 0.5 // Moderate adaptation rate
+                    adaptive_learning_speed: 0.5
                 },
                 relate: {
                     communication_patterns: ["Communication methods"],
                     symbiotic_relationships: ["Ecological relationships"],
                     quantum_connections: true,
                     ecosystem_role: true,
-                    temporal_coordination: 0.5, // Moderate natural cycle synchronization
-                    cross_species_communication: 0.3, // Basic cross-species interaction
-                    ecosystem_impact_radius: 0.4 // Local ecosystem influence
+                    temporal_coordination: 0.5,
+                    cross_species_communication: 0.3,
+                    ecosystem_impact_radius: 0.4
                 },
                 apply: {
                     strategic_non_response: true,
                     creative_applications: ["Adaptive behaviors"],
                     timing_wisdom: true,
                     coherence_optimization: true,
-                    collective_decision_making: 0.4, // Some group coordination
-                    energy_efficiency: 0.6 // Moderate energy optimization
+                    collective_decision_making: 0.4,
+                    energy_efficiency: 0.6
                 },
-                unified_physics_integration: "Quantum biology connections",
-                life_contribution: "Ecological intelligence contribution",
-                research_gaps: ["Research areas needed"]
+                life_contribution: "Ecological intelligence contribution"
             };
         };
 
-        // Conduct research
+        const generateWisdomInsights = (species) => {
+            const insights = { perceive: [], relate: [], apply: [], essence: "" };
+
+            if (species.species.toLowerCase().includes('tree')) {
+                insights.perceive = [
+                    "Trees sense the world through chemical conversations, reading the atmosphere like an ancient language",
+                    "They feel light's subtle changes across seasons, adjusting their entire being to cosmic rhythms",
+                    "Root networks detect the slightest soil vibrations, connecting to underground communication highways"
+                ];
+                insights.relate = [
+                    "Through mycorrhizal partnerships, trees share resources with strangers, creating forest-wide support networks", 
+                    "They warn neighbors of danger through airborne chemicals, demonstrating care across species boundaries",
+                    "Trees coordinate as living communities, timing their flowering and fruiting in collective wisdom"
+                ];
+                insights.apply = [
+                    "Masters of strategic patience, trees know when to conserve energy and when to reach for growth",
+                    "They architect entire ecosystems through canopy design, creating homes for countless other beings",
+                    "Trees demonstrate the intelligence of restraint - growing slowly but surviving for centuries"
+                ];
+                insights.essence = "Trees embody the wisdom of deep time and interconnected generosity, showing us that true intelligence flows through relationship and patient presence.";
+            }
+            else if (species.species.toLowerCase().includes('octop')) {
+                insights.perceive = [
+                    "Octopuses think with their entire body, each arm processing the world independently yet in harmony",
+                    "Their skin becomes a living canvas of emotion and communication, expressing thoughts as dynamic art",
+                    "They taste and smell through touch, experiencing reality through direct intimate contact"
+                ];
+                insights.relate = [
+                    "Color-changing conversations flow across their bodies like living poetry in motion",
+                    "Each octopus develops unique personality and problem-solving style, honoring individual creativity", 
+                    "They form temporary alliances and demonstrate complex social intelligence despite solitary nature"
+                ];
+                insights.apply = [
+                    "Master shapeshifters who adapt instantly to any environment, showing ultimate creative flexibility",
+                    "Tool users who modify their world rather than just adapting to it, demonstrating inventive intelligence",
+                    "They solve problems through play and exploration, turning challenges into opportunities for discovery"
+                ];
+                insights.essence = "Octopuses teach us that intelligence can be fluid, creative, and deeply embodied - thinking not just with our minds but with our entire being.";
+            }
+            else {
+                insights.perceive = [`${species.species} demonstrates unique sensory adaptations that reveal aspects of reality invisible to other species`];
+                insights.relate = [`${species.species} participates in complex ecological webs of communication and mutual support`];
+                insights.apply = [`${species.species} applies intelligence through behaviors perfectly adapted to their environment`];
+                insights.essence = `${species.species} embodies a unique form of intelligence perfectly suited to their role in the web of life.`;
+            }
+
+            return insights;
+        };
+
+        const IntelligenceTriangle = ({ speciesData, metrics }) => {
+            const canvasRef = useRef(null);
+
+            useEffect(() => {
+                if (!canvasRef.current || !speciesData || !metrics) return;
+
+                const canvas = canvasRef.current;
+                const ctx = canvas.getContext('2d');
+                const width = canvas.width;
+                const height = canvas.height;
+
+                ctx.clearRect(0, 0, width, height);
+
+                const centerX = width / 2;
+                const centerY = height / 2;
+                const radius = Math.min(width, height) * 0.35;
+
+                const vertices = [
+                    { x: centerX, y: centerY - radius, label: 'PERCEIVE\n(Sensory)' },
+                    { x: centerX - radius * Math.cos(Math.PI / 6), y: centerY + radius * 0.5, label: 'RELATE\n(Communication)' },
+                    { x: centerX + radius * Math.cos(Math.PI / 6), y: centerY + radius * 0.5, label: 'APPLY\n(Strategic Action)' }
+                ];
+
+                // Create gradient triangle
+                ctx.beginPath();
+                ctx.moveTo(vertices[0].x, vertices[0].y);
+                ctx.lineTo(vertices[1].x, vertices[1].y);
+                ctx.lineTo(vertices[2].x, vertices[2].y);
+                ctx.closePath();
+
+                const gradient = ctx.createLinearGradient(0, 0, width, height);
+                gradient.addColorStop(0, 'rgba(59, 130, 246, 0.2)');
+                gradient.addColorStop(0.33, 'rgba(34, 197, 94, 0.2)');
+                gradient.addColorStop(0.66, 'rgba(168, 85, 247, 0.2)');
+                gradient.addColorStop(1, 'rgba(99, 102, 241, 0.2)');
+
+                ctx.fillStyle = gradient;
+                ctx.fill();
+                ctx.strokeStyle = 'rgba(107, 114, 128, 0.3)';
+                ctx.lineWidth = 2;
+                ctx.stroke();
+
+                // Draw labels and vertices
+                ctx.font = 'bold 14px sans-serif';
+                ctx.textAlign = 'center';
+                ctx.fillStyle = '#374151';
+
+                vertices.forEach((vertex, index) => {
+                    const lines = vertex.label.split('\n');
+                    lines.forEach((line, lineIndex) => {
+                        const offsetY = index === 0 ? -25 - (lineIndex * 18) : 25 + (lineIndex * 18);
+                        ctx.fillText(line, vertex.x, vertex.y + offsetY);
+                    });
+
+                    ctx.beginPath();
+                    ctx.arc(vertex.x, vertex.y, 8, 0, 2 * Math.PI);
+                    ctx.fillStyle = index === 0 ? '#3b82f6' : index === 1 ? '#22c55e' : '#a855f7';
+                    ctx.fill();
+                    ctx.strokeStyle = '#ffffff';
+                    ctx.lineWidth = 2;
+                    ctx.stroke();
+                });
+
+                // Position species
+                const colors = ['#ef4444', '#f97316', '#eab308', '#84cc16', '#06b6d4'];
+                
+                speciesData.forEach((species, index) => {
+                    const metric = metrics[`species${index + 1}`];
+                    if (!metric) return;
+
+                    const total = metric.perceive + metric.relate + metric.apply;
+                    const normalizedPerceive = total > 0 ? metric.perceive / total : 0.33;
+                    const normalizedRelate = total > 0 ? metric.relate / total : 0.33;
+                    const normalizedApply = total > 0 ? metric.apply / total : 0.33;
+
+                    const speciesX = normalizedPerceive * vertices[0].x + normalizedRelate * vertices[1].x + normalizedApply * vertices[2].x;
+                    const speciesY = normalizedPerceive * vertices[0].y + normalizedRelate * vertices[1].y + normalizedApply * vertices[2].y;
+
+                    const speciesColor = colors[index % colors.length];
+                    
+                    // Outer glow
+                    ctx.beginPath();
+                    ctx.arc(speciesX, speciesY, 12, 0, 2 * Math.PI);
+                    ctx.fillStyle = speciesColor + '40';
+                    ctx.fill();
+
+                    // Main circle
+                    ctx.beginPath();
+                    ctx.arc(speciesX, speciesY, 8, 0, 2 * Math.PI);
+                    ctx.fillStyle = speciesColor;
+                    ctx.fill();
+                    ctx.strokeStyle = '#ffffff';
+                    ctx.lineWidth = 2;
+                    ctx.stroke();
+
+                    // Label
+                    ctx.font = 'bold 12px sans-serif';
+                    ctx.fillStyle = '#1f2937';
+                    ctx.textAlign = 'center';
+                    ctx.fillText(species.species, speciesX, speciesY + 25);
+                });
+
+            }, [speciesData, metrics]);
+
+            return (
+                <div className="bg-white rounded-xl shadow-lg p-6 mb-8 fade-in">
+                    <h3 className="text-xl font-semibold text-gray-800 mb-4 flex items-center gap-2">
+                        <Eye />
+                        Intelligence Relationship Mapping
+                    </h3>
+                    <div className="flex flex-col lg:flex-row gap-6">
+                        <div className="flex-1">
+                            <canvas ref={canvasRef} width={500} height={400} className="w-full max-w-lg mx-auto rounded-lg" />
+                        </div>
+                        <div className="lg:w-80">
+                            <div className="bg-white/90 rounded-lg p-4 border">
+                                <h4 className="font-semibold text-gray-800 mb-3">Understanding the Map</h4>
+                                <div className="space-y-2 text-sm text-gray-600">
+                                    <p><strong>Position:</strong> Shows each species' intelligence balance</p>
+                                    <p><strong>Colors:</strong> Blend to show relationship gradients</p>
+                                    <p><strong>Distance:</strong> Closer species share more intelligence traits</p>
+                                </div>
+                                <div className="mt-4 space-y-1">
+                                    <div className="flex items-center gap-2">
+                                        <div className="w-3 h-3 bg-blue-500 rounded-full"></div>
+                                        <span className="text-xs">PERCEIVE - Sensory awareness</span>
+                                    </div>
+                                    <div className="flex items-center gap-2">
+                                        <div className="w-3 h-3 bg-green-500 rounded-full"></div>
+                                        <span className="text-xs">RELATE - Communication & connection</span>
+                                    </div>
+                                    <div className="flex items-center gap-2">
+                                        <div className="w-3 h-3 bg-purple-500 rounded-full"></div>
+                                        <span className="text-xs">APPLY - Strategic action</span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            );
+        };
+
+        const SpeciesWisdomProfiles = ({ speciesData }) => {
+            if (!speciesData || speciesData.length === 0) return null;
+
+            return (
+                <div className="bg-white rounded-xl shadow-lg p-6 mb-8 fade-in">
+                    <h3 className="text-xl font-semibold text-gray-800 mb-6 flex items-center gap-2">
+                        <Brain />
+                        Wisdom Profiles: Learning from Each Form of Life
+                    </h3>
+                    
+                    <div className="grid gap-6">
+                        {speciesData.map((species, index) => {
+                            const wisdom = generateWisdomInsights(species);
+                            
+                            return (
+                                <div key={index} className="wisdom-card border border-gray-200 rounded-lg p-6">
+                                    <div className="mb-4">
+                                        <h4 className="text-lg font-semibold text-gray-800 capitalize mb-2">{species.species}</h4>
+                                        <p className="text-gray-600 italic leading-relaxed">{wisdom.essence}</p>
+                                    </div>
+                                    
+                                    <div className="grid md:grid-cols-3 gap-4">
+                                        <div className="bg-blue-50 p-4 rounded-lg">
+                                            <h5 className="font-medium text-blue-800 mb-3 flex items-center gap-2">
+                                                <Eye />
+                                                Perceive Wisdom
+                                            </h5>
+                                            <div className="space-y-2 text-sm text-blue-700">
+                                                {wisdom.perceive.map((insight, i) => (
+                                                    <p key={i} className="leading-relaxed">• {insight}</p>
+                                                ))}
+                                            </div>
+                                        </div>
+                                        
+                                        <div className="bg-green-50 p-4 rounded-lg">
+                                            <h5 className="font-medium text-green-800 mb-3 flex items-center gap-2">
+                                                <Heart />
+                                                Relate Wisdom
+                                            </h5>
+                                            <div className="space-y-2 text-sm text-green-700">
+                                                {wisdom.relate.map((insight, i) => (
+                                                    <p key={i} className="leading-relaxed">• {insight}</p>
+                                                ))}
+                                            </div>
+                                        </div>
+                                        
+                                        <div className="bg-purple-50 p-4 rounded-lg">
+                                            <h5 className="font-medium text-purple-800 mb-3 flex items-center gap-2">
+                                                <Sparkles />
+                                                Apply Wisdom
+                                            </h5>
+                                            <div className="space-y-2 text-sm text-purple-700">
+                                                {wisdom.apply.map((insight, i) => (
+                                                    <p key={i} className="leading-relaxed">• {insight}</p>
+                                                ))}
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            );
+                        })}
+                    </div>
+                </div>
+            );
+        };
+
         const conductResearch = async () => {
             const validSpecies = speciesList.filter(s => s.name.trim());
             if (validSpecies.length < 2) {
@@ -822,10 +482,9 @@
                     await new Promise(resolve => setTimeout(resolve, 500));
                 }
 
-                let humanData = null;
                 if (includeHumans) {
                     setResearchProgress("Analyzing human intelligence within the relational framework...");
-                    humanData = await researchSpeciesIntelligence("humans");
+                    const humanData = await researchSpeciesIntelligence("humans");
                     if (humanData) {
                         allSpeciesData.push(humanData);
                     }
@@ -834,7 +493,6 @@
                 setResearchProgress("Synthesizing unified physics insights...");
                 
                 if (allSpeciesData.length >= 2) {
-                    const comparison = generateMultiSpeciesComparison(allSpeciesData);
                     const metrics = {};
                     
                     allSpeciesData.forEach((species, index) => {
@@ -843,8 +501,6 @@
 
                     setResearchResults({
                         allSpecies: allSpeciesData,
-                        humanData: humanData,
-                        comparison: comparison,
                         metrics: metrics,
                         timestamp: new Date().toLocaleString()
                     });
@@ -861,399 +517,169 @@
             }
         };
 
-        // Generate comparison
-        const generateMultiSpeciesComparison = (allSpeciesData) => {
-            const similarities = [];
-            const differences = [];
-            const wholeLifeContribution = [];
-
-            const hasQuantumDetection = allSpeciesData.every(s => s.perceive.quantum_detection);
-            const hasStrategicNonResponse = allSpeciesData.every(s => s.apply.strategic_non_response);
-            const hasCommunication = allSpeciesData.every(s => s.relate.communication_patterns.length > 0);
-
-            if (hasQuantumDetection) {
-                similarities.push(`All ${allSpeciesData.length} life forms demonstrate quantum coherence in their biological processes, revealing intelligence as a universal quantum phenomenon that transcends individual species boundaries.`);
-            }
-
-            if (hasStrategicNonResponse) {
-                const examples = allSpeciesData.map(s =>
-                    s.species.toLowerCase().includes('tree') ? 'trees through dormancy' :
-                    s.species.toLowerCase().includes('octop') ? 'octopuses through camouflage stillness' :
-                    s.species.toLowerCase().includes('human') ? 'humans through mindful restraint' :
-                    `${s.species} through strategic timing`
-                ).join(', ');
-                similarities.push(`Each demonstrates strategic non-response as sophisticated intelligence - ${examples}. This shows that knowing when NOT to act is a universal intelligence principle.`);
-            }
-
-            if (hasCommunication) {
-                similarities.push(`All forms demonstrate complex relational communication extending beyond individual boundaries, proving intelligence is fundamentally about connection across the entire spectrum of life.`);
-            }
-
-            differences.push(`These ${allSpeciesData.length} life forms operate across different timescales and spatial domains, showing how intelligence adapts to diverse ecological niches while maintaining core relational principles.`);
-            
-            if (allSpeciesData.length >= 3) {
-                differences.push("This multi-species comparison reveals the full spectrum of intelligence strategies - from rapid individual creativity to patient networked wisdom to abstract collective thinking.");
-            }
-
-            allSpeciesData.forEach(species => {
-                wholeLifeContribution.push(`${species.species}: ${species.life_contribution}`);
-            });
-            
-            wholeLifeContribution.push(`Together, these ${allSpeciesData.length} forms of intelligence create a comprehensive model of life's wisdom - each contributing unique capacities that strengthen and support the entire web of existence.`);
-
-            return { similarities, differences, wholeLifeContribution };
-        };
-
-        // Multi-Species Input Component
-        const MultiSpeciesInput = () => (
-            <div className="bg-white rounded-xl shadow-lg p-6 mb-8">
-                <h2 className="text-2xl font-semibold text-gray-800 mb-4">Research Parameters</h2>
-                
-                <div className="space-y-4 mb-4">
-                    {speciesList.map((species, index) => (
-                        <div key={`species-${species.id}-${index}`} className="flex items-center gap-3">
-                            <div className="flex-1">
-                                <label className="block text-sm font-medium text-gray-700 mb-2">
-                                    {species.label}:
-                                </label>
-                                <input
-                                    type="text"
-                                    value={species.name}
-                                    onChange={(e) => updateSpecies(species.id, e.target.value)}
-                                    className="species-input w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-                                    placeholder="e.g., dolphins, mycorrhizal networks, coral reefs"
-                                    disabled={isResearching}
-                                />
-                            </div>
-                            {speciesList.length > 2 && (
-                                <button
-                                    onClick={() => removeSpecies(species.id)}
-                                    className="mt-6 p-2 text-red-600 hover:bg-red-50 rounded-lg transition-colors"
-                                    disabled={isResearching}
-                                >
-                                    <X className="w-4 h-4" />
-                                </button>
-                            )}
-                        </div>
-                    ))}
-                </div>
-
-                {speciesList.length < 5 && (
-                    <button
-                        onClick={addSpecies}
-                        className="flex items-center gap-2 px-4 py-2 text-blue-600 bg-blue-50 rounded-lg hover:bg-blue-100 transition-colors mb-6"
-                        disabled={isResearching}
-                    >
-                        <Plus className="w-4 h-4" />
-                        Add Another Life Form ({speciesList.length}/5)
-                    </button>
-                )}
-
-                <div className="mb-6 p-4 bg-gradient-to-r from-green-50 to-blue-50 rounded-lg border border-green-200">
-                    <div className="flex items-center justify-between">
-                        <div>
-                            <h3 className="font-semibold text-gray-800 mb-1">Include Human Intelligence Analysis</h3>
-                            <p className="text-sm text-gray-600">Add humans as an additional comparison point to provide familiar context within the broader spectrum of life.</p>
-                        </div>
-                        <label className="relative inline-flex items-center cursor-pointer ml-4">
-                            <input
-                                type="checkbox"
-                                checked={includeHumans}
-                                onChange={(e) => setIncludeHumans(e.target.checked)}
-                                disabled={isResearching}
-                                className="sr-only peer"
-                            />
-                            <div className="relative w-11 h-6 bg-gray-200 rounded-full peer peer-checked:bg-blue-600 peer-focus:ring-4 peer-focus:ring-blue-300 transition-colors">
-                                <div className={`toggle-slider absolute top-0.5 left-0.5 w-5 h-5 bg-white rounded-full shadow transform ${includeHumans ? 'translate-x-5' : 'translate-x-0'}`}></div>
-                            </div>
-                            <span className="ml-3 text-sm font-medium text-gray-700">
-                                {includeHumans ? 'Human Baseline Included' : 'Add Human Baseline'}
-                            </span>
-                        </label>
-                    </div>
-                </div>
-
-                <button
-                    onClick={conductResearch}
-                    disabled={isResearching || speciesList.filter(s => s.name.trim()).length < 2}
-                    className="w-full bg-gradient-to-r from-blue-600 to-purple-600 text-white py-3 px-6 rounded-lg font-semibold hover:from-blue-700 hover:to-purple-700 disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2"
-                >
-                    {isResearching ? (
-                        <>
-                            <Loader className="w-5 h-5" />
-                            Researching...
-                        </>
-                    ) : (
-                        <>
-                            <Search className="w-5 h-5" />
-                            Begin Multi-Species Intelligence Research
-                        </>
-                    )}
-                </button>
-
-                {(researchProgress || isResearching) && (
-                    <div className="mt-4 p-4 bg-blue-50 rounded-lg border border-blue-200">
-                        <div className="flex items-center gap-2">
-                            {isResearching && <Loader className="w-4 h-4 text-blue-600" />}
-                            <p className="text-blue-700 font-medium">
-                                {researchProgress || "Initializing research..."}
-                            </p>
-                        </div>
-                    </div>
-                )}
-            </div>
-        );
-
-        // Individual Species Details Component
-        const SpeciesDetails = ({ speciesData, metrics }) => {
-            if (!speciesData || speciesData.length === 0) return null;
-
-            return (
-                <div className="bg-white rounded-xl shadow-lg p-6 mb-8 fade-in">
-                    <h3 className="text-xl font-semibold text-gray-800 mb-6 flex items-center gap-2">
-                        <Brain className="text-purple-600" />
-                        Detailed Species Intelligence Profiles
-                    </h3>
-                    
-                    <div className="grid gap-6">
-                        {speciesData.map((species, index) => {
-                            const metric = metrics[`species${index + 1}`] || {};
-                            return (
-                                <div key={index} className="border border-gray-200 rounded-lg p-5 bg-gradient-to-r from-gray-50 to-white">
-                                    <div className="flex items-center justify-between mb-4">
-                                        <h4 className="text-lg font-semibold text-gray-800 capitalize">{species.species}</h4>
-                                        <div className="text-sm text-gray-600">
-                                            Overall Intelligence: <span className="font-bold text-purple-600">{Math.round((metric.overall || 0) * 100)}%</span>
-                                        </div>
-                                    </div>
-                                    
-                                    <div className="grid md:grid-cols-3 gap-4 mb-4">
-                                        <div className="bg-blue-50 p-3 rounded-lg">
-                                            <h5 className="font-medium text-blue-800 mb-2 flex items-center gap-1">
-                                                <Eye size={16} />
-                                                PERCEIVE ({Math.round((metric.perceive || 0) * 100)}%)
-                                            </h5>
-                                            <ul className="text-sm text-blue-700 space-y-1">
-                                                {species.perceive?.sensory_systems?.map((system, i) => (
-                                                    <li key={i}>• {system}</li>
-                                                ))}
-                                            </ul>
-                                        </div>
-                                        
-                                        <div className="bg-green-50 p-3 rounded-lg">
-                                            <h5 className="font-medium text-green-800 mb-2 flex items-center gap-1">
-                                                <Heart size={16} />
-                                                RELATE ({Math.round((metric.relate || 0) * 100)}%)
-                                            </h5>
-                                            <ul className="text-sm text-green-700 space-y-1">
-                                                {species.relate?.communication_patterns?.map((pattern, i) => (
-                                                    <li key={i}>• {pattern}</li>
-                                                ))}
-                                            </ul>
-                                        </div>
-                                        
-                                        <div className="bg-purple-50 p-3 rounded-lg">
-                                            <h5 className="font-medium text-purple-800 mb-2 flex items-center gap-1">
-                                                <Zap size={16} />
-                                                APPLY ({Math.round((metric.apply || 0) * 100)}%)
-                                            </h5>
-                                            <ul className="text-sm text-purple-700 space-y-1">
-                                                {species.apply?.creative_applications?.map((application, i) => (
-                                                    <li key={i}>• {application}</li>
-                                                ))}
-                                            </ul>
-                                        </div>
-                                    </div>
-                                    
-                                    <div className="text-sm text-gray-600">
-                                        <p><strong>Life Contribution:</strong> {species.life_contribution}</p>
-                                    </div>
-                                </div>
-                            );
-                        })}
-                    </div>
-                </div>
-            );
-        };
-
-        // Results Display Component
-        const MultiSpeciesResults = ({ results }) => {
-            if (!results) return null;
-
-            return (
-                <div className="space-y-8">
-                    {/* Triangle Visualization */}
-                    <IntelligenceTriangle 
-                        speciesData={results.allSpecies} 
-                        metrics={results.metrics} 
-                    />
-
-                    {/* Triangle Interpretation */}
-                    <TriangleInterpretation 
-                        speciesData={results.allSpecies} 
-                        metrics={results.metrics} 
-                    />
-
-                    {/* Species Details */}
-                    <SpeciesDetails 
-                        speciesData={results.allSpecies} 
-                        metrics={results.metrics} 
-                    />
-
-                    {/* Comparison Results */}
-                    <div className="bg-white rounded-xl shadow-lg p-6 mb-8 fade-in">
-                        <div className="flex items-center justify-between mb-6">
-                            <h2 className="text-2xl font-semibold text-gray-800 flex items-center gap-2">
-                                <Heart className="text-green-600" />
-                                Multi-Species Intelligence Connections
-                            </h2>
-                            <button
-                                onClick={() => {
-                                    const reportText = `🧠 Multi-Species Intelligence Analysis
-${results.allSpecies.map(s => s.species).join(' vs ')}${results.humanData ? ' vs Humans' : ''}
-Generated: ${results.timestamp}
-
-UNIVERSAL PATTERNS:
-${results.comparison.similarities.map(s => `• ${s}`).join('\n')}
-
-DIVERSITY INSIGHTS:
-${results.comparison.differences.map(d => `• ${d}`).join('\n')}
-
-COLLECTIVE CONTRIBUTION TO LIFE:
-${results.comparison.wholeLifeContribution.map(c => `• ${c}`).join('\n')}
-
----
-Generated by Species Intelligence Research Agent
-Redefining Intelligence Framework - Kerri Lake`;
-                                    
-                                    if (navigator.clipboard) {
-                                        navigator.clipboard.writeText(reportText).then(() => {
-                                            setShareUrl('Multi-species report copied! 📋');
-                                            setTimeout(() => setShareUrl(''), 3000);
-                                        }).catch(() => {
-                                            const blob = new Blob([reportText], { type: 'text/plain' });
-                                            const url = URL.createObjectURL(blob);
-                                            const a = document.createElement('a');
-                                            a.href = url;
-                                            a.download = `multi-species-analysis-${Date.now()}.txt`;
-                                            a.click();
-                                            URL.revokeObjectURL(url);
-                                            setShareUrl('Multi-species report downloaded! 📄');
-                                            setTimeout(() => setShareUrl(''), 3000);
-                                        });
-                                    }
-                                }}
-                                className="flex items-center gap-2 px-4 py-2 bg-green-100 text-green-700 rounded-lg hover:bg-green-200 transition-colors"
-                            >
-                                <Sparkles className="w-4 h-4" />
-                                Share Research
-                            </button>
-                        </div>
-
-                        {shareUrl && (
-                            <div className="mb-4 p-3 bg-green-50 rounded-lg border border-green-200">
-                                <p className="text-green-700 text-sm font-medium text-center">{shareUrl}</p>
-                            </div>
-                        )}
-
-                        <div className="grid md:grid-cols-3 gap-6">
-                            {/* Universal Patterns */}
-                            <div className="p-4 bg-gradient-to-r from-blue-50 to-cyan-50 rounded-lg border-l-4 border-l-blue-500">
-                                <h3 className="font-semibold text-gray-800 mb-3 flex items-center gap-2">
-                                    <Sparkles className="w-5 h-5 text-blue-600" />
-                                    Universal Patterns
-                                </h3>
-                                <div className="space-y-2 text-sm text-gray-700">
-                                    {results.comparison.similarities.map((similarity, idx) => (
-                                        <p key={idx} className="leading-relaxed">{similarity}</p>
-                                    ))}
-                                </div>
-                            </div>
-
-                            {/* Diversity Insights */}
-                            <div className="p-4 bg-gradient-to-r from-purple-50 to-pink-50 rounded-lg border-l-4 border-l-purple-500">
-                                <h3 className="font-semibold text-gray-800 mb-3 flex items-center gap-2">
-                                    <Zap className="w-5 h-5 text-purple-600" />
-                                    Diversity Insights
-                                </h3>
-                                <div className="space-y-2 text-sm text-gray-700">
-                                    {results.comparison.differences.map((difference, idx) => (
-                                        <p key={idx} className="leading-relaxed">{difference}</p>
-                                    ))}
-                                </div>
-                            </div>
-
-                            {/* Life Contribution */}
-                            <div className="p-4 bg-gradient-to-r from-green-50 to-emerald-50 rounded-lg border-l-4 border-l-green-500">
-                                <h3 className="font-semibold text-gray-800 mb-3 flex items-center gap-2">
-                                    <Heart className="w-5 h-5 text-green-600" />
-                                    Collective Life Contribution
-                                </h3>
-                                <div className="space-y-2 text-sm text-gray-700">
-                                    {results.comparison.wholeLifeContribution.map((contribution, idx) => (
-                                        <p key={idx} className="leading-relaxed">{contribution}</p>
-                                    ))}
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-
-                    {/* Intelligence Spectrum Summary */}
-                    <div className="bg-gradient-to-r from-indigo-50 to-purple-50 rounded-xl p-6 mb-8 fade-in">
-                        <h3 className="text-lg font-semibold text-gray-800 mb-3 flex items-center gap-2">
-                            <Brain className="text-indigo-600" />
-                            Intelligence Spectrum Summary
-                        </h3>
-                        <p className="text-gray-700 mb-4">
-                            Analyzing {results.allSpecies.length} distinct forms of life{results.humanData ? ' plus human intelligence' : ''} reveals the extraordinary diversity and interconnectedness of intelligence across our shared planet.
-                        </p>
-                        <div className="grid grid-cols-2 md:grid-cols-4 gap-4 text-center">
-                            {results.allSpecies.map((species, idx) => {
-                                const metrics = results.metrics[`species${idx + 1}`] || {};
-                                return (
-                                    <div key={idx} className="bg-white p-3 rounded-lg shadow-sm">
-                                        <div className="font-medium text-gray-800 text-sm mb-1">{species.species}</div>
-                                        <div className="text-xs text-gray-600">
-                                            Overall: {Math.round((metrics.overall || 0) * 100)}%
-                                        </div>
-                                    </div>
-                                );
-                            })}
-                        </div>
-                    </div>
-                </div>
-            );
-        };
-
-        // Main App Render
         return (
-            <div className="max-w-6xl mx-auto p-6 bg-gradient-to-br from-blue-50 via-white to-green-50 min-h-screen container">
+            <div className="max-w-6xl mx-auto p-6 bg-gradient-to-br from-blue-50 via-white to-green-50 min-h-screen">
                 {/* Header */}
                 <div className="text-center mb-8">
                     <h1 className="text-4xl font-bold text-gray-800 mb-2 flex items-center justify-center gap-3">
-                        <Brain className="text-blue-600" size={40} />
+                        <Brain />
                         Species Intelligence Research Agent
                     </h1>
                     <p className="text-lg text-gray-600 max-w-3xl mx-auto">
                         Exploring intelligence through quantum-enhanced relational capacity across all life forms
                     </p>
-                    <p className="text-sm text-gray-500 mt-2">
-                        Multi-Species Support • Triangular Intelligence Mapping • Export Capabilities
-                    </p>
                 </div>
 
                 {/* Multi-Species Input */}
-                <MultiSpeciesInput />
+                <div className="bg-white rounded-xl shadow-lg p-6 mb-8">
+                    <h2 className="text-2xl font-semibold text-gray-800 mb-4">Research Parameters</h2>
+                    
+                    <div className="space-y-4 mb-4">
+                        {speciesList.map((species) => (
+                            <div key={species.id} className="flex items-center gap-3">
+                                <div className="flex-1">
+                                    <label className="block text-sm font-medium text-gray-700 mb-2">
+                                        {species.label}:
+                                    </label>
+                                    <input
+                                        type="text"
+                                        value={species.name}
+                                        onChange={(e) => updateSpecies(species.id, e.target.value)}
+                                        className="species-input w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                                        placeholder="e.g., dolphins, mycorrhizal networks, coral reefs"
+                                        disabled={isResearching}
+                                    />
+                                </div>
+                                {speciesList.length > 2 && (
+                                    <button
+                                        onClick={() => removeSpecies(species.id)}
+                                        className="mt-6 p-2 text-red-600 hover:bg-red-50 rounded-lg transition-colors"
+                                        disabled={isResearching}
+                                    >
+                                        <X />
+                                    </button>
+                                )}
+                            </div>
+                        ))}
+                    </div>
+
+                    {speciesList.length < 5 && (
+                        <button
+                            onClick={addSpecies}
+                            className="flex items-center gap-2 px-4 py-2 text-blue-600 bg-blue-50 rounded-lg hover:bg-blue-100 transition-colors mb-6"
+                            disabled={isResearching}
+                        >
+                            <Plus />
+                            Add Another Life Form ({speciesList.length}/5)
+                        </button>
+                    )}
+
+                    <div className="mb-6 p-4 bg-gradient-to-r from-green-50 to-blue-50 rounded-lg border border-green-200">
+                        <div className="flex items-center justify-between">
+                            <div>
+                                <h3 className="font-semibold text-gray-800 mb-1">Include Human Intelligence Analysis</h3>
+                                <p className="text-sm text-gray-600">Add humans as an additional comparison point to provide familiar context within the broader spectrum of life.</p>
+                            </div>
+                            <label className="relative inline-flex items-center cursor-pointer ml-4">
+                                <input
+                                    type="checkbox"
+                                    checked={includeHumans}
+                                    onChange={(e) => setIncludeHumans(e.target.checked)}
+                                    disabled={isResearching}
+                                    className="sr-only peer"
+                                />
+                                <div className="relative w-11 h-6 bg-gray-200 rounded-full peer peer-checked:bg-blue-600 peer-focus:ring-4 peer-focus:ring-blue-300 transition-colors">
+                                    <div className={`absolute top-0.5 left-0.5 w-5 h-5 bg-white rounded-full shadow transform transition-transform ${includeHumans ? 'translate-x-5' : 'translate-x-0'}`}></div>
+                                </div>
+                                <span className="ml-3 text-sm font-medium text-gray-700">
+                                    {includeHumans ? 'Human Baseline Included' : 'Add Human Baseline'}
+                                </span>
+                            </label>
+                        </div>
+                    </div>
+
+                    <button
+                        onClick={conductResearch}
+                        disabled={isResearching || speciesList.filter(s => s.name.trim()).length < 2}
+                        className="w-full bg-gradient-to-r from-blue-600 to-purple-600 text-white py-3 px-6 rounded-lg font-semibold hover:from-blue-700 hover:to-purple-700 disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2"
+                    >
+                        {isResearching ? (
+                            <>
+                                <div className="spinner"></div>
+                                Researching...
+                            </>
+                        ) : (
+                            <>
+                                <Search />
+                                Begin Multi-Species Intelligence Research
+                            </>
+                        )}
+                    </button>
+
+                    {(researchProgress || isResearching) && (
+                        <div className="mt-4 p-4 bg-blue-50 rounded-lg border border-blue-200">
+                            <div className="flex items-center gap-2">
+                                {isResearching && <div className="spinner"></div>}
+                                <p className="text-blue-700 font-medium">
+                                    {researchProgress || "Initializing research..."}
+                                </p>
+                            </div>
+                        </div>
+                    )}
+                </div>
 
                 {/* Results */}
                 {researchResults && (
-                    <MultiSpeciesResults results={researchResults} />
+                    <div className="space-y-8">
+                        {/* Triangle Visualization */}
+                        <IntelligenceTriangle 
+                            speciesData={researchResults.allSpecies} 
+                            metrics={researchResults.metrics} 
+                        />
+
+                        {/* Wisdom Profiles */}
+                        <SpeciesWisdomProfiles 
+                            speciesData={researchResults.allSpecies} 
+                        />
+
+                        {/* Intelligence Spectrum Summary */}
+                        <div className="bg-gradient-to-r from-indigo-50 to-purple-50 rounded-xl p-6 mb-8 fade-in">
+                            <h3 className="text-lg font-semibold text-gray-800 mb-3 flex items-center gap-2">
+                                <Brain />
+                                Intelligence Spectrum Summary
+                            </h3>
+                            <p className="text-gray-700 mb-4">
+                                Analyzing {researchResults.allSpecies.length} distinct forms of life reveals the extraordinary diversity and interconnectedness of intelligence across our shared planet.
+                            </p>
+                            <div className="grid grid-cols-2 md:grid-cols-4 gap-4 text-center">
+                                {researchResults.allSpecies.map((species, idx) => {
+                                    const metrics = researchResults.metrics[`species${idx + 1}`] || {};
+                                    const dominant = Object.keys(metrics).filter(k => k !== 'overall').reduce((a, b) => 
+                                        (metrics[a] || 0) > (metrics[b] || 0) ? a : b, 'perceive'
+                                    );
+                                    const dominantColors = {
+                                        perceive: 'bg-blue-100 text-blue-800',
+                                        relate: 'bg-green-100 text-green-800', 
+                                        apply: 'bg-purple-100 text-purple-800'
+                                    };
+                                    
+                                    return (
+                                        <div key={idx} className={`p-3 rounded-lg shadow-sm ${dominantColors[dominant]}`}>
+                                            <div className="font-medium text-sm mb-1 capitalize">{species.species}</div>
+                                            <div className="text-xs">
+                                                Excels in {dominant.toUpperCase()}
+                                            </div>
+                                        </div>
+                                    );
+                                })}
+                            </div>
+                        </div>
+                    </div>
                 )}
             </div>
         );
     };
 
-    // Render the app
     ReactDOM.render(<SpeciesIntelligenceResearcher />, document.getElementById('root'));
     </script>
 </body>
