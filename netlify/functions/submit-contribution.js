@@ -1,3 +1,4 @@
+// netlify/functions/submit-contribution.js
 exports.handler = async (event, context) => {
   const headers = {
     'Access-Control-Allow-Origin': '*',
