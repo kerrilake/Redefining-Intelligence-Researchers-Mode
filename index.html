@@ -89,6 +89,7 @@
         #intelligence-map {
             border: 2px solid #e5e7eb;
             transition: border-color 0.3s ease;
+            background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%);
         }
 
         #intelligence-map:hover {
@@ -119,6 +120,16 @@
                 max-width: 100%;
                 height: auto;
             }
+        }
+
+        .gradient-triangle {
+            filter: drop-shadow(0 4px 8px rgba(0, 0, 0, 0.1));
+        }
+
+        .species-legend {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.2);
         }
     </style>
 </head>
@@ -189,6 +200,230 @@
         </svg>
     );
 
+    // Triangle Visualization Component
+    const IntelligenceTriangle = ({ speciesData, metrics }) => {
+        const canvasRef = useRef(null);
+
+        useEffect(() => {
+            if (!canvasRef.current || !speciesData || !metrics) return;
+
+            const canvas = canvasRef.current;
+            const ctx = canvas.getContext('2d');
+            const width = canvas.width;
+            const height = canvas.height;
+
+            // Clear canvas
+            ctx.clearRect(0, 0, width, height);
+
+            // Triangle dimensions
+            const centerX = width / 2;
+            const centerY = height / 2;
+            const radius = Math.min(width, height) * 0.35;
+
+            // Triangle vertices (equilateral)
+            const vertices = [
+                { x: centerX, y: centerY - radius, label: 'PERCEIVE\n(Sensory)' }, // Top
+                { x: centerX - radius * Math.cos(Math.PI / 6), y: centerY + radius * 0.5, label: 'RELATE\n(Communication)' }, // Bottom left
+                { x: centerX + radius * Math.cos(Math.PI / 6), y: centerY + radius * 0.5, label: 'APPLY\n(Strategic Action)' } // Bottom right
+            ];
+
+            // Create gradient triangle background
+            const createTriangleGradient = () => {
+                // Create a beautiful color-blended triangle
+                ctx.beginPath();
+                ctx.moveTo(vertices[0].x, vertices[0].y);
+                ctx.lineTo(vertices[1].x, vertices[1].y);
+                ctx.lineTo(vertices[2].x, vertices[2].y);
+                ctx.closePath();
+
+                // Create radial gradients for each vertex
+                const gradientPerceive = ctx.createRadialGradient(vertices[0].x, vertices[0].y, 0, vertices[0].x, vertices[0].y, radius);
+                gradientPerceive.addColorStop(0, 'rgba(59, 130, 246, 0.4)'); // Blue
+                gradientPerceive.addColorStop(1, 'rgba(59, 130, 246, 0.1)');
+
+                const gradientRelate = ctx.createRadialGradient(vertices[1].x, vertices[1].y, 0, vertices[1].x, vertices[1].y, radius);
+                gradientRelate.addColorStop(0, 'rgba(34, 197, 94, 0.4)'); // Green
+                gradientRelate.addColorStop(1, 'rgba(34, 197, 94, 0.1)');
+
+                const gradientApply = ctx.createRadialGradient(vertices[2].x, vertices[2].y, 0, vertices[2].x, vertices[2].y, radius);
+                gradientApply.addColorStop(0, 'rgba(168, 85, 247, 0.4)'); // Purple
+                gradientApply.addColorStop(1, 'rgba(168, 85, 247, 0.1)');
+
+                // Create a multi-stop gradient that blends all three colors
+                const masterGradient = ctx.createLinearGradient(0, 0, width, height);
+                masterGradient.addColorStop(0, 'rgba(59, 130, 246, 0.2)');
+                masterGradient.addColorStop(0.33, 'rgba(34, 197, 94, 0.2)');
+                masterGradient.addColorStop(0.66, 'rgba(168, 85, 247, 0.2)');
+                masterGradient.addColorStop(1, 'rgba(99, 102, 241, 0.2)');
+
+                ctx.fillStyle = masterGradient;
+                ctx.fill();
+
+                // Add a subtle border
+                ctx.strokeStyle = 'rgba(107, 114, 128, 0.3)';
+                ctx.lineWidth = 2;
+                ctx.stroke();
+            };
+
+            createTriangleGradient();
+
+            // Draw vertex labels
+            ctx.font = 'bold 14px -apple-system, BlinkMacSystemFont, sans-serif';
+            ctx.textAlign = 'center';
+            ctx.fillStyle = '#374151';
+
+            vertices.forEach((vertex, index) => {
+                const lines = vertex.label.split('\n');
+                lines.forEach((line, lineIndex) => {
+                    const offsetY = index === 0 ? -25 - (lineIndex * 18) : 25 + (lineIndex * 18);
+                    ctx.fillText(line, vertex.x, vertex.y + offsetY);
+                });
+
+                // Draw vertex circles
+                ctx.beginPath();
+                ctx.arc(vertex.x, vertex.y, 8, 0, 2 * Math.PI);
+                ctx.fillStyle = index === 0 ? '#3b82f6' : index === 1 ? '#22c55e' : '#a855f7';
+                ctx.fill();
+                ctx.strokeStyle = '#ffffff';
+                ctx.lineWidth = 2;
+                ctx.stroke();
+            });
+
+            // Position species based on their intelligence metrics
+            const colors = ['#ef4444', '#f97316', '#eab308', '#84cc16', '#06b6d4', '#8b5cf6', '#ec4899'];
+            
+            speciesData.forEach((species, index) => {
+                const metric = metrics[`species${index + 1}`];
+                if (!metric) return;
+
+                // Convert intelligence scores to triangle coordinates
+                const perceiveWeight = metric.perceive || 0;
+                const relateWeight = metric.relate || 0;
+                const applyWeight = metric.apply || 0;
+
+                // Normalize weights so they sum to 1
+                const total = perceiveWeight + relateWeight + applyWeight;
+                const normalizedPerceive = total > 0 ? perceiveWeight / total : 0.33;
+                const normalizedRelate = total > 0 ? relateWeight / total : 0.33;
+                const normalizedApply = total > 0 ? applyWeight / total : 0.33;
+
+                // Calculate position using barycentric coordinates
+                const speciesX = normalizedPerceive * vertices[0].x + 
+                               normalizedRelate * vertices[1].x + 
+                               normalizedApply * vertices[2].x;
+                const speciesY = normalizedPerceive * vertices[0].y + 
+                               normalizedRelate * vertices[1].y + 
+                               normalizedApply * vertices[2].y;
+
+                // Draw species point with larger, more visible circle
+                const speciesColor = colors[index % colors.length];
+                
+                // Outer glow
+                ctx.beginPath();
+                ctx.arc(speciesX, speciesY, 12, 0, 2 * Math.PI);
+                ctx.fillStyle = speciesColor + '40'; // Semi-transparent
+                ctx.fill();
+
+                // Main circle
+                ctx.beginPath();
+                ctx.arc(speciesX, speciesY, 8, 0, 2 * Math.PI);
+                ctx.fillStyle = speciesColor;
+                ctx.fill();
+                ctx.strokeStyle = '#ffffff';
+                ctx.lineWidth = 2;
+                ctx.stroke();
+
+                // Species label
+                ctx.font = 'bold 12px -apple-system, BlinkMacSystemFont, sans-serif';
+                ctx.fillStyle = '#1f2937';
+                ctx.textAlign = 'center';
+                ctx.fillText(species.species, speciesX, speciesY + 25);
+
+                // Draw connection lines between similar species
+                for (let j = index + 1; j < speciesData.length; j++) {
+                    const otherMetric = metrics[`species${j + 1}`];
+                    if (!otherMetric) continue;
+
+                    const otherPerceiveWeight = otherMetric.perceive || 0;
+                    const otherRelateWeight = otherMetric.relate || 0;
+                    const otherApplyWeight = otherMetric.apply || 0;
+                    const otherTotal = otherPerceiveWeight + otherRelateWeight + otherApplyWeight;
+                    
+                    const otherNormalizedPerceive = otherTotal > 0 ? otherPerceiveWeight / otherTotal : 0.33;
+                    const otherNormalizedRelate = otherTotal > 0 ? otherRelateWeight / otherTotal : 0.33;
+                    const otherNormalizedApply = otherTotal > 0 ? otherApplyWeight / otherTotal : 0.33;
+
+                    const otherX = otherNormalizedPerceive * vertices[0].x + 
+                                  otherNormalizedRelate * vertices[1].x + 
+                                  otherNormalizedApply * vertices[2].x;
+                    const otherY = otherNormalizedPerceive * vertices[0].y + 
+                                  otherNormalizedRelate * vertices[1].y + 
+                                  otherNormalizedApply * vertices[2].y;
+
+                    // Calculate similarity (closer species have stronger connections)
+                    const distance = Math.sqrt((speciesX - otherX) ** 2 + (speciesY - otherY) ** 2);
+                    const maxDistance = radius;
+                    const similarity = Math.max(0, 1 - (distance / maxDistance));
+
+                    if (similarity > 0.3) { // Only draw lines for similar species
+                        ctx.beginPath();
+                        ctx.moveTo(speciesX, speciesY);
+                        ctx.lineTo(otherX, otherY);
+                        ctx.strokeStyle = `rgba(107, 114, 128, ${similarity * 0.4})`;
+                        ctx.lineWidth = similarity * 3;
+                        ctx.stroke();
+                    }
+                }
+            });
+
+        }, [speciesData, metrics]);
+
+        return (
+            <div className="bg-white rounded-xl shadow-lg p-6 mb-8 fade-in">
+                <h3 className="text-xl font-semibold text-gray-800 mb-4 flex items-center gap-2">
+                    <Eye className="text-indigo-600" />
+                    Intelligence Relationship Mapping
+                </h3>
+                <div className="flex flex-col lg:flex-row gap-6">
+                    <div className="flex-1">
+                        <canvas
+                            ref={canvasRef}
+                            id="intelligence-map"
+                            width={500}
+                            height={400}
+                            className="w-full max-w-lg mx-auto rounded-lg gradient-triangle"
+                        />
+                    </div>
+                    <div className="lg:w-80">
+                        <div className="species-legend rounded-lg p-4">
+                            <h4 className="font-semibold text-gray-800 mb-3">Understanding the Map</h4>
+                            <div className="space-y-2 text-sm text-gray-600">
+                                <p><strong>Position:</strong> Shows each species' intelligence balance across the three dimensions</p>
+                                <p><strong>Connections:</strong> Lines indicate intelligence pattern similarities</p>
+                                <p><strong>Colors:</strong> Blend to show relationship gradients</p>
+                                <p><strong>Distance:</strong> Closer species share more intelligence traits</p>
+                            </div>
+                            <div className="mt-4 space-y-1">
+                                <div className="flex items-center gap-2">
+                                    <div className="w-3 h-3 bg-blue-500 rounded-full"></div>
+                                    <span className="text-xs">PERCEIVE - Sensory awareness</span>
+                                </div>
+                                <div className="flex items-center gap-2">
+                                    <div className="w-3 h-3 bg-green-500 rounded-full"></div>
+                                    <span className="text-xs">RELATE - Communication & connection</span>
+                                </div>
+                                <div className="flex items-center gap-2">
+                                    <div className="w-3 h-3 bg-purple-500 rounded-full"></div>
+                                    <span className="text-xs">APPLY - Strategic action</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        );
+    };
+
     // Main React Component
     const SpeciesIntelligenceResearcher = () => {
         const [speciesList, setSpeciesList] = useState([
@@ -199,9 +434,7 @@
         const [researchResults, setResearchResults] = useState(null);
         const [isResearching, setIsResearching] = useState(false);
         const [researchProgress, setResearchProgress] = useState('');
-        const [showVisualMapping, setShowVisualMapping] = useState(false);
         const [shareUrl, setShareUrl] = useState('');
-        const mapCanvasRef = useRef(null);
 
         // Multi-species management
         const addSpecies = () => {
@@ -483,7 +716,7 @@
                 <h2 className="text-2xl font-semibold text-gray-800 mb-4">Research Parameters</h2>
                 
                 <div className="space-y-4 mb-4">
-                    {speciesList.map((species, index) => (
+                    {speciesList.map((species) => (
                         <div key={species.id} className="flex items-center gap-3">
                             <div className="flex-1">
                                 <label className="block text-sm font-medium text-gray-700 mb-2">
@@ -577,12 +810,96 @@
             </div>
         );
 
+        // Individual Species Details Component
+        const SpeciesDetails = ({ speciesData, metrics }) => {
+            if (!speciesData || speciesData.length === 0) return null;
+
+            return (
+                <div className="bg-white rounded-xl shadow-lg p-6 mb-8 fade-in">
+                    <h3 className="text-xl font-semibold text-gray-800 mb-6 flex items-center gap-2">
+                        <Brain className="text-purple-600" />
+                        Detailed Species Intelligence Profiles
+                    </h3>
+                    
+                    <div className="grid gap-6">
+                        {speciesData.map((species, index) => {
+                            const metric = metrics[`species${index + 1}`] || {};
+                            return (
+                                <div key={index} className="border border-gray-200 rounded-lg p-5 bg-gradient-to-r from-gray-50 to-white">
+                                    <div className="flex items-center justify-between mb-4">
+                                        <h4 className="text-lg font-semibold text-gray-800 capitalize">{species.species}</h4>
+                                        <div className="text-sm text-gray-600">
+                                            Overall Intelligence: <span className="font-bold text-purple-600">{Math.round((metric.overall || 0) * 100)}%</span>
+                                        </div>
+                                    </div>
+                                    
+                                    <div className="grid md:grid-cols-3 gap-4 mb-4">
+                                        <div className="bg-blue-50 p-3 rounded-lg">
+                                            <h5 className="font-medium text-blue-800 mb-2 flex items-center gap-1">
+                                                <Eye size={16} />
+                                                PERCEIVE ({Math.round((metric.perceive || 0) * 100)}%)
+                                            </h5>
+                                            <ul className="text-sm text-blue-700 space-y-1">
+                                                {species.perceive?.sensory_systems?.map((system, i) => (
+                                                    <li key={i}>• {system}</li>
+                                                ))}
+                                            </ul>
+                                        </div>
+                                        
+                                        <div className="bg-green-50 p-3 rounded-lg">
+                                            <h5 className="font-medium text-green-800 mb-2 flex items-center gap-1">
+                                                <Heart size={16} />
+                                                RELATE ({Math.round((metric.relate || 0) * 100)}%)
+                                            </h5>
+                                            <ul className="text-sm text-green-700 space-y-1">
+                                                {species.relate?.communication_patterns?.map((pattern, i) => (
+                                                    <li key={i}>• {pattern}</li>
+                                                ))}
+                                            </ul>
+                                        </div>
+                                        
+                                        <div className="bg-purple-50 p-3 rounded-lg">
+                                            <h5 className="font-medium text-purple-800 mb-2 flex items-center gap-1">
+                                                <Zap size={16} />
+                                                APPLY ({Math.round((metric.apply || 0) * 100)}%)
+                                            </h5>
+                                            <ul className="text-sm text-purple-700 space-y-1">
+                                                {species.apply?.creative_applications?.map((application, i) => (
+                                                    <li key={i}>• {application}</li>
+                                                ))}
+                                            </ul>
+                                        </div>
+                                    </div>
+                                    
+                                    <div className="text-sm text-gray-600">
+                                        <p><strong>Life Contribution:</strong> {species.life_contribution}</p>
+                                    </div>
+                                </div>
+                            );
+                        })}
+                    </div>
+                </div>
+            );
+        };
+
         // Results Display Component
         const MultiSpeciesResults = ({ results }) => {
             if (!results) return null;
 
             return (
                 <div className="space-y-8">
+                    {/* Triangle Visualization */}
+                    <IntelligenceTriangle 
+                        speciesData={results.allSpecies} 
+                        metrics={results.metrics} 
+                    />
+
+                    {/* Species Details */}
+                    <SpeciesDetails 
+                        speciesData={results.allSpecies} 
+                        metrics={results.metrics} 
+                    />
+
                     {/* Comparison Results */}
                     <div className="bg-white rounded-xl shadow-lg p-6 mb-8 fade-in">
                         <div className="flex items-center justify-between mb-6">
