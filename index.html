@@ -685,106 +685,15 @@
             });
         });
 
-        // Main research function with AI integration
-        async function conductResearch() {
-            const speciesInputs = [
-                document.getElementById('species1').value.trim(),
-                document.getElementById('species2').value.trim(),
-                document.getElementById('species3').value.trim(),
-                document.getElementById('species4').value.trim(),
-                document.getElementById('species5').value.trim()
-            ].filter(species => species.length > 0);
-
-            if (speciesInputs.length === 0) {
-                alert('Please enter at least one species name');
-                return;
-            }
-
-            // Check daily limits
-            const today = new Date().toDateString();
-            if (!dailyUsage[today]) dailyUsage[today] = 0;
-            
-            if (dailyUsage[today] >= CONFIG.DAILY_SEARCH_LIMIT) {
-                alert(`Daily search limit reached (${CONFIG.DAILY_SEARCH_LIMIT} searches). Please try again tomorrow or contact info@kerrilake.com for extended access.`);
-                return;
-            }
-
-            const options = {
-                includeIndigenous: document.getElementById('includeIndigenous').checked,
-                includeBiomimicry: document.getElementById('includeBiomimicry').checked,
-                includeHuman: document.getElementById('includeHuman').checked
-            };
-
-            if (options.includeHuman) {
-                speciesInputs.push('Human');
-            }
-
-            const resultsDiv = document.getElementById('results');
-            
-            try {
-                // Show loading
-                resultsDiv.innerHTML = `
-                    <div class="results-container glass fade-in">
-                        <div class="loading-enhanced">
-                            <div class="research-animation">🧬</div>
-                            <h3>Conducting Deep Species Intelligence Research</h3>
-                            <p>Synthesizing peer-reviewed science, quantum biology, and consciousness research for ${speciesInputs.length} species</p>
-                        </div>
-                    </div>
-                `;
-
-                // Call AI API for each species
-                const researchResults = [];
-                for (const species of speciesInputs) {
-                    const result = await callAnthropicAPI(species, options);
-                    researchResults.push(result);
-                }
-
-                // Update usage tracking
-                dailyUsage[today]++;
-                monthlySpend += CONFIG.COST_PER_SEARCH * speciesInputs.length;
-                localStorage.setItem('dailyUsage', JSON.stringify(dailyUsage));
-                localStorage.setItem('monthlySpend', monthlySpend.toString());
-
-                // Check budget threshold
-                if (monthlySpend >= CONFIG.MONTHLY_BUDGET * (CONFIG.EMAIL_THRESHOLD / 100)) {
-                    await sendBudgetNotification(monthlySpend);
-                }
-
-                // Store in research history
-                const searchRecord = {
-                    species: speciesInputs,
-                    timestamp: new Date().toISOString(),
-                    options: options,
-                    results: researchResults
-                };
-                researchHistory.push(searchRecord);
-                localStorage.setItem('researchHistory', JSON.stringify(researchHistory));
-
-                // Display results
-                displayResults(researchResults);
-                updateUsageDisplay();
-                updateConstellation(researchResults);
-                
-            } catch (error) {
-                console.error('Research failed:', error);
-                resultsDiv.innerHTML = `
-                    <div class="results-container glass fade-in">
-                        <div style="text-align: center; padding: 40px;">
-                            <h3 style="color: #e74c3c;">Research Temporarily Unavailable</h3>
-                            <p style="color: #333;">${error.message}</p>
-                            <button onclick="conductResearch()" style="background: linear-gradient(135deg, #e74c3c, #c0392b); color: white; border: none; padding: 12px 25px; border-radius: 20px; cursor: pointer; margin-top: 15px;">Try Again</button>
-                        </div>
-                    </div>
-                `;
-            }
-        }
-
-        // AI API Integration
+        // FIXED AI API Integration
         async function callAnthropicAPI(speciesName, options) {
+            console.log('=== CALLING API FOR:', speciesName, '===');
+            
             const prompt = createResearchPrompt(speciesName, options);
             
             try {
+                console.log('Making request to Netlify function...');
+                
                 const response = await fetch('/.netlify/functions/research-species', {
                     method: 'POST',
                     headers: {
@@ -797,17 +706,37 @@
                     })
                 });
 
+                console.log('Response status:', response.status);
+                console.log('Response ok:', response.ok);
+
                 if (!response.ok) {
-                    throw new Error(`API Error: ${response.status}`);
+                    const errorText = await response.text();
+                    console.error('Response error:', errorText);
+                    throw new Error(`API Error: ${response.status} - ${errorText}`);
                 }
 
                 const data = await response.json();
-                return parseAIResponse(data.response, speciesName);
+                console.log('Received data:', data);
+                
+                // Check if we got a successful response
+                if (data.success && data.response) {
+                    console.log('✅ AI API call successful for', speciesName);
+                    return data.response;
+                } else {
+                    console.warn('⚠️ API returned data but no success flag:', data);
+                    // Still try to use the response if it exists
+                    return data.response || data;
+                }
                 
             } catch (error) {
-                console.error('AI API Error:', error);
-                // Fallback to enhanced local data
-                return createEnhancedFallback(speciesName, options);
+                console.error('❌ AI API Error for', speciesName, ':', error);
+                console.log('🔄 Falling back to enhanced local data');
+                
+                // Fallback to enhanced local data with clear indication
+                const fallbackData = createEnhancedFallback(speciesName, options);
+                fallbackData.fallbackReason = `API Error: ${error.message}`;
+                fallbackData.researchBacked = false;
+                return fallbackData;
             }
         }
 
@@ -879,6 +808,9 @@ Focus on consciousness-expanding insights that bridge science and wisdom. Respon
 
         function parseAIResponse(responseText, speciesName) {
             try {
+                console.log('Parsing AI response for:', speciesName);
+                console.log('Response text preview:', responseText.substring(0, 100) + '...');
+                
                 const cleanedResponse = responseText
                     .replace(/```json\n?/g, "")
                     .replace(/```\n?/g, "")
@@ -901,7 +833,134 @@ Focus on consciousness-expanding insights that bridge science and wisdom. Respon
                 };
             } catch (parseError) {
                 console.warn("Failed to parse AI response:", parseError);
+                console.log("Raw response that failed to parse:", responseText);
                 return createEnhancedFallback(speciesName, {});
+            }
+        }
+
+        // Updated main research function with better debugging
+        async function conductResearch() {
+            const speciesInputs = [
+                document.getElementById('species1').value.trim(),
+                document.getElementById('species2').value.trim(),
+                document.getElementById('species3').value.trim(),
+                document.getElementById('species4').value.trim(),
+                document.getElementById('species5').value.trim()
+            ].filter(species => species.length > 0);
+
+            if (speciesInputs.length === 0) {
+                alert('Please enter at least one species name');
+                return;
+            }
+
+            // Check daily limits
+            const today = new Date().toDateString();
+            if (!dailyUsage[today]) dailyUsage[today] = 0;
+            
+            if (dailyUsage[today] >= CONFIG.DAILY_SEARCH_LIMIT) {
+                alert(`Daily search limit reached (${CONFIG.DAILY_SEARCH_LIMIT} searches). Please try again tomorrow or contact info@kerrilake.com for extended access.`);
+                return;
+            }
+
+            const options = {
+                includeIndigenous: document.getElementById('includeIndigenous').checked,
+                includeBiomimicry: document.getElementById('includeBiomimicry').checked,
+                includeHuman: document.getElementById('includeHuman').checked
+            };
+
+            if (options.includeHuman) {
+                speciesInputs.push('Human');
+            }
+
+            const resultsDiv = document.getElementById('results');
+            
+            try {
+                console.log('🔬 Starting research for:', speciesInputs);
+                console.log('🎛️ Options:', options);
+                
+                // Show loading
+                resultsDiv.innerHTML = `
+                    <div class="results-container glass fade-in">
+                        <div class="loading-enhanced">
+                            <div class="research-animation">🧬</div>
+                            <h3>Conducting Deep Species Intelligence Research</h3>
+                            <p>Calling Claude AI for authentic research on ${speciesInputs.length} species</p>
+                            <p style="color: rgba(255,255,255,0.7); font-size: 14px; margin-top: 10px;">This may take 10-15 seconds per species...</p>
+                        </div>
+                    </div>
+                `;
+
+                // Call AI API for each species
+                const researchResults = [];
+                for (let i = 0; i < speciesInputs.length; i++) {
+                    const species = speciesInputs[i];
+                    console.log(`🔍 Researching ${i + 1}/${speciesInputs.length}: ${species}`);
+                    
+                    // Update loading message
+                    resultsDiv.innerHTML = `
+                        <div class="results-container glass fade-in">
+                            <div class="loading-enhanced">
+                                <div class="research-animation">🧬</div>
+                                <h3>Researching ${species}...</h3>
+                                <p>Species ${i + 1} of ${speciesInputs.length} • Calling Claude AI</p>
+                                <div style="background: rgba(255,255,255,0.1); padding: 10px; border-radius: 10px; margin: 10px 0;">
+                                    <div style="width: ${(i/speciesInputs.length)*100}%; height: 4px; background: #4CAF50; border-radius: 2px;"></div>
+                                </div>
+                            </div>
+                        </div>
+                    `;
+                    
+                    const result = await callAnthropicAPI(species, options);
+                    researchResults.push(result);
+                    
+                    console.log(`✅ Completed research for ${species}:`, result.researchBacked ? 'AI-powered' : 'Fallback data');
+                }
+
+                console.log('🎉 All research completed!');
+                console.log('Results summary:', researchResults.map(r => ({
+                    species: r.species,
+                    aiBacked: r.researchBacked,
+                    fallbackReason: r.fallbackReason
+                })));
+
+                // Update usage tracking
+                dailyUsage[today]++;
+                monthlySpend += CONFIG.COST_PER_SEARCH * speciesInputs.length;
+                localStorage.setItem('dailyUsage', JSON.stringify(dailyUsage));
+                localStorage.setItem('monthlySpend', monthlySpend.toString());
+
+                // Check budget threshold
+                if (monthlySpend >= CONFIG.MONTHLY_BUDGET * (CONFIG.EMAIL_THRESHOLD / 100)) {
+                    await sendBudgetNotification(monthlySpend);
+                }
+
+                // Store in research history
+                const searchRecord = {
+                    species: speciesInputs,
+                    timestamp: new Date().toISOString(),
+                    options: options,
+                    results: researchResults
+                };
+                researchHistory.push(searchRecord);
+                localStorage.setItem('researchHistory', JSON.stringify(researchHistory));
+
+                // Display results
+                displayResults(researchResults);
+                updateUsageDisplay();
+                updateConstellation(researchResults);
+                
+            } catch (error) {
+                console.error('❌ Research failed:', error);
+                resultsDiv.innerHTML = `
+                    <div class="results-container glass fade-in">
+                        <div style="text-align: center; padding: 40px;">
+                            <h3 style="color: #e74c3c;">Research Temporarily Unavailable</h3>
+                            <p style="color: #333;">Error: ${error.message}</p>
+                            <p style="color: #666; font-size: 14px; margin-top: 15px;">Check the browser console (F12) for more details.</p>
+                            <button onclick="conductResearch()" style="background: linear-gradient(135deg, #e74c3c, #c0392b); color: white; border: none; padding: 12px 25px; border-radius: 20px; cursor: pointer; margin-top: 15px;">Try Again</button>
+                        </div>
+                    </div>
+                `;
             }
         }
 
@@ -985,39 +1044,39 @@ Focus on consciousness-expanding insights that bridge science and wisdom. Respon
                     sources: ["Marine mammal cognition research", "Dolphin echolocation studies", "Interspecies communication research", "Quantum biology in marine mammals"]
                 },
                 
-                horse: {
-                    wisdomInsight: "Horses demonstrate profound emotional intelligence and the ability to mirror human consciousness, teaching us about authentic presence and energetic communication.",
+                salamander: {
+                    wisdomInsight: "Salamanders demonstrate the intelligence of regeneration and transformation, showing that consciousness includes the ability to rebuild and renew at the cellular level while maintaining identity and memory.",
                     perceive: {
-                        summary: "Horses perceive through heightened sensory awareness, electromagnetic field sensitivity, and intuitive emotional resonance with other beings.",
+                        summary: "Salamanders perceive through highly sensitive skin that acts as both respiratory and sensory organ, detecting chemical gradients, moisture levels, and electromagnetic fields.",
                         details: [
-                            "Acute electromagnetic field detection for weather and emotional states",
-                            "Sophisticated body language interpretation across species",
-                            "Seismic vibration sensing through hooves and body",
-                            "Energetic boundary awareness and empathic perception"
+                            "Skin-based chemoreception detecting molecular environmental changes",
+                            "Electromagnetic field sensitivity for navigation and predator detection",
+                            "Vibration sensing through substrate contact for territorial awareness",
+                            "Regenerative tissue intelligence that maintains spatial memory during regrowth"
                         ]
                     },
                     relate: {
-                        summary: "Horses relate through complex herd dynamics, interspecies emotional bonding, and energetic communication that transcends verbal language.",
+                        summary: "Salamanders relate to their ecosystem through moisture-dependent connections, seasonal migrations, and symbiotic relationships with forest floor communities.",
                         details: [
-                            "Intricate herd hierarchy based on trust and respect rather than dominance",
-                            "Cross-species therapeutic relationships with humans",
-                            "Energetic mirroring and emotional regulation of other beings",
-                            "Collective decision-making through subtle body language"
+                            "Moisture-gradient navigation linking aquatic and terrestrial ecosystems",
+                            "Chemical communication through pheromone trails and territorial marking",
+                            "Prey-predator balance maintenance in forest floor food webs",
+                            "Seasonal breeding aggregations demonstrating collective timing intelligence"
                         ]
                     },
                     apply: {
-                        summary: "Horses apply their intelligence through adaptive problem-solving, environmental navigation, and therapeutic healing applications with humans.",
+                        summary: "Salamanders apply their intelligence through perfect regeneration, environmental adaptation, and ecosystem engineering that creates micro-habitats for other species.",
                         details: [
-                            "Complex spatial memory and route optimization",
-                            "Therapeutic facilitation for human emotional healing",
-                            "Environmental adaptation and resource management",
-                            "Social mediation and conflict resolution within herds"
+                            "Complete limb and organ regeneration while retaining memory and function",
+                            "Soil aeration and nutrient cycling through burrowing behaviors",
+                            "Prey population regulation maintaining ecosystem balance",
+                            "Climate change adaptation through altitude and latitude migration"
                         ]
                     },
-                    humanLearnings: "Humans can learn authentic presence, emotional transparency, and the power of non-verbal communication from horses. Their ability to live fully in the present moment while maintaining deep social bonds offers profound lessons for human relationships and consciousness.",
-                    conservationWisdom: "Protecting horses and their natural habitats preserves ancient forms of emotional intelligence that serve as bridges between human and wild consciousness. Their intelligence is essential for understanding mammalian emotional evolution.",
-                    quantumAspects: "Recent studies suggest horses may detect subtle electromagnetic fields and quantum fluctuations, potentially explaining their ability to sense emotions and predict weather changes before humans can detect them.",
-                    sources: ["Equine behavioral studies", "Human-horse therapy research", "Electromagnetic sensitivity studies", "Herd dynamics research"]
+                    humanLearnings: "Humans can learn about healing, regeneration, and the intelligence of tissues from salamanders. Their ability to regrow complex structures offers insights into consciousness-directed healing and cellular renewal.",
+                    conservationWisdom: "Salamander populations serve as indicators of ecosystem health. Their regenerative abilities represent biological wisdom about healing that could revolutionize human medicine and environmental restoration.",
+                    quantumAspects: "Research suggests salamander regeneration involves quantum field organization at the cellular level, with bioelectric patterns guiding tissue reconstruction through morphogenetic fields.",
+                    sources: ["Regenerative biology research", "Amphibian ecology studies", "Bioelectric field research", "Morphogenetic field studies"]
                 },
 
                 human: {
