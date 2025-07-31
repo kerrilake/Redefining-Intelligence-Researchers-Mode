@@ -407,7 +407,7 @@
 
             <div style="text-align: center;">
                 <button class="wisdom-button" id="analyzeButton">
-                    🔬 Analyze Intelligence
+                    🔬 Reveal Intelligence
                 </button>
                 
                 <button class="wisdom-button community-button" id="shareButton">
@@ -573,40 +573,30 @@
 
             const resultsDiv = document.getElementById('analysisResults');
             
-            try {
-                // Show loading
-                resultsDiv.innerHTML = `
-                    <div class="wisdom-panel">
-                        <div class="analysis-loading">
-                            <div class="spinning-icon">🧬</div>
-                            <h3 style="color: #333; margin-bottom: 15px;">Conducting Deep Species Intelligence Analysis</h3>
-                            <p style="color: #666; margin-bottom: 25px;">Synthesizing consciousness data for ${speciesInputs.length} species</p>
-                        </div>
+            // Show loading
+            resultsDiv.innerHTML = `
+                <div class="wisdom-panel">
+                    <div class="analysis-loading">
+                        <div class="spinning-icon">🧬</div>
+                        <h3 style="color: #333; margin-bottom: 15px;">Conducting Deep Species Intelligence Analysis</h3>
+                        <p style="color: #666; margin-bottom: 25px;">Synthesizing consciousness data for ${speciesInputs.length} species</p>
                     </div>
-                `;
+                </div>
+            `;
 
-                // Simulate analysis delay
-                await new Promise(resolve => setTimeout(resolve, 2500));
-
-                // Generate analysis results
+            // Simulate analysis delay and then generate results
+            setTimeout(() => {
+                console.log('Generating analysis for species:', speciesInputs);
                 const results = [];
                 for (const species of speciesInputs) {
-                    results.push(generateSpeciesAnalysis(species, options));
+                    const analysis = generateSpeciesAnalysis(species, options);
+                    console.log('Generated analysis for', species, ':', analysis);
+                    results.push(analysis);
                 }
 
+                console.log('All results generated:', results);
                 displayAnalysisResults(results);
-                
-            } catch (error) {
-                console.error('Analysis failed:', error);
-                resultsDiv.innerHTML = `
-                    <div class="wisdom-panel">
-                        <div style="text-align: center; padding: 40px;">
-                            <h3 style="color: #333;">Analysis Demo Mode</h3>
-                            <p style="color: #666;">This is the demo version with consciousness-enhanced framework.</p>
-                        </div>
-                    </div>
-                `;
-            }
+            }, 2500);
         }
 
         function generateSpeciesAnalysis(speciesName, options) {
@@ -755,9 +745,30 @@
         function displayAnalysisResults(dataArray) {
             const resultsDiv = document.getElementById('analysisResults');
             
+            // Validate data
+            if (!dataArray || dataArray.length === 0) {
+                console.error('No analysis data to display');
+                resultsDiv.innerHTML = `
+                    <div class="wisdom-panel">
+                        <div style="text-align: center; padding: 40px;">
+                            <h3 style="color: #333;">Analysis Error</h3>
+                            <p style="color: #666;">No analysis data generated. Please try again.</p>
+                            <button class="wisdom-button" onclick="beginAnalysis()">Retry Analysis</button>
+                        </div>
+                    </div>
+                `;
+                return;
+            }
+            
+            console.log('Displaying analysis results for', dataArray.length, 'species');
+            
             let html = '';
             
+            // Clear any previous results first
+            resultsDiv.innerHTML = '';
+            
             dataArray.forEach((data, index) => {
+                console.log('Processing species data:', data.species);
                 html += `
                     <div class="wisdom-panel species-analysis">
                         <div class="species-title">
@@ -838,7 +849,14 @@
                 </div>
             `;
 
+            console.log('Setting HTML content...');
             resultsDiv.innerHTML = html;
+            console.log('Analysis results displayed successfully');
+            
+            // Scroll to results
+            setTimeout(() => {
+                resultsDiv.scrollIntoView({ behavior: 'smooth', block: 'start' });
+            }, 100);
         }
 
         function resetAnalysis() {
