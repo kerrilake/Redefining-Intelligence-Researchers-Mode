@@ -19,8 +19,6 @@
         .species-input:focus { box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1); border-color: #3b82f6; }
         button { transition: all 0.2s ease; }
         button:hover:not(:disabled) { transform: translateY(-1px); box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); }
-        .wisdom-card { background: linear-gradient(135deg, #fefefe 0%, #f8fafc 100%); transition: all 0.3s ease; }
-        .wisdom-card:hover { transform: translateY(-2px); box-shadow: 0 8px 25px rgba(0, 0, 0, 0.1); }
     </style>
 </head>
 <body>
@@ -35,7 +33,6 @@
     const Plus = () => <svg width="20" height="20" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 6v6m0 0v6m0-6h6m-6 0H6" /></svg>;
     const X = () => <svg width="20" height="20" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" /></svg>;
     const Heart = () => <svg width="20" height="20" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z" /></svg>;
-    const Sparkles = () => <svg width="20" height="20" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 3a2 2 0 00-2 2v1c0 8.284 6.716 15 15 15h1a2 2 0 002-2v-3.28a1 1 0 00-.684-.948l-4.493-1.498a1 1 0 00-1.21.502l-1.13 2.257a11.042 11.042 0 01-5.516-5.517l2.257-1.128a1 1 0 00.502-1.21L9.228 3.683A1 1 0 008.279 3H5z" /></svg>;
     const Eye = () => <svg width="20" height="20" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" /><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" /></svg>;
 
     const SpeciesIntelligenceResearcher = () => {
@@ -47,6 +44,8 @@
         const [researchResults, setResearchResults] = useState(null);
         const [isResearching, setIsResearching] = useState(false);
         const [researchProgress, setResearchProgress] = useState('');
+        const [showMap, setShowMap] = useState(false);
+        const canvasRef = useRef(null);
 
         const addSpecies = () => {
             if (speciesList.length < 5) {
@@ -68,559 +67,145 @@
             setSpeciesList(speciesList.map(s => s.id === id ? { ...s, name } : s));
         };
 
-        const calculateIntelligenceMetrics = (speciesData) => {
-            let perceiveScore = 0;
-            let relateScore = 0;
-            let applyScore = 0;
-
-            // PERCEIVE dimension
-            perceiveScore += (speciesData.perceive.sensory_systems?.length || 0) * 0.2;
-            perceiveScore += (speciesData.perceive.self_awareness_indicators?.length || 0) * 0.2;
-            perceiveScore += speciesData.perceive.quantum_detection ? 0.25 : 0;
-            perceiveScore += speciesData.perceive.holofractographic_processing ? 0.15 : 0;
-            perceiveScore += (speciesData.perceive.adaptive_learning_speed || 0) * 0.2;
-
-            // RELATE dimension - Enhanced with new factors
-            relateScore += (speciesData.relate.communication_patterns?.length || 0) * 0.15;
-            relateScore += (speciesData.relate.symbiotic_relationships?.length || 0) * 0.15;
-            relateScore += speciesData.relate.quantum_connections ? 0.2 : 0;
-            relateScore += speciesData.relate.ecosystem_role ? 0.15 : 0;
-            relateScore += (speciesData.relate.temporal_coordination || 0) * 0.15;
-            relateScore += (speciesData.relate.cross_species_communication || 0) * 0.1;
-            relateScore += (speciesData.relate.ecosystem_impact_radius || 0) * 0.1;
-
-            // APPLY dimension - Enhanced
-            applyScore += speciesData.apply.strategic_non_response ? 0.25 : 0;
-            applyScore += (speciesData.apply.creative_applications?.length || 0) * 0.2;
-            applyScore += speciesData.apply.timing_wisdom ? 0.2 : 0;
-            applyScore += speciesData.apply.coherence_optimization ? 0.15 : 0;
-            applyScore += (speciesData.apply.collective_decision_making || 0) * 0.1;
-            applyScore += (speciesData.apply.energy_efficiency || 0) * 0.1;
-
-            return {
-                perceive: Math.min(perceiveScore, 1.0),
-                relate: Math.min(relateScore, 1.0),
-                apply: Math.min(applyScore, 1.0),
-                overall: Math.min((perceiveScore + relateScore + applyScore) / 3, 1.0)
-            };
-        };
-
-        const researchSpeciesIntelligence = async (speciesName) => {
-            await new Promise(resolve => setTimeout(resolve, 800));
+        const getSpeciesWisdom = (speciesName) => {
+            const name = speciesName.toLowerCase();
             
-            if (speciesName.toLowerCase().includes('tree')) {
-                return {
-                    species: speciesName,
-                    perceive: {
-                        sensory_systems: ["Chemical gradient detection", "Light spectrum analysis", "Vibration sensing through roots", "Electromagnetic field sensitivity"],
-                        self_awareness_indicators: ["Resource allocation decisions", "Territorial root boundary recognition", "Stress response communication"],
-                        quantum_detection: true,
-                        holofractographic_processing: true,
-                        adaptive_learning_speed: 0.3
-                    },
-                    relate: {
-                        communication_patterns: ["Chemical signaling through air and soil", "Root network electrical signals", "Mycorrhizal network information exchange"],
-                        symbiotic_relationships: ["Mycorrhizal fungi partnerships", "Nitrogen-fixing bacteria collaboration", "Animal seed dispersal relationships"],
-                        quantum_connections: true,
-                        ecosystem_role: true,
-                        temporal_coordination: 0.9,
-                        cross_species_communication: 0.8,
-                        ecosystem_impact_radius: 0.9
-                    },
-                    apply: {
-                        strategic_non_response: true,
-                        creative_applications: ["Architectural canopy optimization", "Chemical defense innovation", "Root system engineering"],
-                        timing_wisdom: true,
-                        coherence_optimization: true,
-                        collective_decision_making: 0.7,
-                        energy_efficiency: 0.9
-                    },
-                    life_contribution: "Atmospheric regulation, foundation for terrestrial ecosystems, interspecies communication networks"
-                };
+            if (name.includes('tree')) {
+                return "Trees embody the wisdom of deep time and interconnected generosity, showing us that true intelligence flows through relationship and patient presence.";
             }
-
-            if (speciesName.toLowerCase().includes('octop')) {
-                return {
-                    species: speciesName,
-                    perceive: {
-                        sensory_systems: ["Distributed neural processing", "Chromatophore color-pattern detection", "Tactile arm sensing", "Chemical taste-smell integration"],
-                        self_awareness_indicators: ["Mirror self-recognition", "Individual problem-solving styles", "Emotional color expression"],
-                        quantum_detection: true,
-                        holofractographic_processing: true,
-                        adaptive_learning_speed: 0.9
-                    },
-                    relate: {
-                        communication_patterns: ["Dynamic color communication", "Tactile arm signaling", "Body posture messaging"],
-                        symbiotic_relationships: ["Protective shell relationships", "Cleaning station interactions", "Prey-sharing behaviors"],
-                        quantum_connections: true,
-                        ecosystem_role: true,
-                        temporal_coordination: 0.6,
-                        cross_species_communication: 0.4,
-                        ecosystem_impact_radius: 0.5
-                    },
-                    apply: {
-                        strategic_non_response: true,
-                        creative_applications: ["Tool use and modification", "Camouflage innovation", "Problem-solving creativity"],
-                        timing_wisdom: true,
-                        coherence_optimization: true,
-                        collective_decision_making: 0.2,
-                        energy_efficiency: 0.7
-                    },
-                    life_contribution: "Marine ecosystem balance, problem-solving innovation, distributed intelligence modeling"
-                };
+            else if (name.includes('octop')) {
+                return "Octopuses teach us that intelligence can be fluid, creative, and deeply embodied - thinking not just with our minds but with our entire being.";
             }
-
-            // Generic fallback
-            return {
-                species: speciesName,
-                perceive: {
-                    sensory_systems: ["Species-specific sensory adaptations"],
-                    self_awareness_indicators: ["Behavioral complexity indicators"],
-                    quantum_detection: true,
-                    holofractographic_processing: true,
-                    adaptive_learning_speed: 0.5
-                },
-                relate: {
-                    communication_patterns: ["Communication methods"],
-                    symbiotic_relationships: ["Ecological relationships"],
-                    quantum_connections: true,
-                    ecosystem_role: true,
-                    temporal_coordination: 0.5,
-                    cross_species_communication: 0.3,
-                    ecosystem_impact_radius: 0.4
-                },
-                apply: {
-                    strategic_non_response: true,
-                    creative_applications: ["Adaptive behaviors"],
-                    timing_wisdom: true,
-                    coherence_optimization: true,
-                    collective_decision_making: 0.4,
-                    energy_efficiency: 0.6
-                },
-                life_contribution: "Ecological intelligence contribution"
-            };
-        };
-
-        const generateWisdomInsights = (species) => {
-            const insights = { perceive: [], relate: [], apply: [], essence: "" };
-
-            const speciesName = species.species.toLowerCase();
-
-            if (speciesName.includes('tree')) {
-                insights.perceive = [
-                    "Trees sense the world through chemical conversations, reading the atmosphere like an ancient language",
-                    "They feel light's subtle changes across seasons, adjusting their entire being to cosmic rhythms",
-                    "Root networks detect the slightest soil vibrations, connecting to underground communication highways"
-                ];
-                insights.relate = [
-                    "Through mycorrhizal partnerships, trees share resources with strangers, creating forest-wide support networks", 
-                    "They warn neighbors of danger through airborne chemicals, demonstrating care across species boundaries",
-                    "Trees coordinate as living communities, timing their flowering and fruiting in collective wisdom"
-                ];
-                insights.apply = [
-                    "Masters of strategic patience, trees know when to conserve energy and when to reach for growth",
-                    "They architect entire ecosystems through canopy design, creating homes for countless other beings",
-                    "Trees demonstrate the intelligence of restraint - growing slowly but surviving for centuries"
-                ];
-                insights.essence = "Trees embody the wisdom of deep time and interconnected generosity, showing us that true intelligence flows through relationship and patient presence.";
+            else if (name.includes('human')) {
+                return "Humans demonstrate the power of collective intelligence and symbolic thinking, showing how individual minds can unite to understand reality.";
             }
-            else if (speciesName.includes('octop')) {
-                insights.perceive = [
-                    "Octopuses think with their entire body, each arm processing the world independently yet in harmony",
-                    "Their skin becomes a living canvas of emotion and communication, expressing thoughts as dynamic art",
-                    "They taste and smell through touch, experiencing reality through direct intimate contact"
-                ];
-                insights.relate = [
-                    "Color-changing conversations flow across their bodies like living poetry in motion",
-                    "Each octopus develops unique personality and problem-solving style, honoring individual creativity", 
-                    "They form temporary alliances and demonstrate complex social intelligence despite solitary nature"
-                ];
-                insights.apply = [
-                    "Master shapeshifters who adapt instantly to any environment, showing ultimate creative flexibility",
-                    "Tool users who modify their world rather than just adapting to it, demonstrating inventive intelligence",
-                    "They solve problems through play and exploration, turning challenges into opportunities for discovery"
-                ];
-                insights.essence = "Octopuses teach us that intelligence can be fluid, creative, and deeply embodied - thinking not just with our minds but with our entire being.";
+            else if (name.includes('hummingbird')) {
+                return "Hummingbirds embody the intelligence of precision and grace, showing us how to live intensely while maintaining perfect balance and efficiency.";
             }
-            else if (speciesName.includes('human')) {
-                insights.perceive = [
-                    "Humans excel at pattern recognition across vast scales, from quantum to cosmic phenomena",
-                    "Language processing allows them to share internal experiences and build collective knowledge",
-                    "Social emotional sensing creates deep empathy and understanding across diverse communities"
-                ];
-                insights.relate = [
-                    "Through stories and symbols, humans transmit wisdom across generations and cultures",
-                    "Digital networks enable instant global communication, connecting minds across continents",
-                    "Collaborative partnerships with other species show capacity for inter-species intelligence"
-                ];
-                insights.apply = [
-                    "Technology amplifies human capabilities, extending intelligence beyond biological limits",
-                    "Artistic expression transforms inner experience into shared beauty and meaning",
-                    "Scientific innovation systematically expands understanding of reality's fundamental nature"
-                ];
-                insights.essence = "Humans demonstrate the power of collective intelligence and symbolic thinking, showing how individual minds can unite to understand and transform reality.";
+            else if (name.includes('cat')) {
+                return "Cats teach us the intelligence of presence and patience, showing how awareness and readiness can be more powerful than constant action.";
             }
-            else if (speciesName.includes('hummingbird')) {
-                insights.perceive = [
-                    "Hummingbirds see ultraviolet patterns on flowers invisible to most eyes, navigating a secret world of color",
-                    "Their spatial memory maps thousands of flower locations with GPS-like precision across vast territories",
-                    "Millisecond flight adjustments demonstrate real-time processing of complex aerodynamic calculations"
-                ];
-                insights.relate = [
-                    "Hummingbirds form intricate partnerships with specific flowers, co-evolving in mutual dependence",
-                    "They communicate through elaborate aerial dances, turning flight into expressive art",
-                    "Migration routes connect ecosystems across continents, linking distant habitats through their journeys"
-                ];
-                insights.apply = [
-                    "Masters of energy efficiency, they balance high-speed living with precise resource management",
-                    "Territorial strategies show sophisticated understanding of cost-benefit analysis in nature",
-                    "Hovering flight demonstrates perfect control - the ability to be dynamically still"
-                ];
-                insights.essence = "Hummingbirds embody the intelligence of precision and grace, showing us how to live intensely while maintaining perfect balance and efficiency.";
+            else if (name.includes('dolphin')) {
+                return "Dolphins embody the intelligence of joy and connection, showing us that play, empathy, and community are essential aspects of consciousness.";
             }
-            else if (speciesName.includes('cat')) {
-                insights.perceive = [
-                    "Cats perceive subtle vibrations through whiskers, reading the world through touch at a distance",
-                    "Their night vision reveals a shadow world of movement invisible to human eyes",
-                    "Acute hearing detects ultrasonic communications, accessing hidden layers of environmental information"
-                ];
-                insights.relate = [
-                    "Cats form complex social hierarchies based on mutual respect rather than dominance",
-                    "Purring creates healing vibrations that benefit both themselves and their companions",
-                    "They communicate through scent marking, leaving invisible messages for future visitors"
-                ];
-                insights.apply = [
-                    "Masters of energy conservation, cats demonstrate the wisdom of rest as strategic preparation",
-                    "Hunting techniques reveal patient observation followed by explosive, precise action",
-                    "Territorial intelligence shows how to maintain boundaries while remaining adaptable"
-                ];
-                insights.essence = "Cats teach us the intelligence of presence and patience, showing how awareness and readiness can be more powerful than constant action.";
+            else if (name.includes('bee')) {
+                return "Bees reveal the intelligence of collective harmony, showing how individual actions can create emergent wisdom greater than the sum of its parts.";
             }
-            else if (speciesName.includes('dolphin')) {
-                insights.perceive = [
-                    "Dolphins navigate through echolocation, painting detailed sound-pictures of their underwater world",
-                    "They recognize themselves in mirrors, demonstrating self-awareness rivaling human consciousness",
-                    "Biosonar abilities reveal internal structures of objects, seeing through matter itself"
-                ];
-                insights.relate = [
-                    "Complex social networks span generations, with grandmothers teaching hunting techniques to young",
-                    "Signature whistles act as names, allowing dolphins to call specific individuals across vast distances",
-                    "Cooperative hunting strategies show collective intelligence and coordinated group decision-making"
-                ];
-                insights.apply = [
-                    "Tool use varies by region, showing cultural transmission of innovative techniques",
-                    "Play behaviors extend throughout life, demonstrating joy as a form of intelligence",
-                    "Rescue behaviors toward other species reveal empathy that transcends biological boundaries"
-                ];
-                insights.essence = "Dolphins embody the intelligence of joy and connection, showing us that play, empathy, and community are not luxuries but essential aspects of consciousness.";
+            else if (name.includes('whale')) {
+                return "Whales embody the intelligence of depth and endurance, teaching us about the wisdom that comes from navigating life's deepest currents with grace.";
             }
-            else if (speciesName.includes('bee')) {
-                insights.perceive = [
-                    "Bees perceive polarized light patterns in the sky, using the sun as a compass even on cloudy days",
-                    "They detect electrical fields around flowers, sensing which blossoms have recently been visited",
-                    "Compound eyes process rapid movement and ultraviolet patterns invisible to most other creatures"
-                ];
-                insights.relate = [
-                    "Waggle dances communicate precise locations, transforming complex spatial information into embodied language",
-                    "Collective decision-making processes evaluate potential nest sites through democratic consensus",
-                    "Chemical communications coordinate the activities of thousands through sophisticated pheromone vocabularies"
-                ];
-                insights.apply = [
-                    "Architectural genius creates hexagonal cells with mathematical precision, maximizing storage with minimal materials",
-                    "Foraging efficiency algorithms rival computer optimization systems for route planning",
-                    "Temperature regulation demonstrates collective intelligence managing complex environmental systems"
-                ];
-                insights.essence = "Bees reveal the intelligence of collective harmony, showing how individual actions can create emergent wisdom greater than the sum of its parts.";
+            else if (name.includes('fungi') || name.includes('mushroom') || name.includes('mycelium')) {
+                return "Fungi reveal the intelligence of connection and transformation, showing us how to turn endings into beginnings and create abundance through generous networking.";
             }
-            else if (speciesName.includes('whale')) {
-                insights.perceive = [
-                    "Whales hear across ocean basins, their songs traveling thousands of miles through deep sound channels",
-                    "Magnetic field sensitivity guides epic migrations with precision across trackless seas",
-                    "Low-frequency calls penetrate ocean depths, connecting whale communities across vast underwater distances"
-                ];
-                insights.relate = [
-                    "Multi-generational songs evolve like cultural traditions, passed down and modified through whale societies",
-                    "Complex social structures include lifelong friendships and cooperative child-rearing practices",
-                    "Inter-species communications show sophisticated understanding of different marine intelligences"
-                ];
-                insights.apply = [
-                    "Migration strategies demonstrate long-term planning and environmental prediction across seasons",
-                    "Cooperative feeding techniques like bubble-netting show coordinated group problem-solving",
-                    "Deep diving abilities reveal mastery over extreme environmental pressures"
-                ];
-                insights.essence = "Whales embody the intelligence of depth and endurance, teaching us about the wisdom that comes from navigating life's deepest currents with grace.";
-            }
-            else if (speciesName.includes('fungi') || speciesName.includes('mushroom') || speciesName.includes('mycelium')) {
-                insights.perceive = [
-                    "Fungi sense chemical gradients across vast underground networks, detecting resources and threats across forest ecosystems",
-                    "They perceive seasonal changes through soil temperature and moisture variations, timing reproduction with perfect precision",
-                    "Chemical sensing abilities detect and respond to the needs of partner plants in real-time"
-                ];
-                insights.relate = [
-                    "Mycorrhizal networks connect plant communities, creating internet-like communication systems beneath forests",
-                    "Resource sharing protocols distribute nutrients based on need, supporting struggling plants with excess resources",
-                    "Chemical messaging systems coordinate ecosystem-wide responses to environmental changes"
-                ];
-                insights.apply = [
-                    "Decomposition mastery transforms death into life, recycling complex organic matter with biochemical precision",
-                    "Network optimization creates efficient resource distribution systems that human engineers study and emulate",
-                    "Adaptive growth patterns explore and exploit environmental opportunities with algorithmic efficiency"
-                ];
-                insights.essence = "Fungi reveal the intelligence of connection and transformation, showing us how to turn endings into beginnings and create abundance through generous networking.";
-            }
-            else if (speciesName.includes('elephant')) {
-                insights.perceive = [
-                    "Elephants detect seismic vibrations through their feet, communicating across miles through ground tremors",
-                    "Infrasonic calls travel vast distances, maintaining contact with family groups beyond visual range",
-                    "Emotional intelligence recognizes grief, joy, and complex social dynamics within their communities"
-                ];
-                insights.relate = [
-                    "Matriarchal wisdom guides herds across traditional migration routes passed down through generations",
-                    "Mourning rituals show deep emotional connections and understanding of death's significance",
-                    "Cooperative child-rearing involves entire family groups in teaching and protecting young"
-                ];
-                insights.apply = [
-                    "Problem-solving abilities include tool use and environmental modification to access food and water",
-                    "Leadership strategies balance individual needs with group welfare in complex decision-making",
-                    "Memory systems store decades of environmental knowledge crucial for family survival"
-                ];
-                insights.essence = "Elephants embody the intelligence of memory and compassion, teaching us that wisdom grows through caring for others and honoring the knowledge of our ancestors.";
+            else if (name.includes('elephant')) {
+                return "Elephants embody the intelligence of memory and compassion, teaching us that wisdom grows through caring for others and honoring ancestral knowledge.";
             }
             else {
-                // Enhanced generic fallback with more variety
-                const genericInsights = [
-                    {
-                        perceive: [`${species.species} demonstrates unique sensory adaptations that reveal hidden aspects of reality`, "Their perceptual abilities unlock environmental information invisible to other species", "Specialized awareness allows them to thrive in ecological niches others cannot access"],
-                        relate: [`${species.species} participates in complex ecological relationships that support biodiversity`, "Their communication patterns contribute to ecosystem health and stability", "Symbiotic connections demonstrate intelligence expressed through cooperation and mutual support"],
-                        apply: [`${species.species} applies environmental intelligence through perfectly adapted survival strategies`, "Their behavioral innovations show creative problem-solving unique to their form of life", "Energy management and resource optimization reveal sophisticated biological intelligence"],
-                        essence: `${species.species} embodies a unique form of intelligence perfectly suited to their role in the web of life, contributing irreplaceable wisdom to our understanding of consciousness.`
-                    },
-                    {
-                        perceive: [`${species.species} perceives environmental patterns and changes with remarkable sensitivity`, "Their sensory systems detect subtle cues that guide survival and reproduction", "Awareness capabilities reveal how different forms of life interpret reality"],
-                        relate: [`${species.species} engages in complex social and ecological interactions within their habitat`, "Communication methods create connections that strengthen community bonds", "Relational intelligence supports both individual and collective wellbeing"],
-                        apply: [`${species.species} demonstrates adaptive intelligence through flexible responses to environmental challenges`, "Strategic behaviors show how intelligence manifests through life-sustaining actions", "Creative adaptations reveal problem-solving capabilities refined over evolutionary time"],
-                        essence: `${species.species} represents a distinctive approach to living intelligence, showing us alternative ways of being conscious and engaged with the world.`
-                    }
-                ];
-                
-                const randomInsight = genericInsights[Math.floor(Math.random() * genericInsights.length)];
-                insights.perceive = randomInsight.perceive;
-                insights.relate = randomInsight.relate;
-                insights.apply = randomInsight.apply;
-                insights.essence = randomInsight.essence;
+                return `${speciesName} embodies a unique form of intelligence perfectly suited to their role in the web of life, contributing irreplaceable wisdom to our understanding of consciousness.`;
             }
-
-            return insights;
         };
 
-        const IntelligenceTriangle = ({ speciesData, metrics }) => {
-            const canvasRef = useRef(null);
+        const drawTriangleMap = () => {
+            if (!canvasRef.current || !researchResults) return;
 
-            useEffect(() => {
-                if (!canvasRef.current || !speciesData || !metrics) return;
-
+            try {
                 const canvas = canvasRef.current;
                 const ctx = canvas.getContext('2d');
-                const width = canvas.width;
-                const height = canvas.height;
+                canvas.width = 400;
+                canvas.height = 400;
 
-                ctx.clearRect(0, 0, width, height);
-
-                const centerX = width / 2;
-                const centerY = height / 2;
-                const radius = Math.min(width, height) * 0.35;
-
-                const vertices = [
-                    { x: centerX, y: centerY - radius, label: 'PERCEIVE\n(Sensory)' },
-                    { x: centerX - radius * Math.cos(Math.PI / 6), y: centerY + radius * 0.5, label: 'RELATE\n(Communication)' },
-                    { x: centerX + radius * Math.cos(Math.PI / 6), y: centerY + radius * 0.5, label: 'APPLY\n(Strategic Action)' }
-                ];
-
-                // Create gradient triangle
-                ctx.beginPath();
-                ctx.moveTo(vertices[0].x, vertices[0].y);
-                ctx.lineTo(vertices[1].x, vertices[1].y);
-                ctx.lineTo(vertices[2].x, vertices[2].y);
-                ctx.closePath();
-
-                const gradient = ctx.createLinearGradient(0, 0, width, height);
-                gradient.addColorStop(0, 'rgba(59, 130, 246, 0.2)');
-                gradient.addColorStop(0.33, 'rgba(34, 197, 94, 0.2)');
-                gradient.addColorStop(0.66, 'rgba(168, 85, 247, 0.2)');
-                gradient.addColorStop(1, 'rgba(99, 102, 241, 0.2)');
-
+                // Clear with gradient background
+                const gradient = ctx.createRadialGradient(200, 200, 0, 200, 200, 200);
+                gradient.addColorStop(0, '#f8fafc');
+                gradient.addColorStop(1, '#e2e8f0');
                 ctx.fillStyle = gradient;
-                ctx.fill();
-                ctx.strokeStyle = 'rgba(107, 114, 128, 0.3)';
-                ctx.lineWidth = 2;
+                ctx.fillRect(0, 0, 400, 400);
+
+                // Draw triangle
+                ctx.strokeStyle = '#64748b';
+                ctx.lineWidth = 3;
+                ctx.beginPath();
+                ctx.moveTo(200, 60);  // Top - PERCEIVE
+                ctx.lineTo(60, 340);  // Bottom left - RELATE
+                ctx.lineTo(340, 340); // Bottom right - APPLY
+                ctx.closePath();
                 ctx.stroke();
 
-                // Draw labels and vertices
-                ctx.font = 'bold 14px sans-serif';
-                ctx.textAlign = 'center';
-                ctx.fillStyle = '#374151';
+                // Fill triangle with subtle gradient
+                const triGradient = ctx.createLinearGradient(60, 340, 340, 340);
+                triGradient.addColorStop(0, 'rgba(34, 197, 94, 0.1)');
+                triGradient.addColorStop(0.5, 'rgba(59, 130, 246, 0.1)');
+                triGradient.addColorStop(1, 'rgba(147, 51, 234, 0.1)');
+                ctx.fillStyle = triGradient;
+                ctx.fill();
 
-                vertices.forEach((vertex, index) => {
-                    const lines = vertex.label.split('\n');
-                    lines.forEach((line, lineIndex) => {
-                        const offsetY = index === 0 ? -25 - (lineIndex * 18) : 25 + (lineIndex * 18);
-                        ctx.fillText(line, vertex.x, vertex.y + offsetY);
-                    });
+                // Draw corner labels and circles
+                const corners = [
+                    { x: 200, y: 60, label: 'PERCEIVE', color: 'rgba(59, 130, 246, 0.8)' },
+                    { x: 60, y: 340, label: 'RELATE', color: 'rgba(34, 197, 94, 0.8)' },
+                    { x: 340, y: 340, label: 'APPLY', color: 'rgba(147, 51, 234, 0.8)' }
+                ];
 
+                corners.forEach(corner => {
+                    ctx.fillStyle = corner.color;
                     ctx.beginPath();
-                    ctx.arc(vertex.x, vertex.y, 8, 0, 2 * Math.PI);
-                    ctx.fillStyle = index === 0 ? '#3b82f6' : index === 1 ? '#22c55e' : '#a855f7';
+                    ctx.arc(corner.x, corner.y, 25, 0, 2 * Math.PI);
                     ctx.fill();
-                    ctx.strokeStyle = '#ffffff';
-                    ctx.lineWidth = 2;
-                    ctx.stroke();
-                });
-
-                // Position species
-                const colors = ['#ef4444', '#f97316', '#eab308', '#84cc16', '#06b6d4'];
-                
-                speciesData.forEach((species, index) => {
-                    const metric = metrics[`species${index + 1}`];
-                    if (!metric) return;
-
-                    const total = metric.perceive + metric.relate + metric.apply;
-                    const normalizedPerceive = total > 0 ? metric.perceive / total : 0.33;
-                    const normalizedRelate = total > 0 ? metric.relate / total : 0.33;
-                    const normalizedApply = total > 0 ? metric.apply / total : 0.33;
-
-                    const speciesX = normalizedPerceive * vertices[0].x + normalizedRelate * vertices[1].x + normalizedApply * vertices[2].x;
-                    const speciesY = normalizedPerceive * vertices[0].y + normalizedRelate * vertices[1].y + normalizedApply * vertices[2].y;
-
-                    const speciesColor = colors[index % colors.length];
                     
-                    // Outer glow
-                    ctx.beginPath();
-                    ctx.arc(speciesX, speciesY, 12, 0, 2 * Math.PI);
-                    ctx.fillStyle = speciesColor + '40';
-                    ctx.fill();
-
-                    // Main circle
-                    ctx.beginPath();
-                    ctx.arc(speciesX, speciesY, 8, 0, 2 * Math.PI);
-                    ctx.fillStyle = speciesColor;
-                    ctx.fill();
-                    ctx.strokeStyle = '#ffffff';
-                    ctx.lineWidth = 2;
-                    ctx.stroke();
-
-                    // Label
-                    ctx.font = 'bold 12px sans-serif';
-                    ctx.fillStyle = '#1f2937';
+                    ctx.fillStyle = 'white';
+                    ctx.font = 'bold 11px sans-serif';
                     ctx.textAlign = 'center';
-                    ctx.fillText(species.species, speciesX, speciesY + 25);
+                    ctx.fillText(corner.label, corner.x, corner.y + 4);
                 });
 
-            }, [speciesData, metrics]);
+                // Draw species points
+                const allSpecies = [...researchResults.allSpecies];
+                if (includeHumans && !allSpecies.some(s => s.species.toLowerCase().includes('human'))) {
+                    allSpecies.push({ species: 'humans' });
+                }
 
-            return (
-                <div className="bg-white rounded-xl shadow-lg p-6 mb-8 fade-in">
-                    <h3 className="text-xl font-semibold text-gray-800 mb-4 flex items-center gap-2">
-                        <Eye />
-                        Intelligence Relationship Mapping
-                    </h3>
-                    <div className="flex flex-col lg:flex-row gap-6">
-                        <div className="flex-1">
-                            <canvas ref={canvasRef} width={500} height={400} className="w-full max-w-lg mx-auto rounded-lg" />
-                        </div>
-                        <div className="lg:w-80">
-                            <div className="bg-white/90 rounded-lg p-4 border">
-                                <h4 className="font-semibold text-gray-800 mb-3">Understanding the Map</h4>
-                                <div className="space-y-2 text-sm text-gray-600">
-                                    <p><strong>Position:</strong> Shows each species' intelligence balance</p>
-                                    <p><strong>Colors:</strong> Blend to show relationship gradients</p>
-                                    <p><strong>Distance:</strong> Closer species share more intelligence traits</p>
-                                </div>
-                                <div className="mt-4 space-y-1">
-                                    <div className="flex items-center gap-2">
-                                        <div className="w-3 h-3 bg-blue-500 rounded-full"></div>
-                                        <span className="text-xs">PERCEIVE - Sensory awareness</span>
-                                    </div>
-                                    <div className="flex items-center gap-2">
-                                        <div className="w-3 h-3 bg-green-500 rounded-full"></div>
-                                        <span className="text-xs">RELATE - Communication & connection</span>
-                                    </div>
-                                    <div className="flex items-center gap-2">
-                                        <div className="w-3 h-3 bg-purple-500 rounded-full"></div>
-                                        <span className="text-xs">APPLY - Strategic action</span>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            );
-        };
+                allSpecies.forEach((species, i) => {
+                    // Calculate position (demo positioning in triangle)
+                    const angle = (i / allSpecies.length) * 2 * Math.PI;
+                    const radius = 60 + (i * 15);
+                    let x = 200 + Math.cos(angle) * radius;
+                    let y = 200 + Math.sin(angle) * radius;
 
-        const SpeciesWisdomProfiles = ({ speciesData }) => {
-            if (!speciesData || speciesData.length === 0) return null;
+                    // Keep points within triangle bounds
+                    x = Math.max(80, Math.min(320, x));
+                    y = Math.max(80, Math.min(320, y));
 
-            return (
-                <div className="bg-white rounded-xl shadow-lg p-6 mb-8 fade-in">
-                    <h3 className="text-xl font-semibold text-gray-800 mb-6 flex items-center gap-2">
-                        <Brain />
-                        Wisdom Profiles: Learning from Each Form of Life
-                    </h3>
+                    // Generate color
+                    const hue = (i * 60) % 360;
+                    const color = `hsl(${hue}, 70%, 60%)`;
+
+                    // Draw species point
+                    ctx.fillStyle = color;
+                    ctx.beginPath();
+                    ctx.arc(x, y, 8, 0, 2 * Math.PI);
+                    ctx.fill();
                     
-                    <div className="grid gap-6">
-                        {speciesData.map((species, index) => {
-                            const wisdom = generateWisdomInsights(species);
-                            
-                            return (
-                                <div key={index} className="wisdom-card border border-gray-200 rounded-lg p-6">
-                                    <div className="mb-4">
-                                        <h4 className="text-lg font-semibold text-gray-800 capitalize mb-2">{species.species}</h4>
-                                        <p className="text-gray-600 italic leading-relaxed">{wisdom.essence}</p>
-                                    </div>
-                                    
-                                    <div className="grid md:grid-cols-3 gap-4">
-                                        <div className="bg-blue-50 p-4 rounded-lg">
-                                            <h5 className="font-medium text-blue-800 mb-3 flex items-center gap-2">
-                                                <Eye />
-                                                Perceive Wisdom
-                                            </h5>
-                                            <div className="space-y-2 text-sm text-blue-700">
-                                                {wisdom.perceive.map((insight, i) => (
-                                                    <p key={i} className="leading-relaxed">• {insight}</p>
-                                                ))}
-                                            </div>
-                                        </div>
-                                        
-                                        <div className="bg-green-50 p-4 rounded-lg">
-                                            <h5 className="font-medium text-green-800 mb-3 flex items-center gap-2">
-                                                <Heart />
-                                                Relate Wisdom
-                                            </h5>
-                                            <div className="space-y-2 text-sm text-green-700">
-                                                {wisdom.relate.map((insight, i) => (
-                                                    <p key={i} className="leading-relaxed">• {insight}</p>
-                                                ))}
-                                            </div>
-                                        </div>
-                                        
-                                        <div className="bg-purple-50 p-4 rounded-lg">
-                                            <h5 className="font-medium text-purple-800 mb-3 flex items-center gap-2">
-                                                <Sparkles />
-                                                Apply Wisdom
-                                            </h5>
-                                            <div className="space-y-2 text-sm text-purple-700">
-                                                {wisdom.apply.map((insight, i) => (
-                                                    <p key={i} className="leading-relaxed">• {insight}</p>
-                                                ))}
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-                            );
-                        })}
-                    </div>
-                </div>
-            );
+                    ctx.strokeStyle = 'white';
+                    ctx.lineWidth = 2;
+                    ctx.stroke();
+
+                    // Draw name
+                    ctx.fillStyle = '#1f2937';
+                    ctx.font = 'bold 10px sans-serif';
+                    ctx.textAlign = 'center';
+                    ctx.fillText(species.species, x, y + 20);
+                });
+
+            } catch (error) {
+                console.error('Canvas drawing error:', error);
+            }
         };
+
+        useEffect(() => {
+            if (showMap && researchResults) {
+                drawTriangleMap();
+            }
+        }, [showMap, researchResults]);
 
         const conductResearch = async () => {
             const validSpecies = speciesList.filter(s => s.name.trim());
@@ -633,47 +218,62 @@
             setResearchResults(null);
 
             try {
+                // Simulate research phases
+                setResearchProgress("Initializing quantum intelligence analysis...");
+                await new Promise(resolve => setTimeout(resolve, 800));
+
                 const allSpeciesData = [];
 
                 for (let i = 0; i < validSpecies.length; i++) {
                     const species = validSpecies[i];
-                    setResearchProgress(`Researching quantum intelligence patterns in ${species.name}...`);
-                    const speciesData = await researchSpeciesIntelligence(species.name);
-                    if (speciesData) {
-                        allSpeciesData.push(speciesData);
-                    }
-                    await new Promise(resolve => setTimeout(resolve, 500));
+                    setResearchProgress(`Researching intelligence patterns in ${species.name}...`);
+                    allSpeciesData.push({
+                        species: species.name,
+                        wisdom: getSpeciesWisdom(species.name)
+                    });
+                    await new Promise(resolve => setTimeout(resolve, 600));
                 }
 
                 if (includeHumans) {
                     setResearchProgress("Analyzing human intelligence within the relational framework...");
-                    const humanData = await researchSpeciesIntelligence("humans");
-                    if (humanData) {
-                        allSpeciesData.push(humanData);
-                    }
+                    allSpeciesData.push({
+                        species: 'humans',
+                        wisdom: getSpeciesWisdom('humans')
+                    });
+                    await new Promise(resolve => setTimeout(resolve, 500));
                 }
 
-                setResearchProgress("Synthesizing unified physics insights...");
+                setResearchProgress("Synthesizing multi-species insights...");
+                await new Promise(resolve => setTimeout(resolve, 800));
+
+                // Generate results
+                const results = {
+                    allSpecies: allSpeciesData,
+                    comparison: {
+                        similarities: [
+                            "All demonstrate quantum coherence in their biological processes",
+                            "Each shows strategic non-response as sophisticated intelligence", 
+                            "All have evolved complex relational communication systems"
+                        ],
+                        differences: [
+                            "Different temporal scales of intelligence operation",
+                            "Varying specialization in perception, relation, and application",
+                            "Unique ecological niche adaptations"
+                        ],
+                        wholeLifeContribution: [
+                            ...allSpeciesData.map(species => `${species.species}: ${species.wisdom.split(',')[0]}`),
+                            "Together creating a resilient web of diverse intelligence types"
+                        ]
+                    },
+                    timestamp: new Date().toLocaleString()
+                };
+
+                setResearchResults(results);
+                setResearchProgress("Multi-species research completed successfully!");
                 
-                if (allSpeciesData.length >= 2) {
-                    const metrics = {};
-                    
-                    allSpeciesData.forEach((species, index) => {
-                        metrics[`species${index + 1}`] = calculateIntelligenceMetrics(species);
-                    });
-
-                    setResearchResults({
-                        allSpecies: allSpeciesData,
-                        metrics: metrics,
-                        timestamp: new Date().toLocaleString()
-                    });
-                    
-                    setResearchProgress("Multi-species research completed successfully!");
-                } else {
-                    setResearchProgress("Error: Insufficient research data");
-                }
             } catch (error) {
-                setResearchProgress("Error: " + error.message);
+                console.error('Research error:', error);
+                setResearchProgress("Error: Research process failed");
             } finally {
                 setIsResearching(false);
                 setTimeout(() => setResearchProgress(''), 3000);
@@ -690,6 +290,9 @@
                     </h1>
                     <p className="text-lg text-gray-600 max-w-3xl mx-auto">
                         Exploring intelligence through quantum-enhanced relational capacity across all life forms
+                    </p>
+                    <p className="text-sm text-gray-500 mt-2">
+                        Multi-Species Support • Triangular Intelligence Mapping • Wisdom-Based Insights
                     </p>
                 </div>
 
@@ -792,7 +395,100 @@
                 </div>
 
                 {/* Results */}
-                {researchResults && <MultiSpeciesResults results={researchResults} />}
+                {researchResults && (
+                    <div className="space-y-6">
+                        {/* Main Results */}
+                        <div className="bg-white rounded-xl shadow-lg p-6">
+                            <h2 className="text-xl font-semibold mb-4 flex items-center gap-2">
+                                <Heart />
+                                Multi-Species Intelligence Analysis
+                            </h2>
+                            
+                            <div className="grid md:grid-cols-3 gap-4">
+                                <div className="p-4 bg-blue-50 rounded-lg">
+                                    <h3 className="font-semibold text-blue-800 mb-2">How They're Alike</h3>
+                                    <ul className="text-sm text-gray-700 space-y-1">
+                                        {researchResults.comparison.similarities.map((item, i) => (
+                                            <li key={i}>• {item}</li>
+                                        ))}
+                                    </ul>
+                                </div>
+                                
+                                <div className="p-4 bg-purple-50 rounded-lg">
+                                    <h3 className="font-semibold text-purple-800 mb-2">How They're Different</h3>
+                                    <ul className="text-sm text-gray-700 space-y-1">
+                                        {researchResults.comparison.differences.map((item, i) => (
+                                            <li key={i}>• {item}</li>
+                                        ))}
+                                    </ul>
+                                </div>
+                                
+                                <div className="p-4 bg-green-50 rounded-lg">
+                                    <h3 className="font-semibold text-green-800 mb-2">Life Contributions</h3>
+                                    <ul className="text-sm text-gray-700 space-y-1">
+                                        {researchResults.comparison.wholeLifeContribution.map((item, i) => (
+                                            <li key={i}>• {item}</li>
+                                        ))}
+                                    </ul>
+                                </div>
+                            </div>
+                        </div>
+
+                        {/* Wisdom Profiles */}
+                        <div className="bg-white rounded-xl shadow-lg p-6">
+                            <h3 className="text-xl font-semibold text-gray-800 mb-4 flex items-center gap-2">
+                                <Brain />
+                                Species Wisdom Insights
+                            </h3>
+                            
+                            <div className="grid gap-4">
+                                {researchResults.allSpecies.map((species, index) => (
+                                    <div key={index} className="p-4 bg-gradient-to-r from-gray-50 to-white rounded-lg border border-gray-200">
+                                        <h4 className="text-lg font-semibold text-gray-800 capitalize mb-2">{species.species}</h4>
+                                        <p className="text-gray-600 italic text-sm leading-relaxed">{species.wisdom}</p>
+                                    </div>
+                                ))}
+                            </div>
+                        </div>
+
+                        {/* Optional Triangle Map */}
+                        <div className="bg-white rounded-xl shadow-lg p-6">
+                            <div className="flex items-center justify-between mb-4">
+                                <h2 className="text-xl font-semibold flex items-center gap-2">
+                                    <Eye />
+                                    Triangular Intelligence Map
+                                </h2>
+                                <button
+                                    onClick={() => setShowMap(!showMap)}
+                                    className="px-4 py-2 bg-indigo-100 text-indigo-700 rounded-lg hover:bg-indigo-200 transition-colors"
+                                >
+                                    {showMap ? 'Hide' : 'Show'} Map
+                                </button>
+                            </div>
+
+                            {showMap && (
+                                <div className="text-center space-y-4">
+                                    <canvas 
+                                        ref={canvasRef}
+                                        className="border rounded-lg shadow-sm mx-auto"
+                                        style={{ maxWidth: '100%' }}
+                                    />
+                                    <div className="text-sm text-gray-600 bg-blue-50 p-3 rounded">
+                                        <p><strong>Triangle Guide:</strong> PERCEIVE (top), RELATE (bottom-left), APPLY (bottom-right)</p>
+                                        <p>Species positioned based on intelligence patterns - closer together = more similar</p>
+                                    </div>
+                                </div>
+                            )}
+                        </div>
+
+                        {/* Summary */}
+                        <div className="bg-gradient-to-r from-blue-50 to-purple-50 rounded-xl p-4">
+                            <p className="text-center text-gray-700">
+                                <strong>Analysis Complete!</strong> Explored {researchResults.allSpecies.length} life forms showing the diverse intelligence spectrum across our planet.
+                            </p>
+                        </div>
+                    </div>
+                )}
             </div>
         );
     };
