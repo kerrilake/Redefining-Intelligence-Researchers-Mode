@@ -792,53 +792,7 @@
                 </div>
 
                 {/* Results */}
-                {researchResults && (
-                    <div className="space-y-8">
-                        {/* Triangle Visualization */}
-                        <IntelligenceTriangle 
-                            speciesData={researchResults.allSpecies} 
-                            metrics={researchResults.metrics} 
-                        />
-
-                        {/* Wisdom Profiles */}
-                        <SpeciesWisdomProfiles 
-                            speciesData={researchResults.allSpecies} 
-                        />
-
-                        {/* Intelligence Spectrum Summary */}
-                        <div className="bg-gradient-to-r from-indigo-50 to-purple-50 rounded-xl p-6 mb-8 fade-in">
-                            <h3 className="text-lg font-semibold text-gray-800 mb-3 flex items-center gap-2">
-                                <Brain />
-                                Intelligence Spectrum Summary
-                            </h3>
-                            <p className="text-gray-700 mb-4">
-                                Analyzing {researchResults.allSpecies.length} distinct forms of life reveals the extraordinary diversity and interconnectedness of intelligence across our shared planet.
-                            </p>
-                            <div className="grid grid-cols-2 md:grid-cols-4 gap-4 text-center">
-                                {researchResults.allSpecies.map((species, idx) => {
-                                    const metrics = researchResults.metrics[`species${idx + 1}`] || {};
-                                    const dominant = Object.keys(metrics).filter(k => k !== 'overall').reduce((a, b) => 
-                                        (metrics[a] || 0) > (metrics[b] || 0) ? a : b, 'perceive'
-                                    );
-                                    const dominantColors = {
-                                        perceive: 'bg-blue-100 text-blue-800',
-                                        relate: 'bg-green-100 text-green-800', 
-                                        apply: 'bg-purple-100 text-purple-800'
-                                    };
-                                    
-                                    return (
-                                        <div key={idx} className={`p-3 rounded-lg shadow-sm ${dominantColors[dominant]}`}>
-                                            <div className="font-medium text-sm mb-1 capitalize">{species.species}</div>
-                                            <div className="text-xs">
-                                                Excels in {dominant.toUpperCase()}
-                                            </div>
-                                        </div>
-                                    );
-                                })}
-                            </div>
-                        </div>
-                    </div>
-                )}
+                {researchResults && <MultiSpeciesResults results={researchResults} />}
             </div>
         );
     };
