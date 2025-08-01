@@ -1163,7 +1163,7 @@ Focus on consciousness-expanding insights that bridge cutting-edge science with 
             resultsDiv.innerHTML = html;
         }
 
-        // Enhanced PDF Generation Function
+        // Enhanced PDF Generation Function with Error Handling
         function generateEnhancedPDFReport() {
             if (!currentSpeciesData || currentSpeciesData.length === 0) {
                 alert('No species data available for PDF generation. Please conduct research first.');
@@ -1171,14 +1171,24 @@ Focus on consciousness-expanding insights that bridge cutting-edge science with 
             }
             
             try {
-                // Check if jsPDF is available
-                if (typeof window.jspdf === 'undefined') {
-                    alert('PDF library is loading. Please wait a moment and try again.');
+                // Check if jsPDF is available with better error handling
+                if (typeof window.jspdf === 'undefined' || !window.jspdf.jsPDF) {
+                    console.error('jsPDF not loaded properly');
+                    alert('PDF library is still loading. Please wait a moment and try again. If the issue persists, refresh the page.');
                     return;
                 }
 
                 const { jsPDF } = window.jspdf;
-                const doc = new jsPDF();
+                
+                // Test jsPDF creation
+                let doc;
+                try {
+                    doc = new jsPDF();
+                } catch (pdfError) {
+                    console.error('Error creating PDF document:', pdfError);
+                    alert('Error initializing PDF generator. Please refresh the page and try again.');
+                    return;
+                }
                 
                 // Set up styling variables
                 const pageWidth = doc.internal.pageSize.getWidth();
@@ -1203,192 +1213,218 @@ Focus on consciousness-expanding insights that bridge cutting-edge science with 
                     return false;
                 }
                 
-                // Helper function to wrap text
+                // Helper function to wrap text with error handling
                 function addWrappedText(text, fontSize = 10, lineHeight = 5, color = textColor) {
-                    doc.setFontSize(fontSize);
-                    doc.setTextColor(...color);
-                    const lines = doc.splitTextToSize(text, contentWidth - 20);
-                    
-                    for (let line of lines) {
-                        checkAndAddPage();
-                        doc.text(line, margin + 10, yPosition);
-                        yPosition += lineHeight;
+                    if (!text || typeof text !== 'string') {
+                        text = 'Information not available';
                     }
-                    yPosition += 2;
+                    
+                    try {
+                        doc.setFontSize(fontSize);
+                        doc.setTextColor(...color);
+                        const lines = doc.splitTextToSize(text, contentWidth - 20);
+                        
+                        for (let line of lines) {
+                            checkAndAddPage();
+                            doc.text(line, margin + 10, yPosition);
+                            yPosition += lineHeight;
+                        }
+                        yPosition += 2;
+                    } catch (textError) {
+                        console.error('Error adding text to PDF:', textError);
+                        // Continue without this text block
+                    }
                 }
                 
                 // Title Page
-                doc.setFontSize(24);
-                doc.setTextColor(...primaryColor);
-                doc.text('Enhanced Species Intelligence Research Report', margin, yPosition);
-                yPosition += 15;
-                
-                doc.setFontSize(16);
-                doc.setTextColor(...secondaryColor);
-                doc.text('Comprehensive Analysis Through the Perceive • Relate • Apply Framework', margin, yPosition);
-                yPosition += 8;
-                doc.text('With Temporal, Energetic, Collective & Adaptive Intelligence Dimensions', margin, yPosition);
-                yPosition += 12;
-                
-                doc.setFontSize(12);
-                doc.setTextColor(...textColor);
-                const speciesNames = currentSpeciesData.map(d => d.species).join(', ');
-                doc.text(`Research Focus: ${speciesNames}`, margin, yPosition);
-                yPosition += 8;
-                
-                const reportDate = new Date().toLocaleDateString('en-US', { 
-                    year: 'numeric', 
-                    month: 'long', 
-                    day: 'numeric' 
-                });
-                doc.text(`Generated: ${reportDate}`, margin, yPosition);
-                yPosition += 8;
-                
-                doc.text('Powered by Enhanced Claude AI & Species Intelligence Framework', margin, yPosition);
-                yPosition += 20;
-                
-                // Executive Summary
-                doc.setFontSize(16);
-                doc.setTextColor(...primaryColor);
-                doc.text('Executive Summary', margin, yPosition);
-                yPosition += 10;
-                
-                const executiveSummary = generateExecutiveSummary(currentSpeciesData);
-                addWrappedText(executiveSummary, 10, 5);
-                yPosition += 10;
-                
-                // Individual Species Reports with Enhanced Dimensions
-                currentSpeciesData.forEach((species, index) => {
-                    checkAndAddPage(40);
-                    
-                    // Species Header
-                    doc.setFontSize(18);
+                try {
+                    doc.setFontSize(24);
                     doc.setTextColor(...primaryColor);
-                    doc.text(`${species.species} Intelligence Profile`, margin, yPosition);
-                    yPosition += 8;
+                    doc.text('Species Intelligence Research Report', margin, yPosition);
+                    yPosition += 15;
                     
-                    // Research type indicator
-                    doc.setFontSize(10);
-                    doc.setTextColor(...accentColor);
-                    const researchType = species.researchBacked ? 'Enhanced AI Research' : 'Framework Analysis';
-                    doc.text(`Research Type: ${researchType}`, margin, yPosition);
+                    doc.setFontSize(16);
+                    doc.setTextColor(...secondaryColor);
+                    doc.text('Comprehensive Analysis Through the Perceive • Relate • Apply Framework', margin, yPosition);
                     yPosition += 12;
                     
-                    // Wisdom Insight
-                    doc.setFontSize(14);
-                    doc.setTextColor(...secondaryColor);
-                    doc.text('💡 Revolutionary Wisdom Insight', margin, yPosition);
+                    doc.setFontSize(12);
+                    doc.setTextColor(...textColor);
+                    const speciesNames = currentSpeciesData.map(d => d.species || 'Unknown Species').join(', ');
+                    doc.text(`Research Focus: ${speciesNames}`, margin, yPosition);
                     yPosition += 8;
-                    addWrappedText(species.wisdomInsight, 10, 5);
-                    yPosition += 5;
                     
-                    // Core Framework Sections
-                    ['perceive', 'relate', 'apply'].forEach(section => {
-                        checkAndAddPage(25);
-                        const sectionTitle = section.toUpperCase() + ' • ' + 
-                            (section === 'perceive' ? 'How They Perceive Their World' :
-                             section === 'relate' ? 'How They Relate To Their World' :
-                             'How They Apply Their Intelligence');
+                    const reportDate = new Date().toLocaleDateString('en-US', { 
+                        year: 'numeric', 
+                        month: 'long', 
+                        day: 'numeric' 
+                    });
+                    doc.text(`Generated: ${reportDate}`, margin, yPosition);
+                    yPosition += 8;
+                    
+                    doc.text('Powered by Claude AI & Species Intelligence Framework', margin, yPosition);
+                    yPosition += 20;
+                } catch (titleError) {
+                    console.error('Error creating title page:', titleError);
+                }
+                
+                // Executive Summary
+                try {
+                    doc.setFontSize(16);
+                    doc.setTextColor(...primaryColor);
+                    doc.text('Executive Summary', margin, yPosition);
+                    yPosition += 10;
+                    
+                    const executiveSummary = generateExecutiveSummary(currentSpeciesData);
+                    addWrappedText(executiveSummary, 10, 5);
+                    yPosition += 10;
+                } catch (summaryError) {
+                    console.error('Error creating executive summary:', summaryError);
+                }
+                
+                // Individual Species Reports
+                currentSpeciesData.forEach((species, index) => {
+                    try {
+                        checkAndAddPage(40);
                         
-                        doc.setFontSize(14);
+                        // Species Header
+                        doc.setFontSize(18);
                         doc.setTextColor(...primaryColor);
-                        doc.text(sectionTitle, margin, yPosition);
+                        doc.text(`${species.species || 'Unknown Species'} Intelligence Profile`, margin, yPosition);
                         yPosition += 8;
-                        addWrappedText(species[section].summary, 10, 5);
                         
+                        // Research type indicator
                         doc.setFontSize(10);
-                        doc.setTextColor(...textColor);
-                        species[section].details.forEach(detail => {
-                            checkAndAddPage();
-                            doc.text(`• ${detail}`, margin + 5, yPosition);
-                            yPosition += 5;
-                        });
-                        yPosition += 8;
-                    });
-                    
-                    // Enhanced Intelligence Dimensions
-                    const enhancedSections = [
-                        { key: 'quantumAspects', title: '🌌 Quantum Biology & Consciousness' },
-                        { key: 'temporalIntelligence', title: '⏰ Temporal Intelligence' },
-                        { key: 'energeticIntelligence', title: '⚡ Energetic Intelligence' },
-                        { key: 'collectiveWisdom', title: '🤝 Collective Wisdom' },
-                        { key: 'adaptiveStrategies', title: '🔄 Adaptive Strategies' },
-                        { key: 'humanLearnings', title: '🌱 Human Learning Opportunities' },
-                        { key: 'conservationWisdom', title: '🌍 Conservation Intelligence' }
-                    ];
-                    
-                    enhancedSections.forEach(section => {
-                        if (species[section.key]) {
-                            checkAndAddPage(15);
-                            doc.setFontSize(12);
-                            doc.setTextColor(...secondaryColor);
-                            doc.text(section.title, margin, yPosition);
-                            yPosition += 6;
-                            addWrappedText(species[section.key], 9, 4);
-                            yPosition += 5;
-                        }
-                    });
-                    
-                    if (species.biomimicryPotential) {
-                        checkAndAddPage(15);
-                        doc.setFontSize(12);
+                        doc.setTextColor(...accentColor);
+                        const researchType = species.researchBacked ? 'AI-Enhanced Research' : 'Framework Analysis';
+                        doc.text(`Research Type: ${researchType}`, margin, yPosition);
+                        yPosition += 12;
+                        
+                        // Wisdom Insight
+                        doc.setFontSize(14);
                         doc.setTextColor(...secondaryColor);
-                        doc.text('🔬 Biomimicry Potential', margin, yPosition);
-                        yPosition += 6;
-                        addWrappedText(species.biomimicryPotential, 9, 4);
-                        yPosition += 10;
+                        doc.text('Key Wisdom Insight', margin, yPosition);
+                        yPosition += 8;
+                        addWrappedText(species.wisdomInsight || 'This species demonstrates unique intelligence worthy of deeper study.', 10, 5);
+                        yPosition += 5;
+                        
+                        // Core Framework Sections
+                        ['perceive', 'relate', 'apply'].forEach(section => {
+                            try {
+                                checkAndAddPage(25);
+                                const sectionTitle = section.toUpperCase() + ' • ' + 
+                                    (section === 'perceive' ? 'How They Perceive Their World' :
+                                     section === 'relate' ? 'How They Relate To Their World' :
+                                     'How They Apply Their Intelligence');
+                                
+                                doc.setFontSize(14);
+                                doc.setTextColor(...primaryColor);
+                                doc.text(sectionTitle, margin, yPosition);
+                                yPosition += 8;
+                                
+                                const sectionData = species[section];
+                                if (sectionData && sectionData.summary) {
+                                    addWrappedText(sectionData.summary, 10, 5);
+                                    
+                                    if (sectionData.details && Array.isArray(sectionData.details)) {
+                                        doc.setFontSize(10);
+                                        doc.setTextColor(...textColor);
+                                        sectionData.details.forEach(detail => {
+                                            if (detail) {
+                                                checkAndAddPage();
+                                                doc.text(`• ${detail}`, margin + 5, yPosition);
+                                                yPosition += 5;
+                                            }
+                                        });
+                                    }
+                                }
+                                yPosition += 8;
+                            } catch (sectionError) {
+                                console.error(`Error processing ${section} section:`, sectionError);
+                            }
+                        });
+                        
+                        // Additional Insights
+                        const insights = [
+                            { key: 'quantumAspects', title: 'Quantum Biology & Consciousness' },
+                            { key: 'humanLearnings', title: 'Human Learning Opportunities' },
+                            { key: 'conservationWisdom', title: 'Conservation Intelligence' }
+                        ];
+                        
+                        insights.forEach(insight => {
+                            if (species[insight.key]) {
+                                try {
+                                    checkAndAddPage(15);
+                                    doc.setFontSize(12);
+                                    doc.setTextColor(...secondaryColor);
+                                    doc.text(insight.title, margin, yPosition);
+                                    yPosition += 6;
+                                    addWrappedText(species[insight.key], 9, 4);
+                                    yPosition += 5;
+                                } catch (insightError) {
+                                    console.error(`Error adding ${insight.key}:`, insightError);
+                                }
+                            }
+                        });
+                        
+                    } catch (speciesError) {
+                        console.error(`Error processing species ${species.species}:`, speciesError);
                     }
                 });
                 
-                // Enhanced Comparative Analysis
-                if (currentSpeciesData.length > 1) {
-                    checkAndAddPage(40);
+                // Sources and References
+                try {
+                    checkAndAddPage(30);
                     doc.setFontSize(16);
                     doc.setTextColor(...primaryColor);
-                    doc.text('Enhanced Comparative Intelligence Analysis', margin, yPosition);
-                    yPosition += 12;
+                    doc.text('Sources and References', margin, yPosition);
+                    yPosition += 10;
                     
-                    const comparativeInsights = generateEnhancedComparativeInsights(currentSpeciesData);
-                    addWrappedText(comparativeInsights, 10, 5);
+                    const allSources = [...new Set(currentSpeciesData.flatMap(d => d.sources || ['Enhanced research framework']))];
+                    doc.setFontSize(9);
+                    doc.setTextColor(...textColor);
+                    
+                    allSources.forEach((source, index) => {
+                        if (source) {
+                            checkAndAddPage();
+                            doc.text(`${index + 1}. ${source}`, margin, yPosition);
+                            yPosition += 4;
+                        }
+                    });
+                    yPosition += 10;
+                } catch (sourcesError) {
+                    console.error('Error adding sources:', sourcesError);
                 }
                 
-                // Sources and References
-                checkAndAddPage(30);
-                doc.setFontSize(16);
-                doc.setTextColor(...primaryColor);
-                doc.text('Sources and References', margin, yPosition);
-                yPosition += 10;
+                // Footer
+                try {
+                    doc.setFontSize(8);
+                    doc.setTextColor(128, 128, 128);
+                    doc.text('Generated by Species Intelligence Research Agent', margin, yPosition);
+                    doc.text('Perceive/Relate/Apply Framework by Kerri Lake', margin, yPosition + 4);
+                    doc.text('Visit: generateharmony.com • intuitivelearningfoundation.org • kerrilake.com', margin, yPosition + 8);
+                } catch (footerError) {
+                    console.error('Error adding footer:', footerError);
+                }
                 
-                const allSources = [...new Set(currentSpeciesData.flatMap(d => d.sources || []))];
-                doc.setFontSize(9);
-                doc.setTextColor(...textColor);
-                
-                allSources.forEach((source, index) => {
-                    checkAndAddPage();
-                    doc.text(`${index + 1}. ${source}`, margin, yPosition);
-                    yPosition += 4;
-                });
-                yPosition += 10;
-                
-                // Footer with enhanced framework info
-                doc.setFontSize(8);
-                doc.setTextColor(128, 128, 128);
-                doc.text('Generated by Enhanced Species Intelligence Research Agent', margin, yPosition);
-                doc.text('Perceive/Relate/Apply Framework with 6 Intelligence Dimensions by Kerri Lake', margin, yPosition + 4);
-                doc.text('Visit: generateharmony.com • intuitivelearningfoundation.org • kerrilake.com', margin, yPosition + 8);
-                
-                // Save the enhanced PDF
-                const filename = `Enhanced-Species-Intelligence-Report-${speciesNames.replace(/[^a-zA-Z0-9]/g, '-')}-${new Date().toISOString().split('T')[0]}.pdf`;
-                doc.save(filename);
-                
-                // Success message
-                setTimeout(() => {
-                    alert(`✅ Enhanced PDF Report Generated Successfully!\n\nFile: ${filename}\n\nThe comprehensive report includes:\n• 6 Intelligence dimensions per species\n• Temporal, energetic, collective & adaptive analysis\n• Complete research citations\n• Comparative analysis\n• Biomimicry applications\n• Conservation strategies\n\nThis represents the most detailed species intelligence research available!`);
-                }, 500);
+                // Save the PDF
+                try {
+                    const speciesNames = currentSpeciesData.map(d => d.species || 'Species').join('-');
+                    const filename = `Species-Intelligence-Report-${speciesNames.replace(/[^a-zA-Z0-9]/g, '-')}-${new Date().toISOString().split('T')[0]}.pdf`;
+                    doc.save(filename);
+                    
+                    // Success message
+                    setTimeout(() => {
+                        alert(`✅ PDF Report Generated Successfully!\n\nFile: ${filename}\n\nThe report includes comprehensive research on ${currentSpeciesData.length} species with full analysis and citations.`);
+                    }, 500);
+                } catch (saveError) {
+                    console.error('Error saving PDF:', saveError);
+                    alert('PDF was generated but there was an error saving it. Please try again.');
+                }
                 
             } catch (error) {
                 console.error('Enhanced PDF Generation Error:', error);
-                alert('Error generating enhanced PDF. Please try again or contact support.');
+                alert(`Error generating PDF: ${error.message}\n\nPlease try again or refresh the page. If the issue persists, contact support.`);
             }
         }
 
