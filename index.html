@@ -952,6 +952,27 @@ Focus on consciousness-expanding insights that bridge science and wisdom. Respon
             const today = new Date().toDateString();
             if (!dailyUsage[today]) dailyUsage[today] = 0;
 
+            // ✅ COST LIMITING ENFORCEMENT
+            // Check daily limit
+            if (dailyUsage[today] >= CONFIG.DAILY_SEARCH_LIMIT) {
+                alert(`Daily search limit reached (${CONFIG.DAILY_SEARCH_LIMIT} searches). Please try again tomorrow to stay within budget limits.`);
+                return;
+            }
+
+            // Check monthly budget
+            const projectedCost = monthlySpend + (CONFIG.COST_PER_SEARCH * speciesInputs.length);
+            if (projectedCost > CONFIG.MONTHLY_BUDGET) {
+                alert(`Monthly budget limit would be exceeded (${projectedCost.toFixed(2)} > ${CONFIG.MONTHLY_BUDGET}). Please wait until next month or reduce the number of species.`);
+                return;
+            }
+
+            // Warning at 80% of monthly budget
+            if (projectedCost > (CONFIG.MONTHLY_BUDGET * 0.8) && monthlySpend <= (CONFIG.MONTHLY_BUDGET * 0.8)) {
+                if (!confirm(`Warning: This search will use ${((projectedCost/CONFIG.MONTHLY_BUDGET)*100).toFixed(1)}% of your monthly budget. Continue?`)) {
+                    return;
+                }
+            }
+
             const options = {
                 includeIndigenous: document.getElementById('includeIndigenous').checked,
                 includeBiomimicry: document.getElementById('includeBiomimicry').checked,
