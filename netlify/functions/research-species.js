@@ -1,6 +1,5 @@
-// netlify/functions/research-species.js - OPTIMIZED VERSION
+// netlify/functions/research-species.js - BUG FIXED VERSION
 exports.handler = async (event, context) => {
-    // Set CORS headers for all responses
     const headers = {
         'Access-Control-Allow-Origin': '*',
         'Access-Control-Allow-Headers': 'Content-Type',
@@ -8,44 +7,36 @@ exports.handler = async (event, context) => {
         'Content-Type': 'application/json'
     };
 
-    // Handle preflight OPTIONS request
     if (event.httpMethod === 'OPTIONS') {
-        return {
-            statusCode: 200,
-            headers,
-            body: JSON.stringify({ message: 'CORS preflight successful' })
-        };
+        return { statusCode: 200, headers, body: JSON.stringify({ message: 'CORS preflight successful' }) };
     }
 
-    // Only allow POST requests
     if (event.httpMethod !== 'POST') {
-        return {
-            statusCode: 405,
-            headers,
-            body: JSON.stringify({ error: 'Method not allowed. Use POST.' })
-        };
+        return { statusCode: 405, headers, body: JSON.stringify({ error: 'Method not allowed. Use POST.' }) };
     }
+
+    let species = 'Unknown Species'; // Initialize with default value
 
     try {
-        // Parse request body
-        const { species, prompt, options } = JSON.parse(event.body || '{}');
+        const requestBody = JSON.parse(event.body || '{}');
+        species = requestBody.species || 'Unknown Species'; // Set species from request
+        const options = requestBody.options || {};
         
-        console.log('=== OPTIMIZED FUNCTION START ===');
+        console.log('=== FIXED FUNCTION START ===');
         console.log('Species:', species);
         console.log('API Key available:', !!process.env.ANTHROPIC_API_KEY);
 
-        if (!species) {
+        if (!requestBody.species) {
             return {
                 statusCode: 400,
                 headers,
                 body: JSON.stringify({ 
                     error: 'Missing species parameter',
-                    received: { species, prompt, options }
+                    received: requestBody
                 })
             };
         }
 
-        // Check for API key
         if (!process.env.ANTHROPIC_API_KEY) {
             console.error('ANTHROPIC_API_KEY not found in environment variables');
             return {
@@ -58,126 +49,26 @@ exports.handler = async (event, context) => {
             };
         }
 
-        // Create the optimized research prompt
-        const researchPrompt = createOptimizedResearchPrompt(species, options || {});
-        console.log('Optimized prompt created, length:', researchPrompt.length);
-
-        // Make API call to Anthropic with timeout handling
-        console.log('Making optimized API call to Anthropic...');
-        
-        const controller = new AbortController();
-        const timeoutId = setTimeout(() => controller.abort(), 8000); // 8 second timeout
-        
-        try {
-            const response = await fetch('https://api.anthropic.com/v1/messages', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                    'x-api-key': process.env.ANTHROPIC_API_KEY,
-                    'anthropic-version': '2023-06-01'
-                },
-                body: JSON.stringify({
-                    model: 'claude-3-5-sonnet-20241022',
-                    max_tokens: 2500, // Slightly reduced for faster response
-                    messages: [
-                        {
-                            role: 'user',
-                            content: researchPrompt
-                        }
-                    ]
-                }),
-                signal: controller.signal
-            });
-
-            clearTimeout(timeoutId);
-            console.log('API Response status:', response.status);
-            
-            if (!response.ok) {
-                const errorText = await response.text();
-                console.error('API Error:', response.status, errorText);
-                throw new Error(`API Error: ${response.status} - ${errorText.substring(0, 100)}`);
-            }
-
-            const apiData = await response.json();
-            console.log('Optimized API response received successfully');
-            
-            // Extract the response text
-            const responseText = apiData.content?.[0]?.text || '';
-            console.log('Response text length:', responseText.length);
-            
-            if (!responseText) {
-                console.error('No response text found in API response');
-                throw new Error('No response content from API');
-            }
-
-            // Parse the AI response
-            const parsedResponse = parseOptimizedAIResponse(responseText, species);
-            console.log('Optimized response parsed successfully');
-
-            return {
-                statusCode: 200,
-                headers,
-                body: JSON.stringify({
-                    success: true,
-                    species: species,
-                    response: parsedResponse,
-                    timestamp: new Date().toISOString()
-                })
-            };
-
-        } catch (fetchError) {
-            clearTimeout(timeoutId);
-            
-            if (fetchError.name === 'AbortError') {
-                console.log('API call timed out, using fallback');
-                throw new Error('API timeout - using enhanced fallback');
-            } else {
-                throw fetchError;
-            }
-        }
-
-    } catch (error) {
-        console.error('Function error, using enhanced fallback:', error);
-        
-        // Return enhanced fallback instead of error
-        const fallbackResponse = createComprehensiveFallback(species || 'Unknown Species');
-        
-        return {
-            statusCode: 200,
-            headers,
-            body: JSON.stringify({
-                success: true,
-                species: species,
-                response: fallbackResponse,
-                timestamp: new Date().toISOString(),
-                note: 'Enhanced fallback used due to API timeout'
-            })
-        };
-    }
-};
-
-function createOptimizedResearchPrompt(speciesName, options) {
-    const indigenousKnowledge = options.includeIndigenous ? 'Include indigenous wisdom and traditional knowledge.' : '';
-    const biomimicryApplications = options.includeBiomimicry ? 'Include biomimicry applications and technological innovations.' : '';
-
-    return `Research ${speciesName} intelligence through the Perceive/Relate/Apply framework with enhanced dimensions.
+        // Simple, fast prompt
+        const prompt = `Research ${species} intelligence using the Perceive/Relate/Apply framework with enhanced dimensions.
 
 FRAMEWORK:
-PERCEIVE: How they sense and process their world
-RELATE: How they connect with their environment and others  
-APPLY: How they use intelligence for survival and thriving
+- PERCEIVE: How they sense and process their world
+- RELATE: How they connect with environment and others  
+- APPLY: How they use intelligence for survival
 
-ENHANCED DIMENSIONS (must include):
-TEMPORAL: Time perception, seasonal cycles, pattern recognition
-ENERGETIC: Biofield sensitivity, electromagnetic awareness, energy optimization
-COLLECTIVE: Group consciousness, collective decision-making, distributed intelligence
-ADAPTIVE: Real-time adaptation, crisis response, resilience mechanisms
+ENHANCED DIMENSIONS (required):
+- TEMPORAL: Time perception, seasonal cycles
+- ENERGETIC: Biofield sensitivity, energy optimization
+- COLLECTIVE: Group consciousness, collective decisions
+- ADAPTIVE: Real-time adaptation, resilience
 
-${indigenousKnowledge} ${biomimicryApplications}
+${options.includeIndigenous ? 'Include indigenous wisdom.' : ''}
+${options.includeBiomimicry ? 'Include biomimicry applications.' : ''}
 
 Respond with JSON:
 {
-  "species": "${speciesName}",
+  "species": "${species}",
   "wisdomInsight": "Key insight (3-4 sentences)",
   "perceive": {
     "summary": "How they perceive (3-4 sentences)",
@@ -191,62 +82,120 @@ Respond with JSON:
     "summary": "How they apply intelligence (3-4 sentences)",
     "details": ["application 1", "application 2", "application 3", "ecosystem contribution"]
   },
-  "humanLearnings": "What humans can learn (4-5 sentences)",
-  "conservationWisdom": "Conservation insights (4-5 sentences)",
-  "quantumAspects": "Quantum biology connections (3-4 sentences)",
   "temporalIntelligence": "Time perception and cycles (4-5 sentences)",
   "energeticIntelligence": "Energy interactions and optimization (4-5 sentences)",
   "collectiveWisdom": "Group consciousness and decisions (4-5 sentences)",
   "adaptiveStrategies": "Adaptation and resilience (4-5 sentences)",
+  "humanLearnings": "What humans can learn (4-5 sentences)",
+  "conservationWisdom": "Conservation insights (4-5 sentences)",
+  "quantumAspects": "Quantum biology connections (3-4 sentences)",
   "sources": ["source1", "source2", "source3"]
 }
 
-CRITICAL: All enhanced dimensions must have 4-5 complete sentences. Respond only with valid JSON.`;
-}
+Respond only with valid JSON.`;
 
-function parseOptimizedAIResponse(responseText, speciesName) {
-    try {
-        console.log('Parsing optimized AI response for:', speciesName);
+        console.log('Making API call to Anthropic...');
         
-        // Clean the response text
-        let cleanedResponse = responseText
-            .replace(/```json\n?/g, "")
-            .replace(/```\n?/g, "")
-            .trim();
+        const response = await fetch('https://api.anthropic.com/v1/messages', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'x-api-key': process.env.ANTHROPIC_API_KEY,
+                'anthropic-version': '2023-06-01'
+            },
+            body: JSON.stringify({
+                model: 'claude-3-5-sonnet-20241022',
+                max_tokens: 2000,
+                messages: [{ role: 'user', content: prompt }]
+            })
+        });
+
+        console.log('API Response status:', response.status);
         
-        // Find JSON content
+        if (!response.ok) {
+            const errorText = await response.text();
+            console.error('API Error:', response.status, errorText);
+            throw new Error(`API Error: ${response.status} - ${errorText.substring(0, 100)}`);
+        }
+
+        const apiData = await response.json();
+        const responseText = apiData.content?.[0]?.text || '';
+        
+        console.log('Response received, length:', responseText.length);
+
+        if (!responseText) {
+            throw new Error('No response content from API');
+        }
+
+        // Parse the response
+        let cleanedResponse = responseText.replace(/```json\n?/g, "").replace(/```\n?/g, "").trim();
         const jsonMatch = cleanedResponse.match(/\{[\s\S]*\}/);
         if (jsonMatch) {
             cleanedResponse = jsonMatch[0];
         }
-        
-        const data = JSON.parse(cleanedResponse);
-        
-        // Return enhanced response with fallbacks
-        return {
-            species: data.species || speciesName,
-            wisdomInsight: data.wisdomInsight || createWisdomFallback(speciesName),
-            perceive: data.perceive || createPerceiveFallback(speciesName),
-            relate: data.relate || createRelateFallback(speciesName),
-            apply: data.apply || createApplyFallback(speciesName),
-            humanLearnings: data.humanLearnings || createHumanLearningsFallback(speciesName),
-            conservationWisdom: data.conservationWisdom || createConservationFallback(speciesName),
-            quantumAspects: data.quantumAspects || createQuantumFallback(speciesName),
-            temporalIntelligence: data.temporalIntelligence || createTemporalFallback(speciesName),
-            energeticIntelligence: data.energeticIntelligence || createEnergeticFallback(speciesName),
-            collectiveWisdom: data.collectiveWisdom || createCollectiveFallback(speciesName),
-            adaptiveStrategies: data.adaptiveStrategies || createAdaptiveFallback(speciesName),
-            sources: data.sources || ["Research compilation", "Consciousness studies", "Ecological intelligence"],
+
+        let parsedData;
+        try {
+            parsedData = JSON.parse(cleanedResponse);
+            console.log('✅ JSON parsed successfully - AI response received');
+        } catch (parseError) {
+            console.error('JSON parse error:', parseError);
+            throw new Error('Failed to parse AI response');
+        }
+
+        // Enhanced response with fallbacks for missing fields
+        const finalResponse = {
+            species: parsedData.species || species,
+            wisdomInsight: parsedData.wisdomInsight || createWisdomFallback(species),
+            perceive: parsedData.perceive || createPerceiveFallback(species),
+            relate: parsedData.relate || createRelateFallback(species),
+            apply: parsedData.apply || createApplyFallback(species),
+            temporalIntelligence: parsedData.temporalIntelligence || createTemporalFallback(species),
+            energeticIntelligence: parsedData.energeticIntelligence || createEnergeticFallback(species),
+            collectiveWisdom: parsedData.collectiveWisdom || createCollectiveFallback(species),
+            adaptiveStrategies: parsedData.adaptiveStrategies || createAdaptiveFallback(species),
+            humanLearnings: parsedData.humanLearnings || createHumanLearningsFallback(species),
+            conservationWisdom: parsedData.conservationWisdom || createConservationFallback(species),
+            quantumAspects: parsedData.quantumAspects || createQuantumFallback(species),
+            sources: parsedData.sources || ["Research compilation", "Consciousness studies", "Ecological intelligence"],
             researchBacked: true,
             timestamp: new Date().toISOString()
         };
-    } catch (parseError) {
-        console.warn("Failed to parse AI response:", parseError);
-        return createComprehensiveFallback(speciesName);
-    }
-}
 
-// Comprehensive fallback functions (same as before)
+        console.log('✅ SUCCESS - Returning AI-powered response');
+
+        return {
+            statusCode: 200,
+            headers,
+            body: JSON.stringify({
+                success: true,
+                species: species,
+                response: finalResponse,
+                timestamp: new Date().toISOString()
+            })
+        };
+
+    } catch (error) {
+        console.error('❌ Function error:', error.message);
+        
+        // Return enhanced fallback - species is now guaranteed to be defined
+        const fallbackResponse = createComprehensiveFallback(species);
+        
+        return {
+            statusCode: 200,
+            headers,
+            body: JSON.stringify({
+                success: true,
+                species: species,
+                response: fallbackResponse,
+                timestamp: new Date().toISOString(),
+                note: 'Using enhanced fallback: ' + error.message
+            })
+        };
+    }
+};
+
+// Fallback functions with rich 4-5 sentence content
 function createWisdomFallback(speciesName) {
     return `${speciesName} represents a remarkable form of consciousness that has evolved unique ways of perceiving, relating to, and applying intelligence within their environment over millions of years. Their cognitive abilities demonstrate that intelligence manifests in diverse forms across the natural world, each perfectly adapted to specific ecological niches and survival challenges. Through evolutionary refinement, ${speciesName} has developed sophisticated systems for processing information, making complex decisions, and adapting to changing environmental conditions with remarkable precision. Their intelligence offers profound insights into alternative ways of being conscious and aware in the world, challenging human assumptions about cognition and awareness.`;
 }
@@ -322,16 +271,16 @@ function createComprehensiveFallback(speciesName) {
         perceive: createPerceiveFallback(speciesName),
         relate: createRelateFallback(speciesName),
         apply: createApplyFallback(speciesName),
-        humanLearnings: createHumanLearningsFallback(speciesName),
-        conservationWisdom: createConservationFallback(speciesName),
-        quantumAspects: createQuantumFallback(speciesName),
         temporalIntelligence: createTemporalFallback(speciesName),
         energeticIntelligence: createEnergeticFallback(speciesName),
         collectiveWisdom: createCollectiveFallback(speciesName),
         adaptiveStrategies: createAdaptiveFallback(speciesName),
+        humanLearnings: createHumanLearningsFallback(speciesName),
+        conservationWisdom: createConservationFallback(speciesName),
+        quantumAspects: createQuantumFallback(speciesName),
         sources: ["Enhanced species intelligence framework", "Consciousness research", "Ecological studies"],
         researchBacked: false,
-        fallbackReason: "Using comprehensive database with rich content",
+        fallbackReason: "Enhanced fallback with comprehensive content",
         timestamp: new Date().toISOString()
     };
 }
