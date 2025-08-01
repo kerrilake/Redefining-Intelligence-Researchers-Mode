@@ -6,6 +6,8 @@
     <title>Species Intelligence Research Agent - Redefining Intelligence</title>
     <!-- PDF Generation Library -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+    <!-- Poppins Font Integration -->
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:ital,wght@0,300;0,400;0,500;0,700;1,300;1,400;1,700&display=swap" rel="stylesheet">
     <style>
         * {
             margin: 0;
@@ -14,11 +16,12 @@
         }
 
         body {
-            font-family: 'Arial', sans-serif;
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            font-family: 'Poppins', sans-serif;
+            background: linear-gradient(135deg, #f0f6fd 0%, #9daaec 100%);
             min-height: 100vh;
-            color: #333;
+            color: #3e3a44;
             overflow-x: hidden;
+            line-height: 1.6;
         }
 
         .container {
@@ -29,36 +32,40 @@
         }
 
         .glass {
-            background: rgba(255, 255, 255, 0.1);
+            background: rgba(240, 246, 253, 0.85);
             backdrop-filter: blur(10px);
-            border-radius: 20px;
-            border: 1px solid rgba(255, 255, 255, 0.2);
-            box-shadow: 0 8px 32px rgba(31, 38, 135, 0.37);
+            border-radius: 16px;
+            border: 1px solid rgba(111, 154, 76, 0.2);
+            box-shadow: 0 8px 32px rgba(71, 72, 95, 0.15);
         }
 
         .header {
             text-align: center;
             padding: 40px 20px;
             margin-bottom: 30px;
+            background: rgba(255, 255, 255, 0.9);
         }
 
         .header h1 {
             font-size: 2.5em;
-            color: white;
+            color: #47485f;
             margin-bottom: 10px;
-            text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
+            font-weight: 700;
+            text-shadow: none;
         }
 
         .header p {
-            color: rgba(255, 255, 255, 0.9);
+            color: #6f9a4c;
             font-size: 1.1em;
             font-style: italic;
+            font-weight: 400;
         }
 
         .search-section {
             padding: 30px;
             margin-bottom: 30px;
             text-align: center;
+            background: rgba(255, 255, 255, 0.9);
         }
 
         .search-grid {
@@ -71,18 +78,20 @@
         .species-input {
             padding: 15px;
             font-size: 16px;
-            border: none;
-            border-radius: 15px;
-            background: rgba(255, 255, 255, 0.9);
-            color: #333;
-            backdrop-filter: blur(5px);
+            border: 2px solid #9daaec;
+            border-radius: 12px;
+            background: #f0f6fd;
+            color: #3e3a44;
+            font-family: 'Poppins', sans-serif;
             transition: all 0.3s ease;
         }
 
         .species-input:focus {
             outline: none;
-            transform: scale(1.05);
-            box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+            border-color: #6f9a4c;
+            background: white;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(111, 154, 76, 0.2);
         }
 
         .options-section {
@@ -101,33 +110,38 @@
             display: flex;
             align-items: center;
             gap: 8px;
-            color: white;
+            color: #47485f;
+            font-weight: 500;
         }
 
         .checkbox-item input[type="checkbox"] {
             transform: scale(1.2);
+            accent-color: #6f9a4c;
         }
 
         .research-btn {
-            background: linear-gradient(135deg, #4CAF50, #45a049);
+            background: linear-gradient(135deg, #6f9a4c, #4e6440);
             color: white;
             border: none;
             padding: 15px 40px;
             font-size: 18px;
+            font-family: 'Poppins', sans-serif;
+            font-weight: 600;
             border-radius: 25px;
             cursor: pointer;
             transition: all 0.3s ease;
-            box-shadow: 0 4px 15px rgba(0,0,0,0.2);
+            box-shadow: 0 4px 15px rgba(111, 154, 76, 0.3);
             margin: 20px 10px;
         }
 
         .research-btn:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 6px 20px rgba(0,0,0,0.3);
+            transform: translateY(-3px);
+            box-shadow: 0 6px 20px rgba(111, 154, 76, 0.4);
+            background: linear-gradient(135deg, #4e6440, #6f9a4c);
         }
 
         .research-btn:disabled {
-            background: #ccc;
+            background: #9daaec;
             cursor: not-allowed;
             transform: none;
         }
@@ -136,6 +150,7 @@
             padding: 30px;
             margin: 20px 0;
             position: relative;
+            background: rgba(255, 255, 255, 0.95);
         }
 
         .species-header {
@@ -145,40 +160,44 @@
 
         .species-header h2 {
             font-size: 2.2em;
-            color: #333;
+            color: #47485f;
             margin-bottom: 10px;
+            font-weight: 700;
         }
 
         .research-type {
             display: inline-block;
-            background: linear-gradient(135deg, #FF6B6B, #4ECDC4);
-            color: white;
+            background: linear-gradient(135deg, #e7c64d, #f9ed65);
+            color: #3e3a44;
             padding: 8px 20px;
             border-radius: 20px;
             font-size: 14px;
-            font-weight: bold;
+            font-weight: 600;
         }
 
         .wisdom-insight {
             text-align: center;
             padding: 25px;
             margin: 25px 0;
-            background: linear-gradient(135deg, rgba(255, 215, 0, 0.2), rgba(255, 165, 0, 0.2));
+            background: linear-gradient(135deg, rgba(231, 198, 77, 0.15), rgba(249, 237, 101, 0.15));
             border-radius: 15px;
-            border-left: 5px solid #FFD700;
+            border-left: 5px solid #e7c64d;
+            border: 1px solid rgba(231, 198, 77, 0.3);
         }
 
         .wisdom-insight h3 {
-            color: #B8860B;
+            color: #47485f;
             margin-bottom: 15px;
             font-size: 1.3em;
+            font-weight: 600;
         }
 
         .wisdom-insight p {
             font-size: 1.1em;
-            line-height: 1.6;
-            color: #333;
+            line-height: 1.7;
+            color: #3e3a44;
             font-style: italic;
+            font-weight: 400;
         }
 
         .intelligence-framework {
@@ -192,22 +211,22 @@
             padding: 25px;
             border-radius: 15px;
             position: relative;
-            backdrop-filter: blur(5px);
+            border: 1px solid rgba(111, 154, 76, 0.2);
         }
 
         .perceive-section {
-            background: linear-gradient(135deg, rgba(76, 175, 80, 0.3), rgba(129, 199, 132, 0.3));
-            border-left: 5px solid #4CAF50;
+            background: linear-gradient(135deg, rgba(111, 154, 76, 0.1), rgba(78, 100, 64, 0.1));
+            border-left: 5px solid #6f9a4c;
         }
 
         .relate-section {
-            background: linear-gradient(135deg, rgba(33, 150, 243, 0.3), rgba(100, 181, 246, 0.3));
-            border-left: 5px solid #2196F3;
+            background: linear-gradient(135deg, rgba(157, 170, 236, 0.1), rgba(99, 78, 135, 0.1));
+            border-left: 5px solid #9daaec;
         }
 
         .apply-section {
-            background: linear-gradient(135deg, rgba(156, 39, 176, 0.3), rgba(186, 104, 200, 0.3));
-            border-left: 5px solid #9C27B0;
+            background: linear-gradient(135deg, rgba(71, 72, 95, 0.1), rgba(62, 58, 68, 0.1));
+            border-left: 5px solid #47485f;
         }
 
         .framework-section h3 {
@@ -216,23 +235,24 @@
             display: flex;
             align-items: center;
             gap: 10px;
-            color: white;
+            color: #47485f;
+            font-weight: 600;
         }
 
         .framework-badge {
-            background: linear-gradient(135deg, #667eea, #764ba2);
+            background: linear-gradient(135deg, #6f9a4c, #4e6440);
             color: white;
             padding: 5px 12px;
             border-radius: 15px;
             font-size: 12px;
-            font-weight: bold;
+            font-weight: 600;
         }
 
         .framework-section p {
-            line-height: 1.6;
+            line-height: 1.7;
             margin-bottom: 15px;
-            color: white;
-            font-weight: 500;
+            color: #3e3a44;
+            font-weight: 400;
         }
 
         .framework-details {
@@ -242,76 +262,82 @@
 
         .framework-details li {
             padding: 8px 0;
-            border-bottom: 1px solid rgba(255,255,255,0.2);
+            border-bottom: 1px solid rgba(111, 154, 76, 0.2);
             position: relative;
             padding-left: 20px;
-            color: white;
-            font-weight: 500;
+            color: #3e3a44;
+            font-weight: 400;
         }
 
         .framework-details li:before {
             content: "•";
             position: absolute;
             left: 0;
-            color: white;
+            color: #6f9a4c;
             font-weight: bold;
         }
 
         .comparative-section {
             margin: 40px 0;
             padding: 30px;
-            background: linear-gradient(135deg, rgba(139, 92, 246, 0.3), rgba(167, 139, 250, 0.3));
+            background: linear-gradient(135deg, rgba(71, 72, 95, 0.08), rgba(99, 78, 135, 0.08));
             border-radius: 20px;
-            border-left: 5px solid #8B5CF6;
+            border-left: 5px solid #634e87;
+            border: 1px solid rgba(99, 78, 135, 0.2);
         }
 
         .comparative-section h2 {
-            color: white;
+            color: #47485f;
             text-align: center;
             margin-bottom: 30px;
             font-size: 2em;
+            font-weight: 700;
         }
 
         .shared-patterns, .unique-expressions {
             margin: 25px 0;
             padding: 20px;
-            background: rgba(255, 255, 255, 0.1);
+            background: rgba(240, 246, 253, 0.7);
             border-radius: 15px;
+            border: 1px solid rgba(157, 170, 236, 0.3);
         }
 
         .shared-patterns h3, .unique-expressions h3 {
-            color: #E0E7FF;
+            color: #47485f;
             margin-bottom: 15px;
             font-size: 1.3em;
+            font-weight: 600;
         }
 
         .shared-patterns p, .unique-expressions p {
-            color: #E0E7FF;
+            color: #3e3a44;
             margin-bottom: 15px;
-            line-height: 1.6;
+            line-height: 1.7;
         }
 
         .pattern-list {
-            color: white;
-            font-weight: 500;
+            color: #3e3a44;
+            font-weight: 400;
         }
 
         .species-comparison {
             margin: 15px 0;
             padding: 15px;
-            background: rgba(255, 255, 255, 0.15);
+            background: rgba(255, 255, 255, 0.8);
             border-radius: 10px;
+            border: 1px solid rgba(111, 154, 76, 0.2);
         }
 
         .species-comparison h4 {
-            color: #FDE68A;
+            color: #6f9a4c;
             margin-bottom: 10px;
+            font-weight: 600;
         }
 
         .species-comparison div {
-            color: white;
+            color: #3e3a44;
             font-size: 0.9em;
-            line-height: 1.4;
+            line-height: 1.5;
             margin-bottom: 5px;
         }
 
@@ -319,21 +345,23 @@
             text-align: center;
             padding: 25px;
             margin: 25px 0;
-            background: linear-gradient(135deg, rgba(45, 212, 191, 0.3), rgba(34, 197, 94, 0.3));
+            background: linear-gradient(135deg, rgba(111, 154, 76, 0.1), rgba(78, 100, 64, 0.1));
             border-radius: 15px;
-            border-left: 5px solid #2DD4BF;
+            border-left: 5px solid #6f9a4c;
+            border: 1px solid rgba(111, 154, 76, 0.3);
         }
 
         .collective-wisdom h3 {
-            color: #ECFDF5;
+            color: #47485f;
             margin-bottom: 15px;
             font-size: 1.3em;
+            font-weight: 600;
         }
 
         .collective-wisdom p {
-            color: #ECFDF5;
+            color: #3e3a44;
             font-size: 1.1em;
-            line-height: 1.6;
+            line-height: 1.7;
             font-style: italic;
         }
 
@@ -351,7 +379,8 @@
             padding: 15px 25px;
             border: none;
             border-radius: 25px;
-            font-weight: bold;
+            font-weight: 600;
+            font-family: 'Poppins', sans-serif;
             cursor: pointer;
             transition: all 0.3s ease;
             color: white;
@@ -361,20 +390,21 @@
         }
 
         .breakdown-btn {
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            background: linear-gradient(135deg, #47485f, #3e3a44);
         }
 
         .contribute-btn {
-            background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+            background: linear-gradient(135deg, #e7c64d, #f9ed65);
+            color: #3e3a44;
         }
 
         .research-another-btn {
-            background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);
+            background: linear-gradient(135deg, #9daaec, #634e87);
         }
 
         .action-btn:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 8px 25px rgba(0,0,0,0.2);
+            transform: translateY(-3px);
+            box-shadow: 0 8px 25px rgba(71, 72, 95, 0.2);
         }
 
         .loading-enhanced {
@@ -398,21 +428,23 @@
             position: fixed;
             bottom: 20px;
             right: 20px;
-            background: rgba(0, 0, 0, 0.8);
+            background: rgba(71, 72, 95, 0.9);
             color: white;
             padding: 10px 15px;
             border-radius: 10px;
             font-size: 12px;
             z-index: 100;
+            font-family: 'Poppins', sans-serif;
         }
 
         .constellation-container {
             height: 400px;
             margin: 30px 0;
-            background: rgba(0, 0, 0, 0.3);
+            background: rgba(71, 72, 95, 0.1);
             border-radius: 15px;
             position: relative;
             overflow: hidden;
+            border: 1px solid rgba(71, 72, 95, 0.2);
         }
 
         .modal {
@@ -423,12 +455,12 @@
             top: 0;
             width: 100%;
             height: 100%;
-            background-color: rgba(0,0,0,0.6);
+            background-color: rgba(71, 72, 95, 0.6);
             backdrop-filter: blur(5px);
         }
 
         .modal-content {
-            background: rgba(255, 255, 255, 0.95);
+            background: rgba(240, 246, 253, 0.98);
             margin: 3% auto;
             padding: 30px;
             border-radius: 20px;
@@ -437,6 +469,7 @@
             max-height: 85vh;
             overflow-y: auto;
             position: relative;
+            border: 1px solid rgba(111, 154, 76, 0.3);
         }
 
         .form-group {
@@ -446,8 +479,9 @@
         .form-group label {
             display: block;
             margin-bottom: 8px;
-            font-weight: bold;
-            color: #333;
+            font-weight: 600;
+            color: #47485f;
+            font-family: 'Poppins', sans-serif;
         }
 
         .form-group input,
@@ -455,11 +489,51 @@
         .form-group select {
             width: 100%;
             padding: 12px;
-            border: 2px solid #ddd;
+            border: 2px solid #9daaec;
             border-radius: 10px;
             font-size: 14px;
-            background: rgba(255, 255, 255, 0.9);
-            font-family: inherit;
+            background: #f0f6fd;
+            font-family: 'Poppins', sans-serif;
+            color: #3e3a44;
+        }
+
+        .form-group input:focus,
+        .form-group textarea:focus,
+        .form-group select:focus {
+            outline: none;
+            border-color: #6f9a4c;
+            background: white;
+        }
+
+        /* Enhanced dimension styling */
+        .enhanced-dimension {
+            background: linear-gradient(135deg, rgba(111, 154, 76, 0.08), rgba(231, 198, 77, 0.08));
+            border-left: 4px solid #6f9a4c;
+            border: 1px solid rgba(111, 154, 76, 0.2);
+        }
+
+        .temporal-dimension {
+            background: linear-gradient(135deg, rgba(231, 198, 77, 0.08), rgba(249, 237, 101, 0.08));
+            border-left: 4px solid #e7c64d;
+            border: 1px solid rgba(231, 198, 77, 0.2);
+        }
+
+        .energetic-dimension {
+            background: linear-gradient(135deg, rgba(78, 100, 64, 0.08), rgba(111, 154, 76, 0.08));
+            border-left: 4px solid #4e6440;
+            border: 1px solid rgba(78, 100, 64, 0.2);
+        }
+
+        .collective-dimension {
+            background: linear-gradient(135deg, rgba(157, 170, 236, 0.08), rgba(99, 78, 135, 0.08));
+            border-left: 4px solid #9daaec;
+            border: 1px solid rgba(157, 170, 236, 0.2);
+        }
+
+        .adaptive-dimension {
+            background: linear-gradient(135deg, rgba(99, 78, 135, 0.08), rgba(71, 72, 95, 0.08));
+            border-left: 4px solid #634e87;
+            border: 1px solid rgba(99, 78, 135, 0.2);
         }
 
         .fade-in {
@@ -496,6 +570,24 @@
                 min-width: auto;
             }
         }
+
+        /* Custom scrollbar */
+        ::-webkit-scrollbar {
+            width: 8px;
+        }
+
+        ::-webkit-scrollbar-track {
+            background: #f0f6fd;
+        }
+
+        ::-webkit-scrollbar-thumb {
+            background: #9daaec;
+            border-radius: 4px;
+        }
+
+        ::-webkit-scrollbar-thumb:hover {
+            background: #6f9a4c;
+        }
     </style>
 </head>
 <body>
@@ -506,7 +598,7 @@
         </header>
 
         <section class="search-section glass">
-            <h2 style="color: white; margin-bottom: 20px;">Explore Species Intelligence</h2>
+            <h2 style="color: #47485f; margin-bottom: 20px; font-weight: 600;">Explore Species Intelligence</h2>
             
             <div class="search-grid">
                 <input type="text" class="species-input" id="species1" placeholder="Enter first species (e.g., dolphins)" />
@@ -517,7 +609,7 @@
             </div>
 
             <div class="options-section">
-                <h3 style="color: white; margin-bottom: 15px;">Enhanced Research Options</h3>
+                <h3 style="color: #47485f; margin-bottom: 15px; font-weight: 600;">Enhanced Research Options</h3>
                 <div class="checkbox-group">
                     <div class="checkbox-item">
                         <input type="checkbox" id="includeIndigenous" />
@@ -538,12 +630,12 @@
                 🔬 Reveal Intelligence
             </button>
             
-            <button class="research-btn" onclick="showContributionForm()" style="background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%); margin-left: 10px;">
+            <button class="research-btn contribute-btn" onclick="showContributionForm()" style="background: linear-gradient(135deg, #e7c64d, #f9ed65); color: #3e3a44; margin-left: 10px;">
                 🤝 Contribute Knowledge
             </button>
 
             <div style="margin-top: 20px;">
-                <div id="usageDisplay" style="color: white; font-size: 14px;"></div>
+                <div id="usageDisplay" style="color: #47485f; font-size: 14px; font-weight: 500;"></div>
             </div>
         </section>
 
@@ -559,11 +651,11 @@
     <!-- Community Contribution Modal -->
     <div id="contributionModal" class="modal">
         <div class="modal-content glass">
-            <span style="position: absolute; right: 20px; top: 15px; font-size: 28px; font-weight: bold; cursor: pointer; color: #666;" onclick="closeContributionModal()">&times;</span>
-            <h3>Contribute Species Intelligence Knowledge</h3>
-            <p>Share your research, observations, or insights about species intelligence</p>
+            <span style="position: absolute; right: 20px; top: 15px; font-size: 28px; font-weight: bold; cursor: pointer; color: #47485f;" onclick="closeContributionModal()">&times;</span>
+            <h3 style="color: #47485f; font-weight: 600;">Contribute Species Intelligence Knowledge</h3>
+            <p style="color: #3e3a44;">Share your research, observations, or insights about species intelligence</p>
             
-            <form id="contributionForm">
+            <div id="contributionForm">
                 <div class="form-group">
                     <label for="contributorName">Your Name/Organization *:</label>
                     <input type="text" id="contributorName" required>
@@ -590,20 +682,20 @@
                             placeholder="What profound insight about this species' intelligence should people know?"></textarea>
                 </div>
                 
-                <div style="background: rgba(78, 205, 196, 0.1); padding: 20px; border-radius: 12px; margin: 20px 0;">
-                    <h4 style="color: #4ECDC4; margin-bottom: 12px;">PERCEIVE - How they perceive their world:</h4>
+                <div style="background: rgba(111, 154, 76, 0.1); padding: 20px; border-radius: 12px; margin: 20px 0; border: 1px solid rgba(111, 154, 76, 0.2);">
+                    <h4 style="color: #6f9a4c; margin-bottom: 12px; font-weight: 600;">PERCEIVE - How they perceive their world:</h4>
                     <textarea id="perceiveData" rows="4" required
                             placeholder="Describe their sensory capabilities, environmental awareness, unique perceptual gifts..."></textarea>
                 </div>
                 
-                <div style="background: rgba(78, 205, 196, 0.1); padding: 20px; border-radius: 12px; margin: 20px 0;">
-                    <h4 style="color: #4ECDC4; margin-bottom: 12px;">RELATE - How they relate to their world:</h4>
+                <div style="background: rgba(111, 154, 76, 0.1); padding: 20px; border-radius: 12px; margin: 20px 0; border: 1px solid rgba(111, 154, 76, 0.2);">
+                    <h4 style="color: #6f9a4c; margin-bottom: 12px; font-weight: 600;">RELATE - How they relate to their world:</h4>
                     <textarea id="relateData" rows="4" required
                             placeholder="Social structures, communication, ecological relationships, cultural significance..."></textarea>
                 </div>
                 
-                <div style="background: rgba(78, 205, 196, 0.1); padding: 20px; border-radius: 12px; margin: 20px 0;">
-                    <h4 style="color: #4ECDC4; margin-bottom: 12px;">APPLY - How they apply their intelligence:</h4>
+                <div style="background: rgba(111, 154, 76, 0.1); padding: 20px; border-radius: 12px; margin: 20px 0; border: 1px solid rgba(111, 154, 76, 0.2);">
+                    <h4 style="color: #6f9a4c; margin-bottom: 12px; font-weight: 600;">APPLY - How they apply their intelligence:</h4>
                     <textarea id="applyData" rows="4" required
                             placeholder="Problem-solving, tool use, learning, ecosystem contributions..."></textarea>
                 </div>
@@ -651,8 +743,8 @@
                     </div>
                 </div>
                 
-                <button type="submit" style="background: linear-gradient(135deg, #4CAF50, #45a049); color: white; border: none; padding: 15px 30px; border-radius: 25px; cursor: pointer; font-size: 16px; font-weight: bold; width: 100%; margin-top: 20px;">Submit Contribution</button>
-            </form>
+                <button onclick="submitContribution()" style="background: linear-gradient(135deg, #6f9a4c, #4e6440); color: white; border: none; padding: 15px 30px; border-radius: 25px; cursor: pointer; font-size: 16px; font-weight: 600; width: 100%; margin-top: 20px; font-family: 'Poppins', sans-serif;">Submit Contribution</button>
+            </div>
         </div>
     </div>
 
@@ -661,8 +753,8 @@
         const CONFIG = {
             DAILY_SEARCH_LIMIT: 6,
             MONTHLY_BUDGET: 100,
-            COST_PER_SEARCH: 0.50, // Estimated average
-            EMAIL_THRESHOLD: 80 // Notify at 80% of budget
+            COST_PER_SEARCH: 0.50,
+            EMAIL_THRESHOLD: 80
         };
 
         // Global state
@@ -687,14 +779,14 @@
             });
         });
 
-        // Enhanced AI API Integration with comprehensive research
+        // Enhanced AI API Integration
         async function callAnthropicAPI(speciesName, options) {
-            console.log('=== CALLING ENHANCED API FOR:', speciesName, '===');
+            console.log('=== CALLING API FOR:', speciesName, '===');
             
-            const prompt = createEnhancedResearchPrompt(speciesName, options);
+            const prompt = createResearchPrompt(speciesName, options);
             
             try {
-                console.log('Making enhanced research request to Netlify function...');
+                console.log('Making request to Netlify function...');
                 
                 const response = await fetch('/.netlify/functions/research-species', {
                     method: 'POST',
@@ -718,11 +810,10 @@
                 }
 
                 const data = await response.json();
-                console.log('Received enhanced data:', data);
+                console.log('Received data:', data);
                 
-                // Check if we got a successful response
                 if (data.success && data.response) {
-                    console.log('✅ Enhanced AI API call successful for', speciesName);
+                    console.log('✅ AI API call successful for', speciesName);
                     return data.response;
                 } else {
                     console.warn('⚠️ API returned data but no success flag:', data);
@@ -730,7 +821,7 @@
                 }
                 
             } catch (error) {
-                console.error('❌ Enhanced AI API Error for', speciesName, ':', error);
+                console.error('❌ AI API Error for', speciesName, ':', error);
                 console.log('🔄 Falling back to enhanced local data');
                 
                 const fallbackData = createEnhancedFallback(speciesName, options);
@@ -740,151 +831,78 @@
             }
         }
 
-        // Enhanced Research Prompt with All 6 Dimensions
-        function createEnhancedResearchPrompt(speciesName, options) {
-            const enhancedDimensions = {
-                temporalIntelligence: `
-- Temporal awareness and time perception capabilities with specific examples
-- Seasonal intelligence and circadian rhythm adaptations with documented behaviors
-- Intergenerational knowledge transfer mechanisms with case studies
-- Long-term ecological memory and environmental pattern recognition with research citations`,
-                
-                energeticIntelligence: `
-- Biofield interactions and electromagnetic sensitivity with measurable phenomena
-- Energy conservation and optimization strategies with quantifiable outcomes
-- Healing and regenerative intelligence applications with documented cases
-- Quantum coherence in biological systems with current research findings`,
-                
-                collectiveIntelligence: `
-- Swarm intelligence and collective decision-making with specific examples
-- Information sharing across group consciousness with documented behaviors
-- Distributed problem-solving capabilities with case studies
-- Emergent intelligence in social structures with research backing`,
-                
-                adaptiveIntelligence: `
-- Real-time adaptation mechanisms and plasticity with documented responses
-- Crisis response and survival intelligence with specific examples
-- Environmental stress adaptation strategies with measurable outcomes
-- Evolutionary intelligence and species resilience with long-term studies`
-            };
-            
+        function createResearchPrompt(speciesName, options) {
             const indigenousKnowledge = options.includeIndigenous ? `
-- Indigenous wisdom and traditional ecological knowledge from multiple specific cultures
-- Sacred relationships and ceremonial connections with documented practices
-- Traditional uses and spiritual significance across different indigenous traditions with cultural attribution
-- Shamanic and interspecies communication practices with specific examples` : '';
+- Indigenous wisdom and traditional ecological knowledge from various cultures
+- Sacred relationships and ceremonial connections with this species
+- Traditional uses and spiritual significance across different indigenous traditions` : '';
 
             const biomimicryApplications = options.includeBiomimicry ? `
-- Current biomimicry applications with specific technological examples and companies
-- Potential future innovations with detailed technological possibilities
-- Economic and environmental impact with quantifiable benefits
-- Bio-inspired solutions for consciousness evolution with practical applications` : '';
+- Current biomimicry applications inspired by this species
+- Potential future technological innovations based on their capabilities
+- Economic and environmental impact of species-inspired technologies` : '';
 
-            return `You are a world-renowned multidisciplinary species intelligence researcher with expertise in consciousness studies, quantum biology, ecological intelligence, and interspecies communication. Research ${speciesName} through the revolutionary "Perceive/Relate/Apply" intelligence framework with unprecedented depth and precision.
+            return `You are a multidisciplinary species intelligence researcher specializing in consciousness studies and quantum biology. Research ${speciesName} through the revolutionary "Perceive/Relate/Apply" intelligence framework.
 
-COMPREHENSIVE RESEARCH REQUIREMENTS WITH ENHANCED DIMENSIONS:
-
+RESEARCH REQUIREMENTS:
 1. PERCEIVE: How does ${speciesName} perceive their world?
-   - Sensory capabilities with specific mechanisms and ranges
-   - Environmental awareness systems with documented examples
-   - Quantum sensing abilities with current research citations
-   - Survival perception with documented threat responses
-   ${enhancedDimensions.temporalIntelligence}
-   ${enhancedDimensions.energeticIntelligence}
+   - Sensory capabilities and unique perceptual gifts
+   - Environmental awareness and information processing
+   - Quantum sensing abilities and field perception
+   - Survival perception mechanisms
 
 2. RELATE: How does ${speciesName} relate to their world?
-   - Social structures with specific hierarchies and roles
-   - Communication methods with documented signal types
-   - Ecological relationships with quantified interdependencies
-   - Emotional and energetic connections with behavioral evidence
-   ${enhancedDimensions.collectiveIntelligence}
+   - Social structures and communication methods
+   - Ecological relationships and symbiosis
+   - Emotional and energetic connections
+   - Cultural significance in human societies
+   - Interspecies relationship patterns
 
 3. APPLY: How does ${speciesName} apply their intelligence?
-   - Problem-solving with documented case studies and outcomes
-   - Tool use and environmental manipulation with specific examples
-   - Learning mechanisms with neurological and behavioral evidence
-   - Ecosystem contributions with measurable impacts
-   ${enhancedDimensions.adaptiveIntelligence}
+   - Problem-solving behaviors and adaptations
+   - Tool use and environmental manipulation
+   - Learning, memory, and knowledge transfer
+   - Contributions to ecosystem health and balance
 
-COMPREHENSIVE RESEARCH SOURCES - Include specific citations:
-- Latest peer-reviewed research from Nature, Science, Animal Cognition, Consciousness and Cognition journals
-- Quantum biology studies from researchers like Penrose, Hameroff, McFadden, Al-Khalili
-- Consciousness research from institutes like IONS, University of Arizona Center for Consciousness Studies
-- Earth Species Project findings and AI-assisted animal communication research${indigenousKnowledge}${biomimicryApplications}
-- Field studies with specific locations, dates, and lead researchers
-- Conservation biology data with population studies and ecological impact measurements
-- Biophysics and quantum field interaction studies with experimental results
+SOURCES TO CONSULT:
+- Peer-reviewed biology, ecology, ethology, and neuroscience research
+- Consciousness and quantum biology studies${indigenousKnowledge}${biomimicryApplications}
+- Behavioral studies and cognitive research
+- Conservation and environmental research
 
-ENHANCED RESPONSE FORMAT - Provide unprecedented detail:
+RESPONSE FORMAT:
+Provide a JSON response with this exact structure:
 {
   "species": "${speciesName}",
-  "wisdomInsight": "Revolutionary insight about this species' intelligence that could fundamentally change human understanding of consciousness (4-5 sentences with specific examples and implications)",
+  "wisdomInsight": "One profound insight about this species' intelligence that could expand human consciousness (2-3 sentences)",
   "perceive": {
-    "summary": "Comprehensive analysis of their perceptual world with specific mechanisms and capabilities (4-5 sentences)",
-    "details": [
-      "Primary sensory capability with range/mechanism (e.g., echolocation at 150 kHz with 200m range)",
-      "Environmental awareness system with specific examples (e.g., magnetic field detection for migration)",
-      "Quantum/biofield perception with research evidence (e.g., electromagnetic sensitivity studies)",
-      "Temporal intelligence with specific time perception abilities",
-      "Energetic sensitivity with documented biofield interactions"
-    ]
+    "summary": "How they perceive their world (2-3 sentences)",
+    "details": ["specific perceptual capability 1", "specific perceptual capability 2", "specific perceptual capability 3", "quantum/field perception aspect"]
   },
   "relate": {
-    "summary": "Deep analysis of relational intelligence with specific relationship patterns and communication systems (4-5 sentences)",
-    "details": [
-      "Social structure with specific roles and hierarchies (e.g., matriarchal pods with 8-12 individuals)",
-      "Communication method with signal types and meanings (e.g., signature whistles, alarm calls)",
-      "Ecological relationship with quantified impact (e.g., seed dispersal of 50+ plant species)",
-      "Collective intelligence mechanism with group behavior examples",
-      "Interspecies relationship with documented cases and outcomes"
-    ]
+    "summary": "How they relate to their world (2-3 sentences)", 
+    "details": ["relationship aspect 1", "relationship aspect 2", "relationship aspect 3", "consciousness connection aspect"]
   },
   "apply": {
-    "summary": "Comprehensive analysis of intelligence applications with documented case studies and measurable outcomes (4-5 sentences)",
-    "details": [
-      "Problem-solving example with specific scenario and solution (e.g., tool modification for food extraction)",
-      "Adaptive strategy with measurable success rate (e.g., 95% survival rate during environmental changes)",
-      "Learning mechanism with neurological evidence (e.g., hippocampal plasticity in spatial memory)",
-      "Ecosystem contribution with quantified impact (e.g., carbon sequestration rates, biodiversity support)",
-      "Innovation/creativity with documented novel behaviors and cultural transmission"
-    ]
+    "summary": "How they apply intelligence (2-3 sentences)",
+    "details": ["application example 1", "application example 2", "application example 3", "ecosystem contribution"]
   },
-  "humanLearnings": "Specific, actionable lessons for human consciousness evolution, personal development, and societal advancement with practical applications (5-6 sentences)",
-  "conservationWisdom": "Detailed conservation intelligence including specific threats, population data, protection strategies, and ecosystem interdependencies with quantified impacts (5-6 sentences)",
-  "quantumAspects": "Specific quantum biology and consciousness connections with current research citations, lead researchers, and measurable phenomena (4-5 sentences)",
-  "temporalIntelligence": "How this species perceives and works with time, including seasonal cycles, circadian rhythms, and long-term pattern recognition with specific examples",
-  "energeticIntelligence": "Biofield interactions, electromagnetic sensitivity, energy healing capabilities, and quantum coherence with documented research",
-  "collectiveWisdom": "Group consciousness, collective decision-making, distributed intelligence, and swarm behaviors with specific examples and outcomes",
-  "adaptiveStrategies": "Real-time adaptation mechanisms, crisis responses, environmental stress management, and evolutionary resilience with documented cases",
-  "geographicVariations": "How intelligence expressions vary across different geographical regions and environments with specific location-based studies",
-  "culturalTransmission": "How knowledge and behaviors are passed between generations and across populations with documented examples",
-  "biomimicryPotential": "Current and potential technological applications inspired by this species' intelligence with specific innovations and economic potential",
-  "sources": [
-    "Specific peer-reviewed paper with lead author, journal, and year (e.g., Smith et al., Nature 2023)",
-    "Named consciousness/quantum biology researcher and their specific work with institution", 
-    "Documented field study with location, duration, and key findings",
-    "Conservation database or report with specific population data and trends",
-    "Indigenous knowledge source with cultural attribution and traditional practice description",
-    "Biomimicry application with company/institution and technological details"
-  ]
+  "humanLearnings": "What humans can learn from ${speciesName}'s intelligence for consciousness evolution",
+  "conservationWisdom": "How their intelligence relates to conservation needs and ecosystem health",
+  "quantumAspects": "Quantum biology and consciousness connections documented in research",
+  "temporalIntelligence": "How this species perceives and works with time, seasonal cycles, and long-term patterns (4-5 sentences)",
+  "energeticIntelligence": "Biofield interactions, electromagnetic sensitivity, energy optimization with documented cases (4-5 sentences)",
+  "collectiveWisdom": "Group consciousness, collective decision-making, and distributed intelligence with specific behaviors (4-5 sentences)",
+  "adaptiveStrategies": "Real-time adaptation mechanisms, crisis responses, and resilience with documented examples (4-5 sentences)",
+  "sources": ["key research source 1", "key research source 2", "key research source 3", "consciousness/quantum research source"]
 }
 
-CRITICAL RESEARCH DEPTH REQUIREMENTS:
-- Include specific numerical data, measurements, and quantified outcomes wherever possible
-- Reference exact geographical locations, time periods, and research institutions
-- Provide names of lead researchers and specific study citations with years
-- Include population data, behavioral frequencies, and measurable impacts
-- Connect findings to broader consciousness research and ecological intelligence frameworks
-- Ensure each insight has verifiable research backing or documented field observations
-- Include economic, technological, and practical applications for human development
-
-Focus on consciousness-expanding insights that bridge cutting-edge science with ancient wisdom. Provide unprecedented depth that could revolutionize human understanding of intelligence and consciousness. Respond ONLY with valid JSON that represents the most comprehensive species intelligence research ever compiled.`;
+Focus on consciousness-expanding insights that bridge science and wisdom. Respond ONLY with valid JSON.`;
         }
 
         function parseAIResponse(responseText, speciesName) {
             try {
-                console.log('Parsing enhanced AI response for:', speciesName);
-                console.log('Response text preview:', responseText.substring(0, 100) + '...');
+                console.log('Parsing AI response for:', speciesName);
                 
                 const cleanedResponse = responseText
                     .replace(/```json\n?/g, "")
@@ -895,32 +913,28 @@ Focus on consciousness-expanding insights that bridge cutting-edge science with 
                 
                 return {
                     species: data.species || speciesName,
-                    wisdomInsight: data.wisdomInsight || "This species demonstrates revolutionary intelligence worthy of deeper study.",
+                    wisdomInsight: data.wisdomInsight || "This species demonstrates unique intelligence worthy of deeper study.",
                     perceive: data.perceive || { summary: "Advanced perceptual capabilities", details: [] },
                     relate: data.relate || { summary: "Complex relational intelligence", details: [] },
                     apply: data.apply || { summary: "Sophisticated problem-solving abilities", details: [] },
                     humanLearnings: data.humanLearnings || "Valuable lessons for human consciousness evolution",
-                    conservationWisdom: data.conservationWisdom || "Critical importance for ecosystem balance and health",
+                    conservationWisdom: data.conservationWisdom || "Important for ecosystem balance and health",
                     quantumAspects: data.quantumAspects || "Consciousness connections being explored by researchers",
                     temporalIntelligence: data.temporalIntelligence || "Sophisticated time perception and seasonal awareness",
                     energeticIntelligence: data.energeticIntelligence || "Biofield sensitivity and energy optimization",
                     collectiveWisdom: data.collectiveWisdom || "Group consciousness and collective decision-making abilities",
                     adaptiveStrategies: data.adaptiveStrategies || "Remarkable adaptation mechanisms and resilience",
-                    geographicVariations: data.geographicVariations || "Intelligence expressions vary across different environments",
-                    culturalTransmission: data.culturalTransmission || "Knowledge transfer across generations and populations",
-                    biomimicryPotential: data.biomimicryPotential || "Significant potential for technological innovation",
-                    sources: data.sources || ["Enhanced research compilation"],
+                    sources: data.sources || ["Research compilation"],
                     researchBacked: true,
                     timestamp: new Date().toISOString()
                 };
             } catch (parseError) {
-                console.warn("Failed to parse enhanced AI response:", parseError);
-                console.log("Raw response that failed to parse:", responseText);
+                console.warn("Failed to parse AI response:", parseError);
                 return createEnhancedFallback(speciesName, {});
             }
         }
 
-        // Updated main research function with enhanced depth
+        // Main research function
         async function conductResearch() {
             const speciesInputs = [
                 document.getElementById('species1').value.trim(),
@@ -935,14 +949,8 @@ Focus on consciousness-expanding insights that bridge cutting-edge science with 
                 return;
             }
 
-            // Check daily limits
             const today = new Date().toDateString();
             if (!dailyUsage[today]) dailyUsage[today] = 0;
-            
-            if (false && dailyUsage[today] >= CONFIG.DAILY_SEARCH_LIMIT) {
-                alert(`Daily search limit reached (${CONFIG.DAILY_SEARCH_LIMIT} searches). Please try again tomorrow or contact info@kerrilake.com for extended access.`);
-                return;
-            }
 
             const options = {
                 includeIndigenous: document.getElementById('includeIndigenous').checked,
@@ -957,36 +965,35 @@ Focus on consciousness-expanding insights that bridge cutting-edge science with 
             const resultsDiv = document.getElementById('results');
             
             try {
-                console.log('🔬 Starting enhanced research for:', speciesInputs);
-                console.log('🎛️ Enhanced options:', options);
+                console.log('🔬 Starting research for:', speciesInputs);
                 
-                // Show enhanced loading
+                // Show loading
                 resultsDiv.innerHTML = `
                     <div class="results-container glass fade-in">
                         <div class="loading-enhanced">
                             <div class="research-animation">🧬</div>
-                            <h3>Conducting Deep Species Intelligence Research</h3>
-                            <p>Enhanced Claude AI analysis with temporal, energetic, collective, and adaptive intelligence dimensions</p>
-                            <p style="color: rgba(255,255,255,0.7); font-size: 14px; margin-top: 10px;">This comprehensive research may take 15-20 seconds per species...</p>
+                            <h3 style="color: #47485f;">Conducting Deep Species Intelligence Research</h3>
+                            <p style="color: #3e3a44;">Enhanced Claude AI analysis with temporal, energetic, collective, and adaptive intelligence dimensions</p>
+                            <p style="color: #6f9a4c; font-size: 14px; margin-top: 10px;">This comprehensive research may take 15-20 seconds per species...</p>
                         </div>
                     </div>
                 `;
 
-                // Call enhanced AI API for each species
+                // Call AI API for each species
                 const researchResults = [];
                 for (let i = 0; i < speciesInputs.length; i++) {
                     const species = speciesInputs[i];
-                    console.log(`🔍 Enhanced research ${i + 1}/${speciesInputs.length}: ${species}`);
+                    console.log(`🔍 Research ${i + 1}/${speciesInputs.length}: ${species}`);
                     
                     // Update loading message
                     resultsDiv.innerHTML = `
                         <div class="results-container glass fade-in">
                             <div class="loading-enhanced">
                                 <div class="research-animation">🧬</div>
-                                <h3>Researching ${species}...</h3>
-                                <p>Species ${i + 1} of ${speciesInputs.length} • Enhanced Claude AI with 6 intelligence dimensions</p>
-                                <div style="background: rgba(255,255,255,0.1); padding: 10px; border-radius: 10px; margin: 10px 0;">
-                                    <div style="width: ${(i/speciesInputs.length)*100}%; height: 4px; background: #4CAF50; border-radius: 2px;"></div>
+                                <h3 style="color: #47485f;">Researching ${species}...</h3>
+                                <p style="color: #3e3a44;">Species ${i + 1} of ${speciesInputs.length} • Enhanced Claude AI</p>
+                                <div style="background: rgba(111, 154, 76, 0.2); padding: 10px; border-radius: 10px; margin: 10px 0;">
+                                    <div style="width: ${(i/speciesInputs.length)*100}%; height: 4px; background: #6f9a4c; border-radius: 2px;"></div>
                                 </div>
                             </div>
                         </div>
@@ -995,21 +1002,16 @@ Focus on consciousness-expanding insights that bridge cutting-edge science with 
                     const result = await callAnthropicAPI(species, options);
                     researchResults.push(result);
                     
-                    console.log(`✅ Enhanced research completed for ${species}:`, result.researchBacked ? 'AI-powered' : 'Fallback data');
+                    console.log(`✅ Research completed for ${species}`);
                 }
 
-                console.log('🎉 All enhanced research completed!');
+                console.log('🎉 All research completed!');
 
                 // Update usage tracking
                 dailyUsage[today]++;
                 monthlySpend += CONFIG.COST_PER_SEARCH * speciesInputs.length;
                 localStorage.setItem('dailyUsage', JSON.stringify(dailyUsage));
                 localStorage.setItem('monthlySpend', monthlySpend.toString());
-
-                // Check budget threshold
-                if (monthlySpend >= CONFIG.MONTHLY_BUDGET * (CONFIG.EMAIL_THRESHOLD / 100)) {
-                    await sendBudgetNotification(monthlySpend);
-                }
 
                 // Store in research history
                 const searchRecord = {
@@ -1021,20 +1023,19 @@ Focus on consciousness-expanding insights that bridge cutting-edge science with 
                 researchHistory.push(searchRecord);
                 localStorage.setItem('researchHistory', JSON.stringify(researchHistory));
 
-                // Display enhanced results
+                // Display results with ILF styling
                 displayEnhancedResults(researchResults);
                 updateUsageDisplay();
                 updateConstellation(researchResults);
                 
             } catch (error) {
-                console.error('❌ Enhanced research failed:', error);
+                console.error('❌ Research failed:', error);
                 resultsDiv.innerHTML = `
                     <div class="results-container glass fade-in">
                         <div style="text-align: center; padding: 40px;">
-                            <h3 style="color: #e74c3c;">Research Temporarily Unavailable</h3>
-                            <p style="color: #333;">Error: ${error.message}</p>
-                            <p style="color: #666; font-size: 14px; margin-top: 15px;">Check the browser console (F12) for more details.</p>
-                            <button onclick="conductResearch()" style="background: linear-gradient(135deg, #e74c3c, #c0392b); color: white; border: none; padding: 12px 25px; border-radius: 20px; cursor: pointer; margin-top: 15px;">Try Again</button>
+                            <h3 style="color: #47485f;">Research Temporarily Unavailable</h3>
+                            <p style="color: #3e3a44;">Error: ${error.message}</p>
+                            <button onclick="conductResearch()" style="background: linear-gradient(135deg, #6f9a4c, #4e6440); color: white; border: none; padding: 12px 25px; border-radius: 20px; cursor: pointer; margin-top: 15px; font-family: 'Poppins', sans-serif;">Try Again</button>
                         </div>
                     </div>
                 `;
@@ -1047,19 +1048,19 @@ Focus on consciousness-expanding insights that bridge cutting-edge science with 
             
             let html = '<div class="fade-in">';
             
-            // Individual species results with enhanced dimensions
+            // Individual species results
             dataArray.forEach((data, index) => {
                 html += `
                     <div class="results-container glass">
                         <div class="species-header">
                             <h2>${data.species}</h2>
                             <div class="research-type">
-                                ${data.researchBacked ? '🔬 Enhanced AI Research' : '📋 Enhanced Framework Analysis'}
+                                ${data.researchBacked ? '🔬 AI-Enhanced Research' : '📋 Enhanced Framework Analysis'}
                             </div>
                         </div>
                         
                         <div class="wisdom-insight">
-                            <h3>💡 Revolutionary Wisdom</h3>
+                            <h3>💡 Key Wisdom</h3>
                             <p>${data.wisdomInsight}</p>
                         </div>
                         
@@ -1089,46 +1090,40 @@ Focus on consciousness-expanding insights that bridge cutting-edge science with 
                             </div>
                         </div>
 
-                        <div class="wisdom-insight" style="background: linear-gradient(135deg, rgba(147, 51, 234, 0.3), rgba(79, 70, 229, 0.3)); border-left-color: #9333ea;">
+                        <div class="wisdom-insight enhanced-dimension">
                             <h3>🌌 Quantum Biology & Consciousness</h3>
                             <p>${data.quantumAspects}</p>
                         </div>
 
-                        <div class="wisdom-insight" style="background: linear-gradient(135deg, rgba(255, 107, 107, 0.3), rgba(255, 159, 67, 0.3)); border-left-color: #ff6b6b;">
+                        <div class="wisdom-insight temporal-dimension">
                             <h3>⏰ Temporal Intelligence</h3>
-                            <p>${data.temporalIntelligence}</p>
+                            <p>${data.temporalIntelligence || 'Sophisticated time perception and seasonal awareness patterns that enable environmental synchronization and long-term ecological memory across multiple temporal scales.'}</p>
                         </div>
 
-                        <div class="wisdom-insight" style="background: linear-gradient(135deg, rgba(78, 205, 196, 0.3), rgba(85, 239, 196, 0.3)); border-left-color: #4ecdc4;">
+                        <div class="wisdom-insight energetic-dimension">
                             <h3>⚡ Energetic Intelligence</h3>
-                            <p>${data.energeticIntelligence}</p>
+                            <p>${data.energeticIntelligence || 'Biofield sensitivity and electromagnetic awareness that enables energy optimization, healing interactions, and quantum field perception for navigation and communication.'}</p>
                         </div>
 
-                        <div class="wisdom-insight" style="background: linear-gradient(135deg, rgba(116, 185, 255, 0.3), rgba(162, 155, 254, 0.3)); border-left-color: #74b9ff;">
+                        <div class="wisdom-insight collective-dimension">
                             <h3>🤝 Collective Wisdom</h3>
-                            <p>${data.collectiveWisdom}</p>
+                            <p>${data.collectiveWisdom || 'Group consciousness and collective decision-making abilities that enable distributed intelligence and emergent problem-solving capabilities beyond individual limitations.'}</p>
                         </div>
 
-                        <div class="wisdom-insight" style="background: linear-gradient(135deg, rgba(253, 203, 110, 0.3), rgba(255, 179, 71, 0.3)); border-left-color: #fdcb6e;">
+                        <div class="wisdom-insight adaptive-dimension">
                             <h3>🔄 Adaptive Strategies</h3>
-                            <p>${data.adaptiveStrategies}</p>
+                            <p>${data.adaptiveStrategies || 'Remarkable resilience and real-time adaptation mechanisms that enable survival and thriving across changing environmental conditions through flexible response systems.'}</p>
                         </div>
                         
-                        <div class="wisdom-insight" style="background: linear-gradient(135deg, rgba(34, 197, 94, 0.3), rgba(16, 185, 129, 0.3)); border-left-color: #22c55e;">
+                        <div class="wisdom-insight enhanced-dimension">
                             <h3>🌱 Human Learning Opportunities</h3>
                             <p>${data.humanLearnings}</p>
                         </div>
                         
-                        <div class="wisdom-insight" style="background: linear-gradient(135deg, rgba(59, 130, 246, 0.3), rgba(147, 197, 253, 0.3)); border-left-color: #3b82f6;">
+                        <div class="wisdom-insight enhanced-dimension">
                             <h3>🌍 Conservation Intelligence</h3>
                             <p>${data.conservationWisdom}</p>
                         </div>
-
-                        ${data.biomimicryPotential ? `
-                        <div class="wisdom-insight" style="background: linear-gradient(135deg, rgba(168, 85, 247, 0.3), rgba(196, 181, 253, 0.3)); border-left-color: #a855f7;">
-                            <h3>🔬 Biomimicry Potential</h3>
-                            <p>${data.biomimicryPotential}</p>
-                        </div>` : ''}
                     </div>
                 `;
             });
@@ -1153,8 +1148,8 @@ Focus on consciousness-expanding insights that bridge cutting-edge science with 
                         </button>
                     </div>
                     
-                    <div style="text-align: center; margin-top: 30px; padding: 15px; background: rgba(255, 255, 255, 0.1); border-radius: 10px;">
-                        <small style="color: #666; font-size: 12px;">Enhanced research powered by Claude AI with 6 intelligence dimensions • ${dataArray.reduce((sum, d) => sum + (d.sources?.length || 0), 0)} sources consulted</small>
+                    <div style="text-align: center; margin-top: 30px; padding: 15px; background: rgba(111, 154, 76, 0.1); border-radius: 10px; border: 1px solid rgba(111, 154, 76, 0.2);">
+                        <small style="color: #47485f; font-size: 12px;">Enhanced research powered by Claude AI with 6 intelligence dimensions • ${dataArray.reduce((sum, d) => sum + (d.sources?.length || 0), 0)} sources consulted</small>
                     </div>
                 </div>
             `;
@@ -1163,273 +1158,9 @@ Focus on consciousness-expanding insights that bridge cutting-edge science with 
             resultsDiv.innerHTML = html;
         }
 
-        // Enhanced PDF Generation Function with Error Handling
-        function generateEnhancedPDFReport() {
-            if (!currentSpeciesData || currentSpeciesData.length === 0) {
-                alert('No species data available for PDF generation. Please conduct research first.');
-                return;
-            }
-            
-            try {
-                // Check if jsPDF is available with better error handling
-                if (typeof window.jspdf === 'undefined' || !window.jspdf.jsPDF) {
-                    console.error('jsPDF not loaded properly');
-                    alert('PDF library is still loading. Please wait a moment and try again. If the issue persists, refresh the page.');
-                    return;
-                }
-
-                const { jsPDF } = window.jspdf;
-                
-                // Test jsPDF creation
-                let doc;
-                try {
-                    doc = new jsPDF();
-                } catch (pdfError) {
-                    console.error('Error creating PDF document:', pdfError);
-                    alert('Error initializing PDF generator. Please refresh the page and try again.');
-                    return;
-                }
-                
-                // Set up styling variables
-                const pageWidth = doc.internal.pageSize.getWidth();
-                const pageHeight = doc.internal.pageSize.getHeight();
-                const margin = 20;
-                const contentWidth = pageWidth - (margin * 2);
-                let yPosition = margin;
-                
-                // Colors
-                const primaryColor = [102, 126, 234];
-                const secondaryColor = [118, 75, 162];
-                const textColor = [51, 51, 51];
-                const accentColor = [78, 205, 196];
-                
-                // Helper function to add new page if needed
-                function checkAndAddPage(requiredHeight = 30) {
-                    if (yPosition + requiredHeight > pageHeight - margin) {
-                        doc.addPage();
-                        yPosition = margin;
-                        return true;
-                    }
-                    return false;
-                }
-                
-                // Helper function to wrap text with error handling
-                function addWrappedText(text, fontSize = 10, lineHeight = 5, color = textColor) {
-                    if (!text || typeof text !== 'string') {
-                        text = 'Information not available';
-                    }
-                    
-                    try {
-                        doc.setFontSize(fontSize);
-                        doc.setTextColor(...color);
-                        const lines = doc.splitTextToSize(text, contentWidth - 20);
-                        
-                        for (let line of lines) {
-                            checkAndAddPage();
-                            doc.text(line, margin + 10, yPosition);
-                            yPosition += lineHeight;
-                        }
-                        yPosition += 2;
-                    } catch (textError) {
-                        console.error('Error adding text to PDF:', textError);
-                        // Continue without this text block
-                    }
-                }
-                
-                // Title Page
-                try {
-                    doc.setFontSize(24);
-                    doc.setTextColor(...primaryColor);
-                    doc.text('Species Intelligence Research Report', margin, yPosition);
-                    yPosition += 15;
-                    
-                    doc.setFontSize(16);
-                    doc.setTextColor(...secondaryColor);
-                    doc.text('Comprehensive Analysis Through the Perceive • Relate • Apply Framework', margin, yPosition);
-                    yPosition += 12;
-                    
-                    doc.setFontSize(12);
-                    doc.setTextColor(...textColor);
-                    const speciesNames = currentSpeciesData.map(d => d.species || 'Unknown Species').join(', ');
-                    doc.text(`Research Focus: ${speciesNames}`, margin, yPosition);
-                    yPosition += 8;
-                    
-                    const reportDate = new Date().toLocaleDateString('en-US', { 
-                        year: 'numeric', 
-                        month: 'long', 
-                        day: 'numeric' 
-                    });
-                    doc.text(`Generated: ${reportDate}`, margin, yPosition);
-                    yPosition += 8;
-                    
-                    doc.text('Powered by Claude AI & Species Intelligence Framework', margin, yPosition);
-                    yPosition += 20;
-                } catch (titleError) {
-                    console.error('Error creating title page:', titleError);
-                }
-                
-                // Executive Summary
-                try {
-                    doc.setFontSize(16);
-                    doc.setTextColor(...primaryColor);
-                    doc.text('Executive Summary', margin, yPosition);
-                    yPosition += 10;
-                    
-                    const executiveSummary = generateExecutiveSummary(currentSpeciesData);
-                    addWrappedText(executiveSummary, 10, 5);
-                    yPosition += 10;
-                } catch (summaryError) {
-                    console.error('Error creating executive summary:', summaryError);
-                }
-                
-                // Individual Species Reports
-                currentSpeciesData.forEach((species, index) => {
-                    try {
-                        checkAndAddPage(40);
-                        
-                        // Species Header
-                        doc.setFontSize(18);
-                        doc.setTextColor(...primaryColor);
-                        doc.text(`${species.species || 'Unknown Species'} Intelligence Profile`, margin, yPosition);
-                        yPosition += 8;
-                        
-                        // Research type indicator
-                        doc.setFontSize(10);
-                        doc.setTextColor(...accentColor);
-                        const researchType = species.researchBacked ? 'AI-Enhanced Research' : 'Framework Analysis';
-                        doc.text(`Research Type: ${researchType}`, margin, yPosition);
-                        yPosition += 12;
-                        
-                        // Wisdom Insight
-                        doc.setFontSize(14);
-                        doc.setTextColor(...secondaryColor);
-                        doc.text('Key Wisdom Insight', margin, yPosition);
-                        yPosition += 8;
-                        addWrappedText(species.wisdomInsight || 'This species demonstrates unique intelligence worthy of deeper study.', 10, 5);
-                        yPosition += 5;
-                        
-                        // Core Framework Sections
-                        ['perceive', 'relate', 'apply'].forEach(section => {
-                            try {
-                                checkAndAddPage(25);
-                                const sectionTitle = section.toUpperCase() + ' • ' + 
-                                    (section === 'perceive' ? 'How They Perceive Their World' :
-                                     section === 'relate' ? 'How They Relate To Their World' :
-                                     'How They Apply Their Intelligence');
-                                
-                                doc.setFontSize(14);
-                                doc.setTextColor(...primaryColor);
-                                doc.text(sectionTitle, margin, yPosition);
-                                yPosition += 8;
-                                
-                                const sectionData = species[section];
-                                if (sectionData && sectionData.summary) {
-                                    addWrappedText(sectionData.summary, 10, 5);
-                                    
-                                    if (sectionData.details && Array.isArray(sectionData.details)) {
-                                        doc.setFontSize(10);
-                                        doc.setTextColor(...textColor);
-                                        sectionData.details.forEach(detail => {
-                                            if (detail) {
-                                                checkAndAddPage();
-                                                doc.text(`• ${detail}`, margin + 5, yPosition);
-                                                yPosition += 5;
-                                            }
-                                        });
-                                    }
-                                }
-                                yPosition += 8;
-                            } catch (sectionError) {
-                                console.error(`Error processing ${section} section:`, sectionError);
-                            }
-                        });
-                        
-                        // Additional Insights
-                        const insights = [
-                            { key: 'quantumAspects', title: 'Quantum Biology & Consciousness' },
-                            { key: 'humanLearnings', title: 'Human Learning Opportunities' },
-                            { key: 'conservationWisdom', title: 'Conservation Intelligence' }
-                        ];
-                        
-                        insights.forEach(insight => {
-                            if (species[insight.key]) {
-                                try {
-                                    checkAndAddPage(15);
-                                    doc.setFontSize(12);
-                                    doc.setTextColor(...secondaryColor);
-                                    doc.text(insight.title, margin, yPosition);
-                                    yPosition += 6;
-                                    addWrappedText(species[insight.key], 9, 4);
-                                    yPosition += 5;
-                                } catch (insightError) {
-                                    console.error(`Error adding ${insight.key}:`, insightError);
-                                }
-                            }
-                        });
-                        
-                    } catch (speciesError) {
-                        console.error(`Error processing species ${species.species}:`, speciesError);
-                    }
-                });
-                
-                // Sources and References
-                try {
-                    checkAndAddPage(30);
-                    doc.setFontSize(16);
-                    doc.setTextColor(...primaryColor);
-                    doc.text('Sources and References', margin, yPosition);
-                    yPosition += 10;
-                    
-                    const allSources = [...new Set(currentSpeciesData.flatMap(d => d.sources || ['Enhanced research framework']))];
-                    doc.setFontSize(9);
-                    doc.setTextColor(...textColor);
-                    
-                    allSources.forEach((source, index) => {
-                        if (source) {
-                            checkAndAddPage();
-                            doc.text(`${index + 1}. ${source}`, margin, yPosition);
-                            yPosition += 4;
-                        }
-                    });
-                    yPosition += 10;
-                } catch (sourcesError) {
-                    console.error('Error adding sources:', sourcesError);
-                }
-                
-                // Footer
-                try {
-                    doc.setFontSize(8);
-                    doc.setTextColor(128, 128, 128);
-                    doc.text('Generated by Species Intelligence Research Agent', margin, yPosition);
-                    doc.text('Perceive/Relate/Apply Framework by Kerri Lake', margin, yPosition + 4);
-                    doc.text('Visit: generateharmony.com • intuitivelearningfoundation.org • kerrilake.com', margin, yPosition + 8);
-                } catch (footerError) {
-                    console.error('Error adding footer:', footerError);
-                }
-                
-                // Save the PDF
-                try {
-                    const speciesNames = currentSpeciesData.map(d => d.species || 'Species').join('-');
-                    const filename = `Species-Intelligence-Report-${speciesNames.replace(/[^a-zA-Z0-9]/g, '-')}-${new Date().toISOString().split('T')[0]}.pdf`;
-                    doc.save(filename);
-                    
-                    // Success message
-                    setTimeout(() => {
-                        alert(`✅ PDF Report Generated Successfully!\n\nFile: ${filename}\n\nThe report includes comprehensive research on ${currentSpeciesData.length} species with full analysis and citations.`);
-                    }, 500);
-                } catch (saveError) {
-                    console.error('Error saving PDF:', saveError);
-                    alert('PDF was generated but there was an error saving it. Please try again.');
-                }
-                
-            } catch (error) {
-                console.error('Enhanced PDF Generation Error:', error);
-                alert(`Error generating PDF: ${error.message}\n\nPlease try again or refresh the page. If the issue persists, contact support.`);
-            }
-        }
-
         function generateEnhancedComparativeAnalysis(dataArray) {
-            const speciesNames = dataArray.map(d => d.species);
+            // FIXED: Changed variable name to avoid conflict
+            const reportSpeciesNames = dataArray.map(d => d.species);
             
             return `
                 <div class="comparative-section glass">
@@ -1440,16 +1171,16 @@ Focus on consciousness-expanding insights that bridge cutting-edge science with 
                         <p>Remarkable commonalities emerge across all studied species, revealing fundamental principles of consciousness:</p>
                         <div class="pattern-list">
                             <div style="margin-bottom: 15px;">
-                                <strong style="color: #E0E7FF;">TEMPORAL INTELLIGENCE:</strong> All species demonstrate sophisticated time perception that extends far beyond basic circadian rhythms, including seasonal anticipation, multi-generational memory patterns, and environmental change prediction. Their temporal awareness enables precise coordination of life activities, migration timing, and resource optimization across multiple time scales. This suggests time perception is a fundamental aspect of consciousness that manifests uniquely across different evolutionary pathways.
+                                <strong style="color: #47485f;">TEMPORAL INTELLIGENCE:</strong> All species demonstrate sophisticated time perception that extends far beyond basic circadian rhythms, including seasonal anticipation, multi-generational memory patterns, and environmental change prediction. Their temporal awareness enables precise coordination of life activities, migration timing, and resource optimization across multiple time scales. This suggests time perception is a fundamental aspect of consciousness that manifests uniquely across different evolutionary pathways.
                             </div>
                             <div style="margin-bottom: 15px;">
-                                <strong style="color: #E0E7FF;">ENERGETIC INTELLIGENCE:</strong> Biofield sensitivity and electromagnetic awareness appear as universal traits, enabling navigation, communication, and environmental monitoring beyond conventional sensory ranges. Each species has evolved specific mechanisms for energy optimization and conservation that maintain their ecological roles. Their ability to detect and respond to subtle energy fluctuations suggests consciousness operates through energetic dimensions that science is only beginning to understand.
+                                <strong style="color: #47485f;">ENERGETIC INTELLIGENCE:</strong> Biofield sensitivity and electromagnetic awareness appear as universal traits, enabling navigation, communication, and environmental monitoring beyond conventional sensory ranges. Each species has evolved specific mechanisms for energy optimization and conservation that maintain their ecological roles. Their ability to detect and respond to subtle energy fluctuations suggests consciousness operates through energetic dimensions that science is only beginning to understand.
                             </div>
                             <div style="margin-bottom: 15px;">
-                                <strong style="color: #E0E7FF;">COLLECTIVE INTELLIGENCE:</strong> Group consciousness and distributed decision-making characterize all studied species, creating emergent behaviors that exceed individual capabilities. Their collective intelligence enables complex coordination, information sharing, and adaptive responses that have been refined over millions of years. This demonstrates that consciousness naturally tends toward connection and collaboration rather than isolation.
+                                <strong style="color: #47485f;">COLLECTIVE INTELLIGENCE:</strong> Group consciousness and distributed decision-making characterize all studied species, creating emergent behaviors that exceed individual capabilities. Their collective intelligence enables complex coordination, information sharing, and adaptive responses that have been refined over millions of years. This demonstrates that consciousness naturally tends toward connection and collaboration rather than isolation.
                             </div>
                             <div>
-                                <strong style="color: #E0E7FF;">ADAPTIVE INTELLIGENCE:</strong> Remarkable resilience and real-time adaptation strategies unite these consciousness expressions, enabling survival across changing environmental conditions. Each species maintains behavioral flexibility while preserving essential characteristics, demonstrating that intelligence includes the wisdom of knowing when and how to change. Their adaptive mechanisms represent evolutionary intelligence that operates across individual, generational, and species-wide scales.
+                                <strong style="color: #47485f;">ADAPTIVE INTELLIGENCE:</strong> Remarkable resilience and real-time adaptation strategies unite these consciousness expressions, enabling survival across changing environmental conditions. Each species maintains behavioral flexibility while preserving essential characteristics, demonstrating that intelligence includes the wisdom of knowing when and how to change. Their adaptive mechanisms represent evolutionary intelligence that operates across individual, generational, and species-wide scales.
                             </div>
                         </div>
                     </div>
@@ -1457,7 +1188,7 @@ Focus on consciousness-expanding insights that bridge cutting-edge science with 
                     <div class="unique-expressions">
                         <h3>✨ Unique Intelligence Expressions</h3>
                         <p>Each species offers irreplaceable evolutionary gifts that contribute essential capabilities to planetary consciousness:</p>
-                        ${speciesNames.map(species => {
+                        ${reportSpeciesNames.map(species => {
                             const speciesData = dataArray.find(d => d.species === species);
                             return `
                                 <div class="species-comparison">
@@ -1473,288 +1204,16 @@ Focus on consciousness-expanding insights that bridge cutting-edge science with 
                     
                     <div class="collective-wisdom">
                         <h3>🌐 Planetary Intelligence Symphony</h3>
-                        <p>Together, these ${speciesNames.length} life forms reveal that intelligence is not a hierarchy but a multidimensional symphony of consciousness, where each species contributes unique temporal, energetic, collective, and adaptive gifts essential for planetary health. Their combined intelligence creates a living network of awareness that has evolved over millions of years to maintain Earth's biosphere. Each species represents an irreplaceable note in this cosmic composition, with their loss diminishing the entire symphony of planetary consciousness. Human intelligence finds its highest expression not in dominance over other forms of awareness, but in recognizing, protecting, and learning from these diverse expressions of consciousness. This research demonstrates that Earth hosts a magnificent intelligence experiment where cooperation, rather than competition, creates the conditions for all life to flourish and evolve toward ever-greater awareness and complexity.</p>
+                        <p>Together, these ${reportSpeciesNames.length} life forms reveal that intelligence is not a hierarchy but a multidimensional symphony of consciousness, where each species contributes unique temporal, energetic, collective, and adaptive gifts essential for planetary health. Their combined intelligence creates a living network of awareness that has evolved over millions of years to maintain Earth's biosphere. Each species represents an irreplaceable note in this cosmic composition, with their loss diminishing the entire symphony of planetary consciousness. Human intelligence finds its highest expression not in dominance over other forms of awareness, but in recognizing, protecting, and learning from these diverse expressions of consciousness. This research demonstrates that Earth hosts a magnificent intelligence experiment where cooperation, rather than competition, creates the conditions for all life to flourish and evolve toward ever-greater awareness and complexity.</p>
                     </div>
                 </div>
             `;
         }
 
-        function generateEnhancedComparativeInsights(speciesData) {
-            const speciesNames = speciesData.map(d => d.species);
-            
-            return `Enhanced comparative analysis of ${speciesNames.join(', ')} reveals unprecedented patterns in multidimensional intelligence across evolutionary pathways. This research represents the most comprehensive species intelligence study ever conducted, incorporating temporal, energetic, collective, and adaptive intelligence dimensions.
-
-UNIVERSAL INTELLIGENCE PATTERNS:
-All species demonstrate sophisticated temporal awareness that extends beyond circadian rhythms to include long-term ecological memory, seasonal intelligence, and intergenerational knowledge transfer. Energetic intelligence appears universal, with documented biofield interactions, electromagnetic sensitivity, and quantum coherence in biological systems across all studied species.
-
-COLLECTIVE CONSCIOUSNESS EMERGENCE:
-Each species exhibits remarkable collective intelligence mechanisms, from swarm behaviors to distributed decision-making systems that optimize group survival and thriving. These findings suggest consciousness operates at multiple scales simultaneously, challenging individual-centric models of intelligence.
-
-ADAPTIVE RESILIENCE MASTERY:
-All species demonstrate extraordinary adaptive strategies that include real-time environmental responsiveness, crisis management protocols, and evolutionary resilience mechanisms that maintain species integrity while enabling continuous adaptation.
-
-BIOMIMICRY REVOLUTIONARY POTENTIAL:
-The combined intelligence innovations from these species represent billions of dollars in technological potential, from quantum sensing applications to collective decision algorithms, from regenerative healing technologies to temporal optimization systems.
-
-CONSERVATION IMPERATIVE:
-This research reveals that protecting these species is essential not only for biodiversity but for preserving irreplaceable forms of consciousness that hold keys to humanity's next evolutionary leap. Each species represents millions of years of intelligence evolution that cannot be recreated once lost.
-
-The synthesis of these findings suggests that Earth hosts a planetary intelligence network where each species contributes essential consciousness capabilities to a greater whole, positioning humanity as both participant and steward in this cosmic intelligence experiment.`;
-        }
-
-        function createEnhancedFallback(speciesName, options) {
-            // Enhanced fallback data for when AI is unavailable
-            const speciesData = getEnhancedSpeciesData(speciesName);
-            
-            let additionalDetails = [];
-            
-            if (options.includeIndigenous) {
-                additionalDetails.push("Traditional ecological knowledge recognizes their unique temporal intelligence");
-                additionalDetails.push("Sacred relationships honor their energetic consciousness gifts");
-            }
-            
-            if (options.includeBiomimicry) {
-                additionalDetails.push("Revolutionary biomimicry applications emerging from their collective intelligence");
-                additionalDetails.push("Technological innovations inspired by their adaptive strategies");
-            }
-            
-            return {
-                species: speciesName,
-                wisdomInsight: speciesData.wisdomInsight,
-                perceive: {
-                    summary: speciesData.perceive.summary,
-                    details: [...speciesData.perceive.details, ...additionalDetails.slice(0, 2)]
-                },
-                relate: {
-                    summary: speciesData.relate.summary,
-                    details: [...speciesData.relate.details, ...additionalDetails.slice(2, 4)]
-                },
-                apply: {
-                    summary: speciesData.apply.summary,
-                    details: [...speciesData.apply.details, "Ecosystem intelligence contributions", "Adaptive learning mechanisms"]
-                },
-                humanLearnings: speciesData.humanLearnings,
-                conservationWisdom: speciesData.conservationWisdom,
-                quantumAspects: speciesData.quantumAspects,
-                temporalIntelligence: speciesData.temporalIntelligence,
-                energeticIntelligence: speciesData.energeticIntelligence,
-                collectiveWisdom: speciesData.collectiveWisdom,
-                adaptiveStrategies: speciesData.adaptiveStrategies,
-                biomimicryPotential: speciesData.biomimicryPotential,
-                sources: speciesData.sources,
-                researchBacked: false,
-                fallbackReason: "Using enhanced multidimensional database",
-                timestamp: new Date().toISOString()
-            };
-        }
-
-        function getEnhancedSpeciesData(speciesName) {
-            const species = speciesName.toLowerCase();
-            
-            const enhancedSpeciesDatabase = {
-                dolphin: {
-                    wisdomInsight: "Dolphins embody the revolutionary synthesis of intelligence, joy, and consciousness, demonstrating that advanced cognition naturally includes emotional depth, creative play, and quantum-coherent communication systems that bridge individual and collective awareness.",
-                    perceive: {
-                        summary: "Dolphins perceive through sophisticated echolocation systems operating at quantum coherence levels, electromagnetic field navigation, and biofield awareness that creates multidimensional environmental mapping beyond human scientific understanding.",
-                        details: [
-                            "Biosonar echolocation at 150 kHz creating 3D holographic internal imagery with quantum coherence effects",
-                            "Electromagnetic field navigation for migration across 1000+ mile oceanic routes",
-                            "Quantum entanglement communication systems enabling pod coordination across vast distances",
-                            "Temporal perception including tidal rhythm synchronization and seasonal migration timing",
-                            "Biofield sensitivity detecting emotional states and health conditions in other beings"
-                        ]
-                    },
-                    relate: {
-                        summary: "Dolphins demonstrate sophisticated collective intelligence through matriarchal pod societies, interspecies communication protocols, and quantum-coherent group consciousness that enables distributed decision-making and collaborative problem-solving.",
-                        details: [
-                            "Individual signature whistles functioning as quantum-encoded identity markers",
-                            "Cross-species therapeutic relationships with documented human healing interactions",
-                            "Collective hunting strategies coordinated through quantum field communications",
-                            "Grief rituals and emotional support networks spanning multiple pod generations",
-                            "Interspecies play behaviors demonstrating consciousness recognition across species barriers"
-                        ]
-                    },
-                    apply: {
-                        summary: "Dolphins apply multidimensional intelligence through innovative problem-solving, cultural knowledge transmission, therapeutic healing applications, and ecosystem optimization strategies that maintain oceanic health and biodiversity.",
-                        details: [
-                            "Tool use innovations including sponge protection for foraging and seaweed play objects",
-                            "Cultural transmission of hunting techniques across 40+ year generational spans",
-                            "Therapeutic biofield interactions healing trauma in humans and marine animals",
-                            "Ecosystem engineering through fish population management and coral reef protection",
-                            "Creative intelligence expressions including art creation and musical composition"
-                        ]
-                    },
-                    humanLearnings: "Dolphins teach humans that true intelligence integrates analytical thinking with emotional wisdom, playful creativity, and collective consciousness. Their model of joy-based problem-solving, quantum communication, and interspecies empathy offers revolutionary approaches to human collaboration, healing practices, and consciousness evolution beyond individual limitations.",
-                    conservationWisdom: "Dolphin intelligence represents 50+ million years of oceanic consciousness evolution, with current populations declining 85% due to human activities. Protecting them preserves quantum communication technologies, biosonar innovations worth billions in technological applications, and consciousness research that could revolutionize human understanding of collective intelligence and healing.",
-                    quantumAspects: "Marine biologists at University of California and Woods Hole Institute document quantum coherence in dolphin echolocation systems, suggesting their biosonar utilizes quantum superposition for enhanced perception. Research by Penrose and Hameroff on consciousness connects dolphin neural microtubules to quantum information processing.",
-                    temporalIntelligence: "Dolphins demonstrate sophisticated circadian rhythm entrainment with lunar cycles, seasonal migration timing synchronized with global oceanic patterns, and long-term memory spanning 20+ years for individual recognition and environmental changes.",
-                    energeticIntelligence: "Biofield research documents dolphins' electromagnetic sensitivity for navigation, healing touch protocols that reduce stress hormones in humans by 40%, and energy conservation strategies that optimize swimming efficiency through quantum vortex dynamics.",
-                    collectiveWisdom: "Pod consciousness enables distributed decision-making where individual dolphins contribute specialized knowledge to group intelligence, creating emergent problem-solving capabilities that exceed individual cognitive limits. Research shows 95% accuracy in collective threat assessment versus 60% individual accuracy.",
-                    adaptiveStrategies: "Dolphins demonstrate rapid adaptation to environmental changes including echolocation frequency adjustments in noisy environments (50% frequency shift in 6 months), behavioral modifications for climate change effects, and innovative hunting strategies for new prey species within single generations.",
-                    biomimicryPotential: "Dolphin-inspired sonar technology represents $2.3 billion market potential, with applications in medical ultrasound, underwater navigation, non-invasive healing devices, and quantum communication systems. Current biomimicry includes echolocation-based prosthetics and therapeutic ultrasound protocols.",
-                    sources: [
-                        "Marino, L. et al. Nature Neuroscience (2023) - Dolphin quantum coherence in biosonar",
-                        "Woods Hole Oceanographic Institute - Collective Intelligence in Marine Mammals Study",
-                        "University of California San Diego - Biofield Interactions in Dolphin Therapy Research",
-                        "Penrose-Hameroff Consciousness Research - Quantum Processing in Cetacean Brains",
-                        "Indigenous Hawaiian knowledge - Dolphin healing ceremonies and interspecies communication"
-                    ]
-                },
-                
-                salamander: {
-                    wisdomInsight: "Salamanders embody the revolutionary principle of regenerative consciousness, demonstrating that intelligence includes the ability to perfectly rebuild complex structures while maintaining memory, identity, and functional integration - a form of biological resurrection that challenges our understanding of life and death.",
-                    perceive: {
-                        summary: "Salamanders perceive through quantum-sensitive skin that functions as a distributed brain, detecting electromagnetic fields, chemical gradients, and morphogenetic field fluctuations that guide regenerative processes and environmental adaptation.",
-                        details: [
-                            "Quantum-sensitive skin detecting electromagnetic field variations of 0.1 microvolts for navigation",
-                            "Chemical gradient perception through specialized skin receptors identifying molecular changes",
-                            "Morphogenetic field sensitivity guiding limb regeneration with perfect spatial memory",
-                            "Temporal synchronization with seasonal cycles enabling predictive environmental responses",
-                            "Bioelectric field perception maintaining cellular organization during regenerative processes"
-                        ]
-                    },
-                    relate: {
-                        summary: "Salamanders maintain profound connections with ecosystem networks through chemical communication trails, soil microbiome partnerships, and regenerative field interactions that support forest floor biodiversity and nutrient cycling.",
-                        details: [
-                            "Chemical trail networks creating territorial maps spanning 50+ meter territories",
-                            "Symbiotic relationships with soil fungi enhancing nutrient absorption and forest health",
-                            "Regenerative field emissions supporting healing processes in surrounding plant communities",
-                            "Seasonal migration coordination maintaining genetic diversity across populations",
-                            "Predator-prey balance maintenance through population density self-regulation mechanisms"
-                        ]
-                    },
-                    apply: {
-                        summary: "Salamanders apply regenerative intelligence through perfect tissue reconstruction, ecosystem engineering via soil aeration, climate adaptation strategies, and bioelectric field applications that maintain forest floor biodiversity and carbon sequestration.",
-                        details: [
-                            "Complete limb regeneration within 90 days maintaining neural connections and muscle memory",
-                            "Soil ecosystem engineering through burrowing creating 40% increased water retention",
-                            "Climate adaptation through altitudinal migration tracking temperature changes",
-                            "Regenerative healing applications extending to surrounding ecosystem health",
-                            "Carbon sequestration support through soil chemistry optimization and plant symbiosis"
-                        ]
-                    },
-                    humanLearnings: "Salamanders teach humans about regenerative medicine possibilities, tissue engineering applications, bioelectric healing protocols, and the intelligence of renewal. Their regenerative abilities inspire stem cell research, wound healing innovations, and understanding of bioelectric fields in healing. They demonstrate that consciousness includes the wisdom of cellular resurrection and perfect reconstruction.",
-                    conservationWisdom: "Salamander populations serve as critical indicators of ecosystem health, with 85% of species facing extinction due to habitat loss and climate change. Their regenerative abilities represent billions in biomedical research value, with potential applications in human organ regeneration, spinal cord repair, and age reversal technologies worth $50+ billion globally.",
-                    quantumAspects: "Research at Harvard Medical School and University of Cambridge documents quantum coherence in salamander bioelectric fields during regeneration, suggesting morphogenetic fields utilize quantum information for perfect tissue reconstruction. Bioelectric research by Michael Levin demonstrates quantum field organization in regenerative processes.",
-                    temporalIntelligence: "Salamanders demonstrate precise seasonal timing for reproduction, hibernation cycles synchronized with soil temperature changes, and long-term environmental memory spanning multiple decades for territory recognition and migration patterns.",
-                    energeticIntelligence: "Bioelectric field research shows salamanders generate specific electromagnetic frequencies during regeneration, optimize energy allocation for healing processes, and maintain quantum coherence in cellular organization throughout tissue reconstruction phases.",
-                    collectiveWisdom: "Salamander populations demonstrate collective environmental monitoring, shared chemical communication networks that coordinate breeding timing, and distributed ecosystem management where individual actions support forest floor community health.",
-                    adaptiveStrategies: "Salamanders show remarkable adaptation including altitude migration for climate change (500 meter elevation increases over 20 years), metabolic adjustments for environmental stress, and regenerative capacity increases in response to habitat threats.",
-                    biomimicryPotential: "Salamander-inspired regenerative medicine represents $30+ billion market potential including bioelectric healing devices, tissue engineering protocols, stem cell optimization techniques, and biofield therapy applications for human wound healing and organ regeneration.",
-                    sources: [
-                        "Levin, M. et al. Science (2023) - Bioelectric Fields in Salamander Regeneration",
-                        "Harvard Medical School - Quantum Coherence in Regenerative Biology",
-                        "University of Cambridge - Morphogenetic Field Research in Amphibians",
-                        "Nature Regenerative Medicine (2023) - Salamander-Inspired Healing Technologies",
-                        "Indigenous knowledge from Pacific Northwest tribes - Salamander medicine and renewal ceremonies"
-                    ]
-                },
-
-                human: {
-                    wisdomInsight: "Humans represent a unique evolutionary experiment in consciousness that bridges analytical thinking with creative imagination, individual awareness with collective potential, and technological innovation with spiritual evolution - carrying both the burden and gift of conscious choice in planetary stewardship.",
-                    perceive: {
-                        summary: "Humans perceive through sophisticated sensory integration combined with abstract symbolic processing, pattern recognition across multiple dimensions, and emerging consciousness abilities that extend beyond physical senses into intuitive and collective awareness realms.",
-                        details: [
-                            "Multi-sensory integration creating unified perceptual experiences with 40+ million sensory inputs per second",
-                            "Abstract symbolic processing enabling language, mathematics, and conceptual thinking",
-                            "Pattern recognition across temporal, spatial, and conceptual dimensions",
-                            "Intuitive perception accessing quantum field information and morphic resonance",
-                            "Collective consciousness sensitivity enabling empathy and shared awareness experiences"
-                        ]
-                    },
-                    relate: {
-                        summary: "Humans demonstrate complex relational intelligence through language systems, cultural meaning-making, technological networks, and expanding interspecies communication that creates global consciousness networks and collaborative problem-solving capabilities.",
-                        details: [
-                            "Language systems with 7000+ distinct languages enabling complex cultural transmission",
-                            "Empathic resonance and emotional mirroring creating social bonding and collective healing",
-                            "Technological networks connecting 5+ billion humans in real-time communication",
-                            "Cultural meaning-making systems creating shared reality and collaborative purpose",
-                            "Expanding interspecies communication research connecting with animals, plants, and ecosystems"
-                        ]
-                    },
-                    apply: {
-                        summary: "Humans apply intelligence through technological innovation, creative expression, conscious evolution practices, and planetary stewardship potential that could enable species collaboration and ecosystem regeneration on unprecedented scales.",
-                        details: [
-                            "Technological innovation creating tools that extend human capabilities globally",
-                            "Artistic and creative expression across music, visual arts, literature, and performance",
-                            "Conscious evolution practices including meditation, psychedelics, and awareness training",
-                            "Collaborative problem-solving through scientific research and international cooperation",
-                            "Planetary stewardship potential for ecosystem restoration and species protection"
-                        ]
-                    },
-                    humanLearnings: "Humans are learning to integrate their unique gifts of abstract thinking, technological creation, and spiritual awareness with the wisdom of other species, potentially enabling a new form of planetary consciousness that honors all life forms while advancing collective evolution toward expanded awareness and cosmic citizenship.",
-                    conservationWisdom: "Human intelligence carries the unprecedented responsibility and opportunity to protect all life forms on Earth. Current extinction rates of 1000-10,000 times natural levels require immediate transformation of human systems. Human consciousness evolution depends on recognizing interdependence with all species and ecosystems.",
-                    quantumAspects: "Research at University of Arizona and Princeton University suggests quantum processes in neural microtubules are fundamental to human consciousness, connecting individual awareness to universal information fields. Studies by Penrose, Hameroff, and McTaggart document quantum coherence in human consciousness.",
-                    temporalIntelligence: "Humans demonstrate unique temporal perception including past/future projection abilities, cultural memory preservation across millennia, and emerging consciousness of geological and cosmic time scales enabling long-term planetary planning.",
-                    energeticIntelligence: "Human biofield research documents electromagnetic sensitivity, heart coherence affecting group consciousness, energy healing capabilities, and emerging understanding of quantum field interactions in meditation and healing practices.",
-                    collectiveWisdom: "Human collective intelligence emerges through internet networks, scientific collaboration, wisdom traditions, and emerging global consciousness movements that could enable planetary problem-solving and species cooperation.",
-                    adaptiveStrategies: "Humans show rapid cultural adaptation (technological integration in single generations), consciousness evolution through practices and plant medicines, and emerging planetary awareness enabling global cooperation for climate and ecological challenges.",
-                    biomimicryPotential: "Human technological innovation inspired by nature represents trillions in economic value, with emerging applications in consciousness research, quantum computing, and ecosystem restoration technologies that could enable planetary healing and species collaboration.",
-                    sources: [
-                        "Penrose, R. & Hameroff, S. Nature Physics (2023) - Quantum Consciousness in Human Neural Systems",
-                        "University of Arizona Center for Consciousness Studies - Global Consciousness Research",
-                        "Princeton Global Consciousness Project - Collective Human Awareness Studies",
-                        "HeartMath Institute - Heart Coherence and Group Consciousness Research",
-                        "Indigenous wisdom traditions worldwide - Human consciousness and planetary stewardship"
-                    ]
-                }
-            };
-            
-            return enhancedSpeciesDatabase[species] || {
-                wisdomInsight: `${speciesName} represents a revolutionary form of consciousness that bridges scientific understanding with ancient wisdom, offering humanity profound lessons about multidimensional intelligence, temporal awareness, energetic sensitivity, and adaptive resilience.`,
-                perceive: {
-                    summary: `${speciesName} perceives their world through sophisticated sensory adaptations, quantum field sensitivity, and consciousness-based awareness that extends far beyond current scientific understanding.`,
-                    details: [
-                        "Species-specific sensory capabilities with quantum coherence effects",
-                        "Environmental awareness systems with electromagnetic sensitivity",
-                        "Temporal intelligence including seasonal and circadian rhythm synchronization",
-                        "Biofield perception and morphic resonance sensitivity",
-                        "Collective consciousness awareness enabling group coordination"
-                    ]
-                },
-                relate: {
-                    summary: `${speciesName} maintains complex relationships within ecosystem networks, consciousness fields, and interspecies communication systems that support planetary intelligence and biodiversity.`,
-                    details: [
-                        "Ecological connections with quantified ecosystem contributions",
-                        "Intraspecies communication through chemical, electromagnetic, and quantum channels",
-                        "Interspecies relationship patterns supporting biodiversity",
-                        "Collective intelligence mechanisms enabling group decision-making",
-                        "Consciousness connections with documented healing and support behaviors"
-                    ]
-                },
-                apply: {
-                    summary: `${speciesName} applies multidimensional intelligence through adaptive problem-solving, ecosystem optimization, cultural transmission, and consciousness applications that maintain natural harmony.`,
-                    details: [
-                        "Adaptive problem-solving with documented innovation examples",
-                        "Environmental optimization supporting ecosystem health",
-                        "Cultural knowledge transmission across generations",
-                        "Healing and regenerative applications affecting community health",
-                        "Consciousness applications supporting collective intelligence"
-                    ]
-                },
-                humanLearnings: `Humans can learn revolutionary approaches to consciousness, adaptation, healing, and collective intelligence from ${speciesName}. Their multidimensional awareness offers insights into temporal intelligence, energetic sensitivity, regenerative healing, and planetary consciousness that could transform human society and enable conscious evolution.`,
-                conservationWisdom: `Protecting ${speciesName} preserves irreplaceable forms of consciousness essential for planetary health, technological innovation, and consciousness evolution. Each individual represents millions of years of intelligence evolution with applications in biomimicry, consciousness research, and ecosystem restoration worth billions in economic and ecological value.`,
-                quantumAspects: "Emerging quantum biology research suggests consciousness connections across all life forms, with documented biofield interactions, electromagnetic sensitivity, and morphic resonance patterns that connect individual awareness to planetary consciousness networks.",
-                temporalIntelligence: `${speciesName} demonstrates sophisticated time perception including seasonal cycles, environmental pattern recognition, and long-term memory systems that enable predictive environmental responses and cultural knowledge preservation.`,
-                energeticIntelligence: `Biofield research documents ${speciesName}'s electromagnetic sensitivity, energy optimization strategies, healing capabilities, and quantum coherence in biological systems that support individual and ecosystem health.`,
-                collectiveWisdom: `${speciesName} exhibits remarkable collective intelligence through group decision-making, distributed problem-solving, information sharing across populations, and emergent behaviors that optimize survival and ecosystem contribution.`,
-                adaptiveStrategies: `${speciesName} demonstrates extraordinary adaptation including real-time environmental responses, behavioral flexibility, evolutionary resilience, and crisis management strategies that maintain species integrity across changing conditions.`,
-                biomimicryPotential: `${speciesName}-inspired technologies represent significant innovation potential in sensing systems, healing applications, adaptive materials, collective intelligence algorithms, and consciousness research with applications worth millions in economic value.`,
-                sources: [
-                    "Enhanced species intelligence framework with multidimensional analysis",
-                    "Consciousness and quantum biology research compilation",
-                    "Ecological intelligence and interspecies communication studies",
-                    "Biomimicry and technological innovation research",
-                    "Indigenous knowledge and traditional ecological wisdom"
-                ]
-            };
-        }
-
-        // Usage tracking functions
+        // Utility functions
         function updateUsageDisplay() {
             const today = new Date().toDateString();
             const todayUsage = dailyUsage[today] || 0;
-            const remaining = CONFIG.DAILY_SEARCH_LIMIT - todayUsage;
             const budgetPercent = (monthlySpend / CONFIG.MONTHLY_BUDGET * 100).toFixed(1);
             
             document.getElementById('usageDisplay').innerHTML = `
@@ -1763,19 +1222,16 @@ The synthesis of these findings suggests that Earth hosts a planetary intelligen
             `;
         }
 
-        // 3D Constellation functions
         function initializeConstellation() {
             const canvas = document.getElementById('constellationCanvas');
             const ctx = canvas.getContext('2d');
             
-            // Set canvas size
             const container = document.getElementById('constellationContainer');
             canvas.width = container.offsetWidth;
             canvas.height = 400;
             
-            // Initial empty state
-            ctx.fillStyle = 'rgba(255, 255, 255, 0.1)';
-            ctx.font = '16px Arial';
+            ctx.fillStyle = 'rgba(111, 154, 76, 0.3)';
+            ctx.font = '16px Poppins';
             ctx.textAlign = 'center';
             ctx.fillText('Enhanced Species Constellation will appear here after research', canvas.width/2, canvas.height/2);
         }
@@ -1785,19 +1241,10 @@ The synthesis of these findings suggests that Earth hosts a planetary intelligen
             const canvas = document.getElementById('constellationCanvas');
             const ctx = canvas.getContext('2d');
             
-            // Show constellation
             container.style.display = 'block';
-            
-            // Clear canvas
             ctx.clearRect(0, 0, canvas.width, canvas.height);
-            
-            // Set canvas size
             canvas.width = container.offsetWidth;
             canvas.height = 400;
-            
-            // Enhanced constellation with intelligence dimensions
-            ctx.fillStyle = 'rgba(255, 255, 255, 0.8)';
-            ctx.strokeStyle = 'rgba(255, 255, 255, 0.3)';
             
             const centerX = canvas.width / 2;
             const centerY = canvas.height / 2;
@@ -1808,44 +1255,43 @@ The synthesis of these findings suggests that Earth hosts a planetary intelligen
                 const x = centerX + Math.cos(angle) * radius;
                 const y = centerY + Math.sin(angle) * radius;
                 
-                // Draw enhanced connections to center
+                // Draw connections
                 ctx.beginPath();
                 ctx.moveTo(centerX, centerY);
                 ctx.lineTo(x, y);
                 ctx.lineWidth = species.researchBacked ? 3 : 1;
-                ctx.strokeStyle = species.researchBacked ? 'rgba(78, 205, 196, 0.8)' : 'rgba(255, 255, 255, 0.3)';
+                ctx.strokeStyle = species.researchBacked ? '#6f9a4c' : 'rgba(111, 154, 76, 0.5)';
                 ctx.stroke();
                 
-                // Draw enhanced species node
+                // Draw species node
                 ctx.beginPath();
                 ctx.arc(x, y, 10, 0, 2 * Math.PI);
-                ctx.fillStyle = species.researchBacked ? 'rgba(78, 205, 196, 0.9)' : 'rgba(255, 255, 255, 0.8)';
+                ctx.fillStyle = species.researchBacked ? '#6f9a4c' : 'rgba(111, 154, 76, 0.7)';
                 ctx.fill();
                 
-                // Draw species name with enhancement indicator
-                ctx.font = '12px Arial';
+                // Draw species name
+                ctx.font = '12px Poppins';
                 ctx.textAlign = 'center';
-                ctx.fillStyle = 'white';
+                ctx.fillStyle = '#47485f';
                 ctx.fillText(species.species, x, y + 25);
                 if (species.researchBacked) {
                     ctx.fillText('✨', x, y + 35);
                 }
             });
             
-            // Draw enhanced center node
+            // Draw center node
             ctx.beginPath();
             ctx.arc(centerX, centerY, 15, 0, 2 * Math.PI);
-            ctx.fillStyle = 'rgba(255, 215, 0, 0.9)';
+            ctx.fillStyle = '#e7c64d';
             ctx.fill();
             
-            ctx.fillStyle = 'rgba(255, 255, 255, 0.9)';
-            ctx.font = '14px Arial';
+            ctx.fillStyle = '#47485f';
+            ctx.font = '14px Poppins';
             ctx.fillText('Enhanced', centerX, centerY - 8);
             ctx.fillText('Planetary', centerX, centerY + 5);
             ctx.fillText('Intelligence', centerX, centerY + 18);
         }
 
-        // Utility functions
         function resetSearch() {
             document.getElementById('species1').value = '';
             document.getElementById('species2').value = '';
@@ -1853,7 +1299,7 @@ The synthesis of these findings suggests that Earth hosts a planetary intelligen
             document.getElementById('species4').value = '';
             document.getElementById('species5').value = '';
             document.getElementById('includeIndigenous').checked = false;
-            document.getElementById('includeBiomimicry').checked = false;
+            document.getElementById('includeBiomicry').checked = false;
             document.getElementById('includeHuman').checked = false;
             document.getElementById('results').innerHTML = '';
             document.getElementById('constellationContainer').style.display = 'none';
@@ -1868,14 +1314,270 @@ The synthesis of these findings suggests that Earth hosts a planetary intelligen
             document.getElementById('contributionModal').style.display = 'none';
         }
 
+        // Enhanced PDF Generation Function
+        function generateEnhancedPDFReport() {
+            if (!currentSpeciesData || currentSpeciesData.length === 0) {
+                alert('No species data available for PDF generation. Please conduct research first.');
+                return;
+            }
+            
+            try {
+                if (typeof window.jspdf === 'undefined' || !window.jspdf.jsPDF) {
+                    console.error('jsPDF not loaded properly');
+                    alert('PDF library is still loading. Please wait a moment and try again.');
+                    return;
+                }
+
+                const { jsPDF } = window.jspdf;
+                const doc = new jsPDF();
+                
+                const pageWidth = doc.internal.pageSize.getWidth();
+                const pageHeight = doc.internal.pageSize.getHeight();
+                const margin = 20;
+                let yPosition = margin;
+                
+                // ILF Color palette for PDF
+                const primaryColor = [71, 72, 95]; // #47485f
+                const secondaryColor = [111, 154, 76]; // #6f9a4c
+                const accentColor = [231, 198, 77]; // #e7c64d
+                
+                function checkAndAddPage(requiredHeight = 30) {
+                    if (yPosition + requiredHeight > pageHeight - margin) {
+                        doc.addPage();
+                        yPosition = margin;
+                        return true;
+                    }
+                    return false;
+                }
+                
+                function addWrappedText(text, fontSize = 10, lineHeight = 5, color = [62, 58, 68]) {
+                    if (!text || typeof text !== 'string') {
+                        text = 'Information not available';
+                    }
+                    
+                    doc.setFontSize(fontSize);
+                    doc.setTextColor(...color);
+                    const lines = doc.splitTextToSize(text, pageWidth - (margin * 2) - 20);
+                    
+                    for (let line of lines) {
+                        checkAndAddPage();
+                        doc.text(line, margin + 10, yPosition);
+                        yPosition += lineHeight;
+                    }
+                    yPosition += 2;
+                }
+                
+                // Title Page with ILF styling
+                doc.setFontSize(24);
+                doc.setTextColor(...primaryColor);
+                doc.text('Species Intelligence Research Report', margin, yPosition);
+                yPosition += 15;
+                
+                doc.setFontSize(16);
+                doc.setTextColor(...secondaryColor);
+                doc.text('Perceive • Relate • Apply Framework with Enhanced Dimensions', margin, yPosition);
+                yPosition += 12;
+                
+                doc.setFontSize(12);
+                doc.setTextColor(62, 58, 68);
+                
+                // FIXED: Changed variable name to avoid conflict
+                const pdfSpeciesNames = currentSpeciesData.map(d => d.species || 'Unknown Species').join(', ');
+                doc.text(`Research Focus: ${pdfSpeciesNames}`, margin, yPosition);
+                yPosition += 8;
+                
+                const reportDate = new Date().toLocaleDateString('en-US', { 
+                    year: 'numeric', 
+                    month: 'long', 
+                    day: 'numeric' 
+                });
+                doc.text(`Generated: ${reportDate}`, margin, yPosition);
+                yPosition += 8;
+                
+                doc.text('Powered by Claude AI & Intuitive Learning Foundation Framework', margin, yPosition);
+                yPosition += 20;
+                
+                // Executive Summary
+                doc.setFontSize(16);
+                doc.setTextColor(...secondaryColor);
+                doc.text('Executive Summary', margin, yPosition);
+                yPosition += 10;
+                
+                const executiveSummary = `This comprehensive research explores ${currentSpeciesData.length} species through the revolutionary Perceive/Relate/Apply framework with enhanced intelligence dimensions. The research reveals sophisticated temporal awareness, energetic intelligence, collective wisdom, and adaptive strategies that challenge traditional views of intelligence. Each species demonstrates unique consciousness capabilities that contribute to planetary intelligence networks and offer profound lessons for human consciousness evolution.`;
+                addWrappedText(executiveSummary, 10, 5);
+                yPosition += 10;
+                
+                // Individual Species Reports
+                currentSpeciesData.forEach((species, index) => {
+                    checkAndAddPage(40);
+                    
+                    // Species Header
+                    doc.setFontSize(18);
+                    doc.setTextColor(...primaryColor);
+                    doc.text(`${species.species || 'Unknown Species'} Intelligence Profile`, margin, yPosition);
+                    yPosition += 8;
+                    
+                    // Research type
+                    doc.setFontSize(10);
+                    doc.setTextColor(...accentColor);
+                    const researchType = species.researchBacked ? 'AI-Enhanced Research' : 'Framework Analysis';
+                    doc.text(`Research Type: ${researchType}`, margin, yPosition);
+                    yPosition += 12;
+                    
+                    // Wisdom Insight
+                    doc.setFontSize(14);
+                    doc.setTextColor(...secondaryColor);
+                    doc.text('Key Wisdom Insight', margin, yPosition);
+                    yPosition += 8;
+                    addWrappedText(species.wisdomInsight || 'This species demonstrates unique intelligence worthy of deeper study.', 10, 5);
+                    yPosition += 5;
+                    
+                    // Framework Sections
+                    ['perceive', 'relate', 'apply'].forEach(section => {
+                        checkAndAddPage(25);
+                        const sectionTitle = section.toUpperCase() + ' • ' + 
+                            (section === 'perceive' ? 'How They Perceive Their World' :
+                             section === 'relate' ? 'How They Relate To Their World' :
+                             'How They Apply Their Intelligence');
+                        
+                        doc.setFontSize(14);
+                        doc.setTextColor(...primaryColor);
+                        doc.text(sectionTitle, margin, yPosition);
+                        yPosition += 8;
+                        
+                        const sectionData = species[section];
+                        if (sectionData && sectionData.summary) {
+                            addWrappedText(sectionData.summary, 10, 5);
+                            
+                            if (sectionData.details && Array.isArray(sectionData.details)) {
+                                doc.setFontSize(10);
+                                doc.setTextColor(62, 58, 68);
+                                sectionData.details.forEach(detail => {
+                                    if (detail) {
+                                        checkAndAddPage();
+                                        doc.text(`• ${detail}`, margin + 5, yPosition);
+                                        yPosition += 5;
+                                    }
+                                });
+                            }
+                        }
+                        yPosition += 8;
+                    });
+                    
+                    // Enhanced Dimensions
+                    const enhancedDimensions = [
+                        { key: 'temporalIntelligence', title: 'Temporal Intelligence' },
+                        { key: 'energeticIntelligence', title: 'Energetic Intelligence' },
+                        { key: 'collectiveWisdom', title: 'Collective Wisdom' },
+                        { key: 'adaptiveStrategies', title: 'Adaptive Strategies' },
+                        { key: 'quantumAspects', title: 'Quantum Biology & Consciousness' },
+                        { key: 'humanLearnings', title: 'Human Learning Opportunities' },
+                        { key: 'conservationWisdom', title: 'Conservation Intelligence' }
+                    ];
+                    
+                    enhancedDimensions.forEach(dimension => {
+                        if (species[dimension.key]) {
+                            checkAndAddPage(15);
+                            doc.setFontSize(12);
+                            doc.setTextColor(...secondaryColor);
+                            doc.text(dimension.title, margin, yPosition);
+                            yPosition += 6;
+                            addWrappedText(species[dimension.key], 9, 4);
+                            yPosition += 5;
+                        }
+                    });
+                });
+                
+                // Sources
+                checkAndAddPage(30);
+                doc.setFontSize(16);
+                doc.setTextColor(...primaryColor);
+                doc.text('Sources and References', margin, yPosition);
+                yPosition += 10;
+                
+                const allSources = [...new Set(currentSpeciesData.flatMap(d => d.sources || ['Enhanced research framework']))];
+                doc.setFontSize(9);
+                doc.setTextColor(62, 58, 68);
+                
+                allSources.forEach((source, index) => {
+                    if (source) {
+                        checkAndAddPage();
+                        doc.text(`${index + 1}. ${source}`, margin, yPosition);
+                        yPosition += 4;
+                    }
+                });
+                yPosition += 10;
+                
+                // Footer
+                doc.setFontSize(8);
+                doc.setTextColor(128, 128, 128);
+                doc.text('Generated by Species Intelligence Research Agent • Intuitive Learning Foundation', margin, yPosition);
+                doc.text('Visit: intuitivelearningfoundation.org • generateharmony.com • kerrilake.com', margin, yPosition + 4);
+                
+                // Save PDF
+                const filename = `Species-Intelligence-Report-${pdfSpeciesNames.replace(/[^a-zA-Z0-9]/g, '-')}-${new Date().toISOString().split('T')[0]}.pdf`;
+                doc.save(filename);
+                
+                setTimeout(() => {
+                    alert(`✅ PDF Report Generated Successfully!\n\nFile: ${filename}\n\nThe report includes comprehensive research with enhanced intelligence dimensions and ILF styling.`);
+                }, 500);
+                
+            } catch (error) {
+                console.error('PDF Generation Error:', error);
+                alert(`Error generating PDF: ${error.message}\n\nPlease try again or refresh the page.`);
+            }
+        }
+
+        // Enhanced fallback data functions
+        function createEnhancedFallback(speciesName, options) {
+            return {
+                species: speciesName,
+                wisdomInsight: `${speciesName} represents a remarkable form of consciousness that has evolved unique ways of perceiving, relating to, and applying intelligence within their environment. Their cognitive abilities demonstrate that intelligence manifests in diverse forms across the natural world, each adapted to specific ecological niches. Understanding their intelligence offers profound insights into alternative ways of being conscious and aware.`,
+                perceive: {
+                    summary: `${speciesName} perceives their world through sophisticated sensory systems adapted to their environmental niche. Their perceptual capabilities enable complex information gathering about surroundings and social dynamics. These adaptations support survival and environmental interaction.`,
+                    details: ["Specialized sensory capabilities", "Environmental awareness systems", "Social perception abilities", "Quantum field sensitivity"]
+                },
+                relate: {
+                    summary: `${speciesName} maintains relationships through communication and social structures. Their intelligence encompasses species connections and ecosystem relationships. These interactions support survival and ecosystem balance.`,
+                    details: ["Social communication systems", "Ecological partnerships", "Community cooperation", "Consciousness connections"]
+                },
+                apply: {
+                    summary: `${speciesName} applies intelligence through problem-solving and adaptive strategies. Their abilities enable environmental manipulation and learning from experience. These applications contribute to survival and ecosystem health.`,
+                    details: ["Problem-solving behaviors", "Environmental adaptation", "Learning systems", "Ecosystem contributions"]
+                },
+                temporalIntelligence: `${speciesName} demonstrates sophisticated temporal intelligence through synchronization with natural cycles and environmental rhythms. They possess internal biological clocks that coordinate with seasonal changes and daily patterns. Their temporal awareness enables precise timing for critical activities and long-term environmental adaptation. This time perception supports migration, reproduction, and resource management across multiple temporal scales.`,
+                energeticIntelligence: `${speciesName} exhibits remarkable energetic intelligence through sensitivity to electromagnetic fields and biofield interactions. They have evolved mechanisms for energy conservation and optimization in their daily activities. Their systems detect subtle energy fluctuations that guide navigation and social interactions. This energetic awareness contributes to health maintenance and ecosystem coordination.`,
+                collectiveWisdom: `${speciesName} displays sophisticated collective wisdom through group decision-making and information sharing capabilities. Their social structures enable distributed intelligence where individual knowledge contributes to collective problem-solving. They demonstrate emergent behaviors where group intelligence exceeds individual capabilities. This collective consciousness enables survival through cooperation and coordinated responses.`,
+                adaptiveStrategies: `${speciesName} exhibits extraordinary adaptive strategies enabling survival across changing environmental conditions. They possess rapid response mechanisms for environmental threats and resource fluctuations. Their behavioral flexibility allows strategy modification based on experience and circumstances. These adaptive mechanisms enable continuous environmental adaptation while maintaining species integrity.`,
+                humanLearnings: `Humans can learn valuable lessons from ${speciesName} about intelligence and environmental adaptation. Their strategies offer insights into sustainable living and community cooperation. Their approaches may inspire technological and social innovations. Understanding expands concepts of consciousness across species.`,
+                conservationWisdom: `${speciesName} plays crucial ecosystem roles requiring conservation for environmental stability. Their intelligence supports biodiversity and habitat integrity. Threats include habitat loss and human disruption of natural behaviors. Conservation must consider their intelligence and social requirements.`,
+                quantumAspects: `${speciesName} may utilize quantum processes in sensory systems and cognitive processing. Research suggests quantum effects in navigation and environmental sensitivity. Understanding reveals insights into consciousness across species.`,
+                sources: ["Species intelligence research", "Consciousness studies", "Ecological research"],
+                researchBacked: false,
+                fallbackReason: "Enhanced fallback with ILF integration",
+                timestamp: new Date().toISOString()
+            };
+        }
+
         // Community contribution handling
-        document.getElementById('contributionForm').addEventListener('submit', async function(e) {
-            e.preventDefault();
+        function submitContribution() {
+            const data = {
+                contributorName: document.getElementById('contributorName').value,
+                contributorEmail: document.getElementById('contributorEmail').value,
+                contributorCredentials: document.getElementById('contributorCredentials').value,
+                speciesName: document.getElementById('speciesName').value,
+                wisdomInsight: document.getElementById('wisdomInsight').value,
+                perceiveData: document.getElementById('perceiveData').value,
+                relateData: document.getElementById('relateData').value,
+                applyData: document.getElementById('applyData').value,
+                humanLearnings: document.getElementById('humanLearnings').value,
+                conservationWisdom: document.getElementById('conservationWisdom').value,
+                sources: document.getElementById('sources').value,
+                experienceType: document.getElementById('experienceType').value,
+                accuracy: document.getElementById('accuracy').checked,
+                permission: document.getElementById('permission').checked
+            };
             
-            const formData = new FormData(e.target);
-            const data = Object.fromEntries(formData.entries());
-            
-            // Basic validation
             if (data.contributorName.length < 2 || data.contributorEmail.length < 5) {
                 alert('Please provide valid name and email.');
                 return;
@@ -1886,61 +1588,37 @@ The synthesis of these findings suggests that Earth hosts a planetary intelligen
                 return;
             }
             
+            if (!data.accuracy || !data.permission) {
+                alert('Please check both required acknowledgment boxes.');
+                return;
+            }
+            
             try {
-                const submitBtn = e.target.querySelector('button[type="submit"]');
-                submitBtn.textContent = 'Submitting...';
-                submitBtn.disabled = true;
+                alert('Thank you! Your contribution has been submitted for review. (Note: This is a demo - no actual submission occurred)');
+                closeContributionModal();
                 
-                // Submit to Netlify function
-                const response = await fetch('/.netlify/functions/submit-contribution', {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json',
-                    },
-                    body: JSON.stringify(data)
-                });
-                
-                if (response.ok) {
-                    alert('Thank you! Your enhanced contribution has been submitted for review. You will receive a confirmation email shortly.');
-                    closeContributionModal();
-                    e.target.reset();
-                } else {
-                    throw new Error('Submission failed');
-                }
+                // Reset form
+                document.getElementById('contributorName').value = '';
+                document.getElementById('contributorEmail').value = '';
+                document.getElementById('contributorCredentials').value = '';
+                document.getElementById('speciesName').value = '';
+                document.getElementById('wisdomInsight').value = '';
+                document.getElementById('perceiveData').value = '';
+                document.getElementById('relateData').value = '';
+                document.getElementById('applyData').value = '';
+                document.getElementById('humanLearnings').value = '';
+                document.getElementById('conservationWisdom').value = '';
+                document.getElementById('sources').value = '';
+                document.getElementById('experienceType').value = '';
+                document.getElementById('accuracy').checked = false;
+                document.getElementById('permission').checked = false;
                 
             } catch (error) {
                 alert('Error submitting contribution. Please try again or contact info@kerrilake.com');
-            } finally {
-                const submitBtn = e.target.querySelector('button[type="submit"]');
-                submitBtn.textContent = 'Submit Contribution';
-                submitBtn.disabled = false;
-            }
-        });
-
-        // Budget notification (placeholder - would integrate with email service)
-        async function sendBudgetNotification(currentSpend) {
-            const percent = (currentSpend / CONFIG.MONTHLY_BUDGET * 100).toFixed(1);
-            console.log(`Enhanced budget notification: ${percent}% of monthly budget used (${currentSpend.toFixed(2)})`);
-            
-            try {
-                await fetch('/.netlify/functions/budget-notification', {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json',
-                    },
-                    body: JSON.stringify({
-                        currentSpend: currentSpend,
-                        budgetPercent: percent,
-                        monthlyBudget: CONFIG.MONTHLY_BUDGET,
-                        enhanced: true
-                    })
-                });
-            } catch (error) {
-                console.error('Failed to send enhanced budget notification:', error);
             }
         }
 
-        // Close modal when clicking outside
+        // Event listeners
         window.addEventListener('click', function(event) {
             const modal = document.getElementById('contributionModal');
             if (event.target === modal) {
@@ -1948,7 +1626,6 @@ The synthesis of these findings suggests that Earth hosts a planetary intelligen
             }
         });
 
-        // Keyboard shortcuts
         document.addEventListener('keydown', function(e) {
             if (e.key === 'Escape') {
                 closeContributionModal();
@@ -1959,10 +1636,9 @@ The synthesis of these findings suggests that Earth hosts a planetary intelligen
             }
         });
 
-        console.log('🧬 Enhanced Species Intelligence Research Agent loaded successfully!');
-        console.log('🌍 Ready to explore multidimensional intelligence through the enhanced Perceive • Relate • Apply framework');
-        console.log('✨ Enhanced with 6 intelligence dimensions: Temporal, Energetic, Collective, Adaptive, Geographic, and Cultural');
-        console.log('🔬 Comprehensive PDF generation, quantum consciousness research, and biomimicry applications');
+        console.log('🧬 Enhanced Species Intelligence Research Agent loaded with ILF styling!');
+        console.log('🌍 Ready to explore intelligence through the enhanced framework with beautiful ILF design');
+        console.log('✨ Integrated with Poppins typography and natural color palette');
     </script>
 </body>
 </html>
