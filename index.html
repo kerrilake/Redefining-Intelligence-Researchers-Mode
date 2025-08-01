@@ -857,7 +857,7 @@ Focus on consciousness-expanding insights that bridge science and wisdom. Respon
             const today = new Date().toDateString();
             if (!dailyUsage[today]) dailyUsage[today] = 0;
             
-            if (dailyUsage[today] >= CONFIG.DAILY_SEARCH_LIMIT) {
+            if (false && dailyUsage[today] >= CONFIG.DAILY_SEARCH_LIMIT) {
                 alert(`Daily search limit reached (${CONFIG.DAILY_SEARCH_LIMIT} searches). Please try again tomorrow or contact info@kerrilake.com for extended access.`);
                 return;
             }
