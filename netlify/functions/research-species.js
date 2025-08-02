@@ -1,5 +1,9 @@
-// netlify/functions/research-species.js - BUG FIXED VERSION
+// netlify/functions/research-species.js - DEBUG VERSION
 exports.handler = async (event, context) => {
+    console.log('🔥 FUNCTION CALLED - START');
+    console.log('Method:', event.httpMethod);
+    console.log('Body:', event.body);
+    
     const headers = {
         'Access-Control-Allow-Origin': '*',
         'Access-Control-Allow-Headers': 'Content-Type',
@@ -8,25 +12,30 @@ exports.handler = async (event, context) => {
     };
 
     if (event.httpMethod === 'OPTIONS') {
+        console.log('🔥 CORS preflight request');
         return { statusCode: 200, headers, body: JSON.stringify({ message: 'CORS preflight successful' }) };
     }
 
     if (event.httpMethod !== 'POST') {
+        console.log('🔥 Wrong method:', event.httpMethod);
         return { statusCode: 405, headers, body: JSON.stringify({ error: 'Method not allowed. Use POST.' }) };
     }
 
-    let species = 'Unknown Species'; // Initialize with default value
+    let species = 'Unknown Species';
 
     try {
+        console.log('🔥 Parsing request body...');
         const requestBody = JSON.parse(event.body || '{}');
-        species = requestBody.species || 'Unknown Species'; // Set species from request
+        species = requestBody.species || 'Unknown Species';
         const options = requestBody.options || {};
         
-        console.log('=== FIXED FUNCTION START ===');
-        console.log('Species:', species);
-        console.log('API Key available:', !!process.env.ANTHROPIC_API_KEY);
+        console.log('🔥 Species:', species);
+        console.log('🔥 Options:', options);
+        console.log('🔥 API Key available:', !!process.env.ANTHROPIC_API_KEY);
+        console.log('🔥 API Key first 10 chars:', process.env.ANTHROPIC_API_KEY ? process.env.ANTHROPIC_API_KEY.substring(0, 10) + '...' : 'MISSING');
 
         if (!requestBody.species) {
+            console.log('🔥 Missing species parameter');
             return {
                 statusCode: 400,
                 headers,
@@ -38,63 +47,47 @@ exports.handler = async (event, context) => {
         }
 
         if (!process.env.ANTHROPIC_API_KEY) {
-            console.error('ANTHROPIC_API_KEY not found in environment variables');
+            console.log('🔥 API key missing');
             return {
                 statusCode: 500,
                 headers,
                 body: JSON.stringify({ 
-                    error: 'API key not configured',
-                    details: 'ANTHROPIC_API_KEY missing from environment variables'
+                    error: 'API key not configured'
                 })
             };
         }
 
-        // Simple, fast prompt
-        const prompt = `Research ${species} intelligence using the Perceive/Relate/Apply framework with enhanced dimensions.
+        // Simple prompt for testing
+        const prompt = `You are a species intelligence researcher. Research ${species} using the Perceive/Relate/Apply framework.
 
-FRAMEWORK:
-- PERCEIVE: How they sense and process their world
-- RELATE: How they connect with environment and others  
-- APPLY: How they use intelligence for survival
-
-ENHANCED DIMENSIONS (required):
-- TEMPORAL: Time perception, seasonal cycles
-- ENERGETIC: Biofield sensitivity, energy optimization
-- COLLECTIVE: Group consciousness, collective decisions
-- ADAPTIVE: Real-time adaptation, resilience
-
-${options.includeIndigenous ? 'Include indigenous wisdom.' : ''}
-${options.includeBiomimicry ? 'Include biomimicry applications.' : ''}
-
-Respond with JSON:
+Respond with valid JSON only:
 {
   "species": "${species}",
-  "wisdomInsight": "Key insight (3-4 sentences)",
+  "wisdomInsight": "A profound insight about ${species} intelligence (2-3 sentences)",
   "perceive": {
-    "summary": "How they perceive (3-4 sentences)",
-    "details": ["capability 1", "capability 2", "capability 3", "quantum aspect"]
+    "summary": "How ${species} perceives their world (2-3 sentences)",
+    "details": ["perceptual capability 1", "capability 2", "capability 3", "quantum sensing"]
   },
   "relate": {
-    "summary": "How they relate (3-4 sentences)",
-    "details": ["relationship 1", "relationship 2", "relationship 3", "consciousness connection"]
+    "summary": "How ${species} relates to their world (2-3 sentences)", 
+    "details": ["social structure", "communication", "ecological relationships", "consciousness connections"]
   },
   "apply": {
-    "summary": "How they apply intelligence (3-4 sentences)",
-    "details": ["application 1", "application 2", "application 3", "ecosystem contribution"]
+    "summary": "How ${species} applies intelligence (2-3 sentences)",
+    "details": ["problem solving", "tool use", "learning", "ecosystem contributions"]
   },
-  "temporalIntelligence": "Time perception and cycles (4-5 sentences)",
-  "energeticIntelligence": "Energy interactions and optimization (4-5 sentences)",
-  "collectiveWisdom": "Group consciousness and decisions (4-5 sentences)",
-  "adaptiveStrategies": "Adaptation and resilience (4-5 sentences)",
-  "humanLearnings": "What humans can learn (4-5 sentences)",
-  "conservationWisdom": "Conservation insights (4-5 sentences)",
-  "quantumAspects": "Quantum biology connections (3-4 sentences)",
+  "temporalIntelligence": "Time perception abilities (3-4 sentences)",
+  "energeticIntelligence": "Energy sensitivity and optimization (3-4 sentences)",
+  "collectiveWisdom": "Group consciousness and collective decisions (3-4 sentences)",
+  "adaptiveStrategies": "Adaptation and resilience mechanisms (3-4 sentences)",
+  "humanLearnings": "What humans can learn from ${species} (3-4 sentences)",
+  "conservationWisdom": "Conservation insights for ${species} (3-4 sentences)",
+  "quantumAspects": "Quantum biology connections (2-3 sentences)",
   "sources": ["source1", "source2", "source3"]
-}
+}`;
 
-Respond only with valid JSON.`;
-
-        console.log('Making API call to Anthropic...');
+        console.log('🔥 Making API call to Anthropic...');
+        console.log('🔥 Prompt length:', prompt.length);
         
         const response = await fetch('https://api.anthropic.com/v1/messages', {
             method: 'POST',
@@ -105,64 +98,74 @@ Respond only with valid JSON.`;
             },
             body: JSON.stringify({
                 model: 'claude-3-5-sonnet-20241022',
-                max_tokens: 2000,
+                max_tokens: 3000,
                 messages: [{ role: 'user', content: prompt }]
             })
         });
 
-        console.log('API Response status:', response.status);
+        console.log('🔥 API Response status:', response.status);
+        console.log('🔥 API Response ok:', response.ok);
         
         if (!response.ok) {
             const errorText = await response.text();
-            console.error('API Error:', response.status, errorText);
-            throw new Error(`API Error: ${response.status} - ${errorText.substring(0, 100)}`);
+            console.log('🔥 API Error response:', errorText);
+            throw new Error(`API Error: ${response.status} - ${errorText.substring(0, 200)}`);
         }
 
         const apiData = await response.json();
+        console.log('🔥 API Data received, content length:', apiData.content?.[0]?.text?.length || 0);
+        
         const responseText = apiData.content?.[0]?.text || '';
         
-        console.log('Response received, length:', responseText.length);
-
         if (!responseText) {
+            console.log('🔥 No response text from API');
             throw new Error('No response content from API');
         }
 
-        // Parse the response
+        console.log('🔥 Raw response first 200 chars:', responseText.substring(0, 200));
+
+        // Clean and parse the response
         let cleanedResponse = responseText.replace(/```json\n?/g, "").replace(/```\n?/g, "").trim();
+        
+        // Try to extract JSON if wrapped in other text
         const jsonMatch = cleanedResponse.match(/\{[\s\S]*\}/);
         if (jsonMatch) {
             cleanedResponse = jsonMatch[0];
         }
 
+        console.log('🔥 Cleaned response first 200 chars:', cleanedResponse.substring(0, 200));
+
         let parsedData;
         try {
             parsedData = JSON.parse(cleanedResponse);
-            console.log('✅ JSON parsed successfully - AI response received');
+            console.log('🔥 JSON parsed successfully!');
+            console.log('🔥 Species in response:', parsedData.species);
         } catch (parseError) {
-            console.error('JSON parse error:', parseError);
-            throw new Error('Failed to parse AI response');
+            console.log('🔥 JSON parse error:', parseError.message);
+            console.log('🔥 Failed to parse, using fallback');
+            throw new Error('Failed to parse AI response as JSON');
         }
 
-        // Enhanced response with fallbacks for missing fields
+        // Return successful AI response
         const finalResponse = {
             species: parsedData.species || species,
-            wisdomInsight: parsedData.wisdomInsight || createWisdomFallback(species),
-            perceive: parsedData.perceive || createPerceiveFallback(species),
-            relate: parsedData.relate || createRelateFallback(species),
-            apply: parsedData.apply || createApplyFallback(species),
-            temporalIntelligence: parsedData.temporalIntelligence || createTemporalFallback(species),
-            energeticIntelligence: parsedData.energeticIntelligence || createEnergeticFallback(species),
-            collectiveWisdom: parsedData.collectiveWisdom || createCollectiveFallback(species),
-            adaptiveStrategies: parsedData.adaptiveStrategies || createAdaptiveFallback(species),
-            humanLearnings: parsedData.humanLearnings || createHumanLearningsFallback(species),
-            conservationWisdom: parsedData.conservationWisdom || createConservationFallback(species),
-            quantumAspects: parsedData.quantumAspects || createQuantumFallback(species),
-            sources: parsedData.sources || ["Research compilation", "Consciousness studies", "Ecological intelligence"],
+            wisdomInsight: parsedData.wisdomInsight || `${species} demonstrates remarkable intelligence.`,
+            perceive: parsedData.perceive || { summary: "Advanced perception", details: ["Sensory capabilities"] },
+            relate: parsedData.relate || { summary: "Complex relationships", details: ["Social structures"] },
+            apply: parsedData.apply || { summary: "Problem-solving abilities", details: ["Tool use"] },
+            temporalIntelligence: parsedData.temporalIntelligence || "Sophisticated time perception.",
+            energeticIntelligence: parsedData.energeticIntelligence || "Energy optimization abilities.",
+            collectiveWisdom: parsedData.collectiveWisdom || "Group decision-making capabilities.",
+            adaptiveStrategies: parsedData.adaptiveStrategies || "Remarkable adaptation mechanisms.",
+            humanLearnings: parsedData.humanLearnings || "Valuable lessons for humans.",
+            conservationWisdom: parsedData.conservationWisdom || "Important conservation insights.",
+            quantumAspects: parsedData.quantumAspects || "Potential quantum processes.",
+            sources: parsedData.sources || ["AI research", "Scientific studies"],
             researchBacked: true,
             timestamp: new Date().toISOString()
         };
 
-        console.log('✅ SUCCESS - Returning AI-powered response');
+        console.log('🔥 SUCCESS - Returning AI response');
 
         return {
             statusCode: 200,
@@ -176,10 +179,11 @@ Respond only with valid JSON.`;
         };
 
     } catch (error) {
-        console.error('❌ Function error:', error.message);
+        console.log('🔥 ERROR caught:', error.message);
+        console.log('🔥 Error stack:', error.stack);
         
-        // Return enhanced fallback - species is now guaranteed to be defined
-        const fallbackResponse = createComprehensiveFallback(species);
+        // Return fallback
+        console.log('🔥 Returning fallback for species:', species);
         
         return {
             statusCode: 200,
@@ -187,100 +191,27 @@ Respond only with valid JSON.`;
             body: JSON.stringify({
                 success: true,
                 species: species,
-                response: fallbackResponse,
+                response: {
+                    species: species,
+                    wisdomInsight: `${species} represents a fascinating form of consciousness that demonstrates unique intelligence.`,
+                    perceive: { summary: "Advanced sensory systems", details: ["Specialized perception"] },
+                    relate: { summary: "Complex social relationships", details: ["Communication systems"] },
+                    apply: { summary: "Problem-solving behaviors", details: ["Adaptive strategies"] },
+                    temporalIntelligence: "Sophisticated temporal awareness and seasonal synchronization.",
+                    energeticIntelligence: "Energy sensitivity and optimization capabilities.",
+                    collectiveWisdom: "Group consciousness and collective decision-making.",
+                    adaptiveStrategies: "Remarkable adaptation and resilience mechanisms.",
+                    humanLearnings: "Valuable lessons for human consciousness development.",
+                    conservationWisdom: "Important insights for species conservation.",
+                    quantumAspects: "Potential quantum biological processes.",
+                    sources: ["Framework analysis"],
+                    researchBacked: false,
+                    fallbackReason: error.message,
+                    timestamp: new Date().toISOString()
+                },
                 timestamp: new Date().toISOString(),
-                note: 'Using enhanced fallback: ' + error.message
+                note: 'Using fallback due to: ' + error.message
             })
         };
     }
 };
-
-// Fallback functions with rich 4-5 sentence content
-function createWisdomFallback(speciesName) {
-    return `${speciesName} represents a remarkable form of consciousness that has evolved unique ways of perceiving, relating to, and applying intelligence within their environment over millions of years. Their cognitive abilities demonstrate that intelligence manifests in diverse forms across the natural world, each perfectly adapted to specific ecological niches and survival challenges. Through evolutionary refinement, ${speciesName} has developed sophisticated systems for processing information, making complex decisions, and adapting to changing environmental conditions with remarkable precision. Their intelligence offers profound insights into alternative ways of being conscious and aware in the world, challenging human assumptions about cognition and awareness.`;
-}
-
-function createTemporalFallback(speciesName) {
-    return `${speciesName} demonstrates sophisticated temporal intelligence through their ability to synchronize with natural cycles and environmental rhythms with extraordinary precision. They possess complex internal biological clocks that coordinate with seasonal changes, lunar phases, and daily light-dark cycles, enabling precise timing for critical life activities such as reproduction, migration, and resource gathering. Their temporal awareness extends to long-term pattern recognition, allowing them to anticipate environmental changes and prepare accordingly, often displaying predictive behaviors that suggest deep environmental memory. Research suggests they may perceive time differently than humans, experiencing temporal flow in ways that optimize their survival strategies and ecological relationships across multiple time scales. This temporal intelligence enables them to coordinate group behaviors with remarkable synchronization, migrate across vast distances with precise timing, and maintain optimal energy expenditure throughout different seasonal and daily cycles.`;
-}
-
-function createEnergeticFallback(speciesName) {
-    return `${speciesName} exhibits remarkable energetic intelligence through their ability to sense and interact with electromagnetic fields and biofields in their environment with sensitivity far beyond human capabilities. They have evolved sophisticated mechanisms for energy conservation and optimization, allowing them to maximize efficiency in their daily activities, survival strategies, and metabolic processes. Their nervous systems may be highly sensitive to subtle energy fluctuations that guide navigation, social interactions, and environmental awareness, including magnetic field variations and bioelectric signals from other organisms. Studies suggest they can detect and respond to energy patterns that are imperceptible to human senses, using these capabilities for long-distance communication, healing interactions, and ecosystem coordination. This energetic sensitivity contributes significantly to their ability to maintain health, communicate across distances, coordinate with their ecosystem's energy flows, and potentially access information through quantum field interactions.`;
-}
-
-function createCollectiveFallback(speciesName) {
-    return `${speciesName} displays sophisticated collective wisdom through their ability to share information and make decisions as a group that consistently exceed individual capabilities, creating emergent intelligence phenomena. Their social structures enable distributed intelligence where individual knowledge, experience, and sensory input contribute to collective problem-solving and environmental adaptation strategies. They demonstrate remarkable emergent behaviors where the group's intelligence surpasses what any individual could achieve alone, creating complex coordinated responses to challenges, opportunities, and environmental changes. Communication systems within their communities allow for rapid information transfer about resources, threats, environmental conditions, and social dynamics, often using multiple channels including chemical, acoustic, and potentially electromagnetic signals. This collective intelligence enables them to survive in complex environments through sophisticated cooperation, shared vigilance, coordinated responses, and collaborative decision-making processes that have been refined and optimized over countless generations.`;
-}
-
-function createAdaptiveFallback(speciesName) {
-    return `${speciesName} exhibits extraordinary adaptive strategies that enable them to thrive in changing environmental conditions through both immediate behavioral adjustments and longer-term evolutionary adaptations with remarkable flexibility. They possess rapid response mechanisms that allow real-time adaptation to environmental threats, resource availability fluctuations, social dynamics, and unexpected challenges with sophisticated decision-making capabilities. Their behavioral flexibility enables them to modify their strategies based on experience, environmental feedback, and changing circumstances, demonstrating advanced learning capabilities that extend far beyond simple conditioning to include complex problem-solving and innovation. Crisis response protocols within their behavioral repertoire allow them to survive extreme conditions, environmental disruptions, and population pressures through coordinated emergency behaviors and resource management strategies. These adaptive mechanisms represent millions of years of evolutionary refinement, creating remarkably resilient biological and behavioral systems that maintain species integrity while enabling continuous adaptation to new challenges, opportunities, and environmental conditions.`;
-}
-
-function createPerceiveFallback(speciesName) {
-    return {
-        summary: `${speciesName} perceives their world through sophisticated sensory systems that have evolved to detect environmental information crucial for survival, navigation, and social interaction with remarkable precision and sensitivity. Their perceptual capabilities often extend far beyond human sensory ranges, including sensitivity to electromagnetic fields, chemical gradients, subtle environmental changes, and possibly quantum field fluctuations. These sensory adaptations enable them to gather complex, multi-layered information about their surroundings and make informed decisions about behavior, movement, resource utilization, and social interactions.`,
-        details: [
-            "Specialized sensory organs adapted to their environmental niche with sensitivity exceeding human capabilities",
-            "Environmental awareness systems detecting weather patterns, seasonal shifts, and ecosystem dynamics",
-            "Social perception abilities enabling recognition of individuals and assessment of group dynamics",
-            "Potential quantum field sensitivity contributing to navigation and environmental awareness"
-        ]
-    };
-}
-
-function createRelateFallback(speciesName) {
-    return {
-        summary: `${speciesName} maintains complex relationships within their ecosystem through sophisticated communication systems, social structures, and ecological partnerships that have evolved over millions of years. Their relational intelligence encompasses both intraspecies connections and intricate interspecies relationships that contribute to ecosystem balance and biodiversity. These relationships are maintained through various forms of communication, from chemical signals and acoustic displays to behavioral demonstrations and possibly electromagnetic interactions.`,
-        details: [
-            "Social structures organizing group behavior, resource sharing, and cooperative activities through established hierarchies",
-            "Communication methods conveying complex information about threats, opportunities, and environmental conditions using multiple channels",
-            "Ecological relationships with other species creating mutual benefits and ecosystem stability through symbiotic partnerships",
-            "Consciousness connections enabling empathy, cooperation, and shared awareness experiences within and across species"
-        ]
-    };
-}
-
-function createApplyFallback(speciesName) {
-    return {
-        summary: `${speciesName} applies their intelligence through sophisticated problem-solving behaviors, environmental manipulation, and adaptive strategies that enable survival and thriving within their ecological niche. Their cognitive abilities are expressed through tool use, habitat modification, learning from experience, and innovation in response to environmental challenges. These applications contribute to individual success, species survival, ecosystem health, and biodiversity maintenance.`,
-        details: [
-            "Problem-solving behaviors overcoming environmental challenges and resource limitations through innovative approaches",
-            "Environmental modification activities creating favorable conditions for survival and reproduction",
-            "Learning and memory systems enabling knowledge accumulation and skill transfer across generations",
-            "Ecosystem contributions maintaining biodiversity and ecological balance through their activities and relationships"
-        ]
-    };
-}
-
-function createHumanLearningsFallback(speciesName) {
-    return `Humans can learn valuable lessons from ${speciesName} about alternative approaches to intelligence, consciousness, environmental adaptation, and sustainable living practices. Their unique cognitive strategies offer insights into different ways of processing information, making decisions, relating to the natural world, and maintaining harmony with ecological systems. By studying their behavioral patterns, adaptive mechanisms, and social structures, humans can gain perspectives on community cooperation, environmental stewardship, and consciousness development. Their approaches to problem-solving, resource management, and social organization may inspire innovations in human technology, social systems, healing practices, and consciousness expansion techniques. Understanding their intelligence can broaden human concepts of awareness and provide practical wisdom for creating more sustainable and harmonious ways of living on Earth.`;
-}
-
-function createConservationFallback(speciesName) {
-    return `${speciesName} plays crucial roles in maintaining ecosystem health and biodiversity, making their conservation essential for environmental stability and planetary well-being. Their unique intelligence and behavioral patterns contribute to ecological processes that support other species, maintain habitat integrity, and preserve natural balance. Current threats to their populations include habitat loss, climate change, pollution, human encroachment, and activities that disrupt their natural behaviors and life cycles. Conservation efforts must consider their specific intelligence requirements, including their need for appropriate social structures, communication opportunities, and environmental complexity. Protecting ${speciesName} preserves not only their individual species but also the ecological knowledge and relationships they have developed over millions of years of evolution.`;
-}
-
-function createQuantumFallback(speciesName) {
-    return `${speciesName} may utilize quantum biological processes in their sensory systems, navigation abilities, cognitive processing, and possibly consciousness itself, though research in this field is still developing. Some studies suggest that quantum effects could play roles in their magnetic field detection, photosynthesis efficiency, neural processing capabilities, and information integration systems. Their biological systems may demonstrate quantum coherence effects that enhance their environmental sensitivity and decision-making processes. Understanding potential quantum aspects of their biology could reveal new insights into consciousness, cognitive processing, and the fundamental nature of awareness across species.`;
-}
-
-function createComprehensiveFallback(speciesName) {
-    return {
-        species: speciesName,
-        wisdomInsight: createWisdomFallback(speciesName),
-        perceive: createPerceiveFallback(speciesName),
-        relate: createRelateFallback(speciesName),
-        apply: createApplyFallback(speciesName),
-        temporalIntelligence: createTemporalFallback(speciesName),
-        energeticIntelligence: createEnergeticFallback(speciesName),
-        collectiveWisdom: createCollectiveFallback(speciesName),
-        adaptiveStrategies: createAdaptiveFallback(speciesName),
-        humanLearnings: createHumanLearningsFallback(speciesName),
-        conservationWisdom: createConservationFallback(speciesName),
-        quantumAspects: createQuantumFallback(speciesName),
-        sources: ["Enhanced species intelligence framework", "Consciousness research", "Ecological studies"],
-        researchBacked: false,
-        fallbackReason: "Enhanced fallback with comprehensive content",
-        timestamp: new Date().toISOString()
-    };
-}
