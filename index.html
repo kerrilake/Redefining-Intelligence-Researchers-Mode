@@ -146,6 +146,29 @@
             transform: none;
         }
 
+        .bridge-btn {
+            background: linear-gradient(135deg, #634e87, #9daaec);
+            color: white;
+            border: none;
+            padding: 15px 40px;
+            font-size: 18px;
+            font-family: 'Poppins', sans-serif;
+            font-weight: 600;
+            border-radius: 25px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 15px rgba(99, 78, 135, 0.3);
+            margin: 20px 10px;
+            text-decoration: none;
+            display: inline-block;
+        }
+
+        .bridge-btn:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 6px 20px rgba(99, 78, 135, 0.4);
+            background: linear-gradient(135deg, #9daaec, #634e87);
+        }
+
         .results-container {
             padding: 30px;
             margin: 20px 0;
@@ -569,6 +592,12 @@
             .action-btn {
                 min-width: auto;
             }
+
+            .research-btn, .bridge-btn {
+                display: block;
+                margin: 10px 0;
+                width: 100%;
+            }
         }
 
         /* Custom scrollbar */
@@ -633,6 +662,10 @@
             <button class="research-btn contribute-btn" onclick="showContributionForm()" style="background: linear-gradient(135deg, #e7c64d, #f9ed65); color: #3e3a44; margin-left: 10px;">
                 🤝 Contribute Knowledge
             </button>
+
+            <a href="https://ai-consciousness-bridge.netlify.app/" class="bridge-btn" target="_blank">
+                🌉 Explore AI Consciousness Bridge
+            </a>
 
             <div style="margin-top: 20px;">
                 <div id="usageDisplay" style="color: #47485f; font-size: 14px; font-weight: 500;"></div>
@@ -1320,7 +1353,7 @@ Focus on consciousness-expanding insights that bridge science and wisdom. Respon
             document.getElementById('species4').value = '';
             document.getElementById('species5').value = '';
             document.getElementById('includeIndigenous').checked = false;
-            document.getElementById('includeBiomicry').checked = false;
+            document.getElementById('includeBiomimicry').checked = false;
             document.getElementById('includeHuman').checked = false;
             document.getElementById('results').innerHTML = '';
             document.getElementById('constellationContainer').style.display = 'none';
