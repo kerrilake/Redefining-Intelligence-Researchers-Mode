@@ -593,11 +593,159 @@
         let constellationData = JSON.parse(localStorage.getItem('constellationData') || '[]');
         let mappingPatterns = JSON.parse(localStorage.getItem('mappingPatterns') || '{}');
         
-        console.log('✅ Configuration and state initialized');
+        // Enhanced AI API Integration
+        async function callAnthropicAPI(speciesName, options) {
+            console.log('=== CALLING AI API FOR:', speciesName, '===');
+            const prompt = createResearchPrompt(speciesName, options);
+            
+            try {
+                console.log('Making request to Netlify function...');
+                const response = await fetch('/.netlify/functions/research-species', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({
+                        species: speciesName,
+                        prompt: prompt,
+                        options: options
+                    })
+                });
+                
+                console.log('Response status:', response.status);
+                console.log('Response ok:', response.ok);
+                
+                if (!response.ok) {
+                    const errorText = await response.text();
+                    console.error('Response error:', errorText);
+                    throw new Error(`API Error: ${response.status} - ${errorText}`);
+                }
+                
+                const data = await response.json();
+                console.log('Received data:', data);
+                
+                if (data.success && data.response) {
+                    console.log('✅ AI API call successful for', speciesName);
+                    return parseAIResponse(data.response, speciesName);
+                } else {
+                    console.warn('⚠️ API returned data but no success flag:', data);
+                    return parseAIResponse(data.response || data, speciesName);
+                }
+            } catch (error) {
+                console.error('❌ AI API Error for', speciesName, ':', error);
+                console.log('🔄 Falling back to enhanced local data');
+                const fallbackData = generateEnhancedFallback(speciesName, options);
+                fallbackData.fallbackReason = `API Error: ${error.message}`;
+                fallbackData.researchBacked = false;
+                return fallbackData;
+            }
+        }
         
-        // Main research function
-        function conductResearch() {
-            console.log('🔬 Starting research...');
+        function createResearchPrompt(speciesName, options) {
+            const indigenousKnowledge = options.includeIndigenous ? `
+                - Indigenous wisdom and traditional ecological knowledge from various cultures
+                - Sacred relationships and ceremonial connections with this species
+                - Traditional uses and spiritual significance across different indigenous traditions` : '';
+            
+            const biomimicryApplications = options.includeBiomimicry ? `
+                - Current biomimicry applications inspired by this species
+                - Potential future technological innovations based on their capabilities
+                - Economic and environmental impact of species-inspired technologies` : '';
+            
+            return `You are a multidisciplinary species intelligence researcher specializing in consciousness studies and quantum biology. Research ${speciesName} through the revolutionary "Perceive/Relate/Apply" intelligence framework.
+
+RESEARCH REQUIREMENTS:
+1. PERCEIVE: How does ${speciesName} perceive their world?
+   - Sensory capabilities and unique perceptual gifts
+   - Environmental awareness and information processing
+   - Quantum sensing abilities and field perception
+   - Survival perception mechanisms
+
+2. RELATE: How does ${speciesName} relate to their world?
+   - Social structures and communication methods
+   - Ecological relationships and symbiosis
+   - Emotional and energetic connections
+   - Cultural significance in human societies
+   - Interspecies relationship patterns
+
+3. APPLY: How does ${speciesName} apply their intelligence?
+   - Problem-solving behaviors and adaptations
+   - Tool use and environmental manipulation
+   - Learning, memory, and knowledge transfer
+   - Contributions to ecosystem health and balance
+
+SOURCES TO CONSULT:
+- Peer-reviewed biology, ecology, ethology, and neuroscience research
+- Consciousness and quantum biology studies${indigenousKnowledge}${biomimicryApplications}
+- Behavioral studies and cognitive research
+- Conservation and environmental research
+
+RESPONSE FORMAT:
+Provide a JSON response with this exact structure:
+{
+    "species": "${speciesName}",
+    "wisdomInsight": "One profound insight about this species' intelligence that could expand human consciousness (2-3 sentences)",
+    "perceive": {
+        "summary": "How they perceive their world (2-3 sentences)",
+        "details": ["specific perceptual capability 1", "specific perceptual capability 2", "specific perceptual capability 3", "quantum/field perception aspect"]
+    },
+    "relate": {
+        "summary": "How they relate to their world (2-3 sentences)",
+        "details": ["relationship aspect 1", "relationship aspect 2", "relationship aspect 3", "consciousness connection aspect"]
+    },
+    "apply": {
+        "summary": "How they apply intelligence (2-3 sentences)",
+        "details": ["application example 1", "application example 2", "application example 3", "ecosystem contribution"]
+    },
+    "humanLearnings": "What humans can learn from ${speciesName}'s intelligence for consciousness evolution",
+    "conservationWisdom": "How their intelligence relates to conservation needs and ecosystem health",
+    "quantumAspects": "Quantum biology and consciousness connections documented in research",
+    "temporalIntelligence": "How this species perceives and works with time, seasonal cycles, and long-term patterns (4-5 sentences)",
+    "energeticIntelligence": "Biofield interactions, electromagnetic sensitivity, energy optimization with documented cases (4-5 sentences)",
+    "collectiveWisdom": "Group consciousness, collective decision-making, and distributed intelligence with specific behaviors (4-5 sentences)",
+    "adaptiveStrategies": "Real-time adaptation mechanisms, crisis responses, and resilience with documented examples (4-5 sentences)",
+    "sources": ["key research source 1", "key research source 2", "key research source 3", "consciousness/quantum research source"]
+}
+
+Focus on consciousness-expanding insights that bridge science and wisdom. Respond ONLY with valid JSON.`;
+        }
+        
+        function parseAIResponse(responseText, speciesName) {
+            try {
+                console.log('Parsing AI response for:', speciesName);
+                const cleanedResponse = responseText
+                    .replace(/```json\n?/g, "")
+                    .replace(/```\n?/g, "")
+                    .trim();
+                
+                const data = JSON.parse(cleanedResponse);
+                
+                return {
+                    species: data.species || speciesName,
+                    wisdomInsight: data.wisdomInsight || "This species demonstrates unique intelligence worthy of deeper study.",
+                    perceive: data.perceive || { summary: "Advanced perceptual capabilities", details: [] },
+                    relate: data.relate || { summary: "Complex relational intelligence", details: [] },
+                    apply: data.apply || { summary: "Sophisticated problem-solving abilities", details: [] },
+                    humanLearnings: data.humanLearnings || "Valuable lessons for human consciousness evolution",
+                    conservationWisdom: data.conservationWisdom || "Important for ecosystem balance and health",
+                    quantumAspects: data.quantumAspects || "Consciousness connections being explored by researchers",
+                    temporalIntelligence: data.temporalIntelligence || "Sophisticated time perception and seasonal awareness",
+                    energeticIntelligence: data.energeticIntelligence || "Biofield sensitivity and energy optimization",
+                    collectiveWisdom: data.collectiveWisdom || "Group consciousness and collective decision-making abilities",
+                    adaptiveStrategies: data.adaptiveStrategies || "Remarkable adaptation mechanisms and resilience",
+                    sources: data.sources || ["Research compilation"],
+                    researchBacked: true,
+                    timestamp: new Date().toISOString()
+                };
+            } catch (parseError) {
+                console.warn("Failed to parse AI response:", parseError);
+                return generateEnhancedFallback(speciesName, {});
+            }
+        }
+        
+        // Main research function - AI-POWERED VERSION
+        async function conductResearch() {
+            console.log('🔬 Starting AI-powered research...'); // This should appear in console
             
             const speciesInputs = [
                 document.getElementById('species1').value.trim(),
@@ -612,7 +760,28 @@
                 return;
             }
             
-            console.log('Researching species:', speciesInputs);
+            const today = new Date().toDateString();
+            if (!dailyUsage[today]) dailyUsage[today] = 0;
+            
+            // Cost limiting enforcement
+            if (dailyUsage[today] >= CONFIG.DAILY_SEARCH_LIMIT) {
+                alert(`Daily search limit reached (${CONFIG.DAILY_SEARCH_LIMIT} searches). Please try again tomorrow to stay within budget limits.`);
+                return;
+            }
+            
+            const projectedCost = monthlySpend + (CONFIG.COST_PER_SEARCH * speciesInputs.length);
+            if (projectedCost > CONFIG.MONTHLY_BUDGET) {
+                alert(`Monthly budget limit would be exceeded (${projectedCost.toFixed(2)} > ${CONFIG.MONTHLY_BUDGET}). Please wait until next month or reduce the number of species.`);
+                return;
+            }
+            
+            if (projectedCost > (CONFIG.MONTHLY_BUDGET * 0.8) && monthlySpend <= (CONFIG.MONTHLY_BUDGET * 0.8)) {
+                if (!confirm(`Warning: This search will use ${((projectedCost/CONFIG.MONTHLY_BUDGET)*100).toFixed(1)}% of your monthly budget. Continue?`)) {
+                    return;
+                }
+            }
+            
+            console.log('✅ Budget checks passed, researching species:', speciesInputs);
             
             // Get options
             const options = {
@@ -625,23 +794,66 @@
                 speciesInputs.push('Human');
             }
             
-            // Show loading
             const resultsDiv = document.getElementById('results');
-            resultsDiv.innerHTML = `
-                <div class="results-container glass fade-in">
-                    <div class="loading-enhanced">
-                        <div class="research-animation">🧬</div>
-                        <h3 style="color: #47485f;">Conducting Deep Species Intelligence Research</h3>
-                        <p style="color: #3e3a44;">Enhanced Claude AI analysis with temporal, energetic, collective, and adaptive intelligence dimensions</p>
-                        <p style="color: #6f9a4c; font-size: 14px; margin-top: 10px;">Generating comprehensive research for ${speciesInputs.join(', ')}...</p>
-                    </div>
-                </div>
-            `;
             
-            // Simulate research process
-            setTimeout(() => {
-                const researchResults = speciesInputs.map(species => generateEnhancedFallback(species, options));
-                currentSpeciesData = researchResults;
+            try {
+                console.log('🔬 Starting AI research for:', speciesInputs);
+                
+                // Show loading
+                resultsDiv.innerHTML = `
+                    <div class="results-container glass fade-in">
+                        <div class="loading-enhanced">
+                            <div class="research-animation">🧬</div>
+                            <h3 style="color: #47485f;">Conducting Deep Species Intelligence Research</h3>
+                            <p style="color: #3e3a44;">Enhanced Claude AI analysis with temporal, energetic, collective, and adaptive intelligence dimensions</p>
+                            <p style="color: #6f9a4c; font-size: 14px; margin-top: 10px;">This comprehensive research may take 15-20 seconds per species...</p>
+                        </div>
+                    </div>
+                `;
+                
+                // Call AI API for each species
+                const researchResults = [];
+                for (let i = 0; i < speciesInputs.length; i++) {
+                    const species = speciesInputs[i];
+                    console.log(`🔍 AI Research ${i + 1}/${speciesInputs.length}: ${species}`);
+                    
+                    // Update loading message
+                    resultsDiv.innerHTML = `
+                        <div class="results-container glass fade-in">
+                            <div class="loading-enhanced">
+                                <div class="research-animation">🧬</div>
+                                <h3 style="color: #47485f;">Researching ${species}...</h3>
+                                <p style="color: #3e3a44;">Species ${i + 1} of ${speciesInputs.length} • Enhanced Claude AI</p>
+                                <div style="background: rgba(111, 154, 76, 0.2); padding: 10px; border-radius: 10px; margin: 10px 0;">
+                                    <div style="width: ${(i/speciesInputs.length)*100}%; height: 4px; background: #6f9a4c; border-radius: 2px;"></div>
+                                </div>
+                            </div>
+                        </div>
+                    `;
+                    
+                    // THIS IS THE KEY: Actually call the AI API
+                    const result = await callAnthropicAPI(species, options);
+                    researchResults.push(result);
+                    console.log(`✅ AI Research completed for ${species}`);
+                }
+                
+                console.log('🎉 All AI research completed!');
+                
+                // Update usage tracking
+                dailyUsage[today]++;
+                monthlySpend += CONFIG.COST_PER_SEARCH * speciesInputs.length;
+                localStorage.setItem('dailyUsage', JSON.stringify(dailyUsage));
+                localStorage.setItem('monthlySpend', monthlySpend.toString());
+                
+                // Store in research history
+                const searchRecord = {
+                    species: speciesInputs,
+                    timestamp: new Date().toISOString(),
+                    options: options,
+                    results: researchResults
+                };
+                researchHistory.push(searchRecord);
+                localStorage.setItem('researchHistory', JSON.stringify(researchHistory));
                 
                 // Update intelligence mapping
                 updateIntelligenceMapping(researchResults);
@@ -652,8 +864,20 @@
                 // Update usage
                 updateUsageDisplay();
                 
-                console.log('✅ Research completed successfully');
-            }, 2000);
+                console.log('✅ AI-powered research completed successfully');
+                
+            } catch (error) {
+                console.error('❌ AI Research failed:', error);
+                resultsDiv.innerHTML = `
+                    <div class="results-container glass fade-in">
+                        <div style="text-align: center; padding: 40px;">
+                            <h3 style="color: #47485f;">Research Temporarily Unavailable</h3>
+                            <p style="color: #3e3a44;">Error: ${error.message}</p>
+                            <button onclick="conductResearch()" style="background: linear-gradient(135deg, #6f9a4c, #4e6440); color: white; border: none; padding: 12px 25px; border-radius: 20px; cursor: pointer; margin-top: 15px; font-family: 'Poppins', sans-serif;">Try Again</button>
+                        </div>
+                    </div>
+                `;
+            }
         }
         
         // Generate enhanced fallback data
