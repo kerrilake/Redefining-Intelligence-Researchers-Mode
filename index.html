@@ -1322,45 +1322,67 @@
             alert('🌌 Species Intelligence Constellation data exported! This JSON file contains all intelligence vectors, 3D positions, and pattern analysis.');
         }
 
-        // Enhanced AI API Integration
-        async function callAnthropicAPI(speciesName, options) {
-            const prompt = createResearchPrompt(speciesName, options);
-            
-            try {
-                const response = await fetch('/.netlify/functions/research-species', {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json',
-                    },
-                    body: JSON.stringify({
-                        species: speciesName,
-                        prompt: prompt,
-                        options: options
-                    })
-                });
-
-                if (!response.ok) {
-                    const errorText = await response.text();
-                    throw new Error(`API Error: ${response.status} - ${errorText}`);
-                }
-
-                const data = await response.json();
-                
-                if (data.success && data.response) {
-                    return parseAIResponse(data.response, speciesName);
-                } else {
-                    return parseAIResponse(data.response || data, speciesName);
-                }
-                
-            } catch (error) {
-                console.error('AI API Error for', speciesName, ':', error);
-                
-                const fallbackData = createEnhancedFallback(speciesName, options);
-                fallbackData.fallbackReason = `API Error: ${error.message}`;
-                fallbackData.researchBacked = false;
-                return fallbackData;
-            }
+        // Replace your callAnthropicAPI function with this:
+async function callAnthropicAPI(species, options) {
+    try {
+        const prompt = generatePrompt(species, options); // You'll need this function too
+        
+        const response = await fetch('/.netlify/functions/research-species', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({
+                species: species,
+                prompt: prompt,
+                options: options
+            })
+        });
+        
+        if (!response.ok) {
+            throw new Error(`HTTP error! status: ${response.status}`);
         }
+        
+        const data = await response.json();
+        
+        if (!data.success) {
+            throw new Error(data.error || 'API call failed');
+        }
+        
+        return {
+            species: species,
+            content: data.response,
+            success: true
+        };
+        
+    } catch (error) {
+        console.error(`AI API Error for ${species}:`, error);
+        throw error;
+    }
+}
+
+// You'll also need this function to generate prompts for each species:
+function generatePrompt(species, options) {
+    let prompt = `Conduct a comprehensive intelligence analysis of ${species}. Provide detailed information about:
+1. **Cognitive Intelligence**: Problem-solving abilities, learning capacity, memory systems
+2. **Social Intelligence**: Communication methods, group dynamics, cooperation strategies  
+3. **Adaptive Intelligence**: Environmental adaptation, behavioral flexibility, survival strategies
+4. **Temporal Intelligence**: Time perception, planning abilities, learning from experience
+5. **Sensory Intelligence**: Sensory capabilities, information processing, environmental awareness
+Format the response with clear sections and specific examples. Include fascinating facts and recent research findings.`;
+    
+    if (options.includeIndigenous) {
+        prompt += `\n\nAlso include traditional indigenous knowledge and cultural perspectives about this species.`;
+    }
+    
+    if (options.includeBiomimicry) {
+        prompt += `\n\nInclude biomimicry applications and how humans have learned from this species.`;
+    }
+    
+    prompt += `\n\nProvide a comprehensive analysis that's both scientifically accurate and engaging to read.`;
+    
+    return prompt;
+}
 
         function createResearchPrompt(speciesName, options) {
             const indigenousKnowledge = options.includeIndigenous ? `
