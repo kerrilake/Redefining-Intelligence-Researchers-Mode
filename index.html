@@ -1322,42 +1322,43 @@
             alert('🌌 Species Intelligence Constellation data exported! This JSON file contains all intelligence vectors, 3D positions, and pattern analysis.');
         }
 
-        // Replace your callAnthropicAPI function with this:
-async function callAnthropicAPI(species, options) {
+        // Enhanced AI API Integration - Fixed Version
+async function callAnthropicAPI(speciesName, options) {
     try {
-        const prompt = generatePrompt(species, options); // You'll need this function too
+        const prompt = createResearchPrompt(speciesName, options); // Use your existing prompt function
         
         const response = await fetch('/.netlify/functions/research-species', {
             method: 'POST',
             headers: {
-                'Content-Type': 'application/json'
+                'Content-Type': 'application/json',
             },
             body: JSON.stringify({
-                species: species,
+                species: speciesName,
                 prompt: prompt,
                 options: options
             })
         });
-        
+
         if (!response.ok) {
-            throw new Error(`HTTP error! status: ${response.status}`);
+            const errorText = await response.text();
+            throw new Error(`API Error: ${response.status} - ${errorText}`);
         }
-        
+
         const data = await response.json();
         
-        if (!data.success) {
+        if (data.success && data.response) {
+            return parseAIResponse(data.response, speciesName);
+        } else {
             throw new Error(data.error || 'API call failed');
         }
         
-        return {
-            species: species,
-            content: data.response,
-            success: true
-        };
-        
     } catch (error) {
-        console.error(`AI API Error for ${species}:`, error);
-        throw error;
+        console.error('AI API Error for', speciesName, ':', error);
+        
+        const fallbackData = createEnhancedFallback(speciesName, options);
+        fallbackData.fallbackReason = `API Error: ${error.message}`;
+        fallbackData.researchBacked = false;
+        return fallbackData;
     }
 }
 
