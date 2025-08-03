@@ -1,26 +1,18 @@
 /**
- * DEBUG VERSION - Netlify Function: Species Intelligence Research
- * This version includes debugging to help us figure out the API key issue
+ * ENHANCED DEBUG VERSION - Netlify Function: Species Intelligence Research
  */
 
 exports.handler = async (event, context) => {
-  // Handle CORS (Cross-Origin Resource Sharing)
   const headers = {
     'Access-Control-Allow-Origin': '*',
     'Access-Control-Allow-Headers': 'Content-Type',
     'Access-Control-Allow-Methods': 'POST, OPTIONS'
   };
 
-  // Handle preflight requests
   if (event.httpMethod === 'OPTIONS') {
-    return {
-      statusCode: 200,
-      headers,
-      body: ''
-    };
+    return { statusCode: 200, headers, body: '' };
   }
 
-  // Only allow POST requests
   if (event.httpMethod !== 'POST') {
     return {
       statusCode: 405,
@@ -30,14 +22,16 @@ exports.handler = async (event, context) => {
   }
 
   try {
-    // Parse the request from your frontend
     const { species, prompt, options } = JSON.parse(event.body);
-    
-    // DEBUG: Check if environment variable exists
     const apiKey = process.env.ANTHROPIC_API_KEY;
+    
+    // Enhanced debugging
+    console.log('=== ENHANCED DEBUG INFO ===');
     console.log('API Key exists:', !!apiKey);
-    console.log('API Key starts with sk-ant:', apiKey ? apiKey.startsWith('sk-ant-') : false);
     console.log('API Key length:', apiKey ? apiKey.length : 0);
+    console.log('API Key prefix:', apiKey ? apiKey.substring(0, 15) : 'N/A');
+    console.log('API Key suffix:', apiKey ? apiKey.substring(apiKey.length - 10) : 'N/A');
+    console.log('Species requested:', species);
     
     if (!apiKey) {
       return {
@@ -45,25 +39,26 @@ exports.handler = async (event, context) => {
         headers,
         body: JSON.stringify({
           success: false,
-          error: 'ANTHROPIC_API_KEY environment variable not found',
-          debug: 'Environment variable is missing or empty'
+          error: 'ANTHROPIC_API_KEY environment variable not found'
         })
       };
     }
 
-    if (!apiKey.startsWith('sk-ant-')) {
-      return {
-        statusCode: 500,
-        headers,
-        body: JSON.stringify({
-          success: false,
-          error: 'Invalid API key format',
-          debug: 'API key should start with sk-ant-'
-        })
-      };
-    }
-    
-    // Make the call to Claude AI
+    // Test with a minimal request first
+    const testPayload = {
+      model: 'claude-3-sonnet-20240229',
+      max_tokens: 50,
+      messages: [{
+        role: 'user',
+        content: 'Say "API test successful" and nothing else.'
+      }]
+    };
+
+    console.log('Making API request with payload:', JSON.stringify(testPayload));
+    console.log('Request headers will include:');
+    console.log('- Authorization: Bearer [API_KEY]');
+    console.log('- anthropic-version: 2023-06-01');
+
     const response = await fetch('https://api.anthropic.com/v1/messages', {
       method: 'POST',
       headers: {
@@ -71,56 +66,55 @@ exports.handler = async (event, context) => {
         'Authorization': `Bearer ${apiKey}`,
         'anthropic-version': '2023-06-01'
       },
-      body: JSON.stringify({
-        model: 'claude-3-sonnet-20240229',
-        max_tokens: 4000,
-        messages: [{
-          role: 'user',
-          content: prompt
-        }]
-      })
+      body: JSON.stringify(testPayload)
     });
 
-    // DEBUG: Log the response status
-    console.log('Claude API Response Status:', response.status);
+    console.log('Response status:', response.status);
+    console.log('Response headers:', JSON.stringify([...response.headers.entries()]));
     
+    const responseText = await response.text();
+    console.log('Raw response:', responseText);
+
     if (!response.ok) {
-      const errorText = await response.text();
-      console.log('Claude API Error Response:', errorText);
-      
       return {
         statusCode: 500,
         headers,
         body: JSON.stringify({
           success: false,
           error: `Claude API Error: ${response.status}`,
-          debug: errorText,
-          apiKeyCheck: 'API key was present and formatted correctly'
+          debug: responseText,
+          apiKeyCheck: 'API key was present and formatted correctly',
+          fullDebug: {
+            status: response.status,
+            statusText: response.statusText,
+            headers: [...response.headers.entries()]
+          }
         })
       };
     }
 
-    const data = await response.json();
+    const data = JSON.parse(responseText);
     
-    // Send the response back to your frontend
     return {
       statusCode: 200,
       headers,
       body: JSON.stringify({
         success: true,
-        response: data.content[0].text
+        response: data.content[0].text,
+        debug: 'API call successful'
       })
     };
 
   } catch (error) {
     console.error('Function Error:', error);
+    console.error('Error stack:', error.stack);
     return {
       statusCode: 500,
       headers,
       body: JSON.stringify({
         success: false,
         error: error.message,
-        debug: 'Check Netlify function logs for more details'
+        stack: error.stack
       })
     };
   }
