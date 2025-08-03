@@ -1,4 +1,4 @@
-# 🌟 Species Intelligence Research Agent v2.0 - Constellation
+# 🌟 Specie Intelligence Research Agent v2.0 - Constellation
 
 > **Redefining Intelligence Through the Perceive • Relate • Apply Framework**
 
