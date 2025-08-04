@@ -146,6 +146,29 @@
             transform: none;
         }
 
+        .bridge-btn {
+            background: linear-gradient(135deg, #634e87, #9daaec);
+            color: white;
+            border: none;
+            padding: 15px 40px;
+            font-size: 18px;
+            font-family: 'Poppins', sans-serif;
+            font-weight: 600;
+            border-radius: 25px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 15px rgba(99, 78, 135, 0.3);
+            margin: 20px 10px;
+            text-decoration: none;
+            display: inline-block;
+        }
+
+        .bridge-btn:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 6px 20px rgba(99, 78, 135, 0.4);
+            background: linear-gradient(135deg, #9daaec, #634e87);
+        }
+
         .results-container {
             padding: 30px;
             margin: 20px 0;
@@ -569,6 +592,12 @@
             .action-btn {
                 min-width: auto;
             }
+
+            .research-btn, .bridge-btn {
+                display: block;
+                margin: 10px 0;
+                width: 100%;
+            }
         }
 
         /* Custom scrollbar */
@@ -634,6 +663,10 @@
                 🤝 Contribute Knowledge
             </button>
 
+            <a href="https://your-consciousness-bridge-url.netlify.app/" class="bridge-btn" target="_blank">
+                🌉 Explore AI Consciousness Bridge
+            </a>
+
             <div style="margin-top: 20px;">
                 <div id="usageDisplay" style="color: #47485f; font-size: 14px; font-weight: 500;"></div>
             </div>
@@ -646,6 +679,22 @@
         <div id="results"></div>
 
         <div class="usage-stats" id="usageStats"></div>
+        
+        <!-- Footer Section -->
+        <footer style="text-align: center; padding: 30px; margin-top: 50px; background: rgba(71, 72, 95, 0.1); border-radius: 15px; color: #47485f; font-size: 0.9em; max-width: 1200px; margin-left: auto; margin-right: auto;">
+            <p><strong>Species Intelligence Research Agent</strong> • Revolutionary consciousness research platform</p>
+            <p style="margin-top: 10px;">Part of the Intuitive Learning Foundation consciousness research initiative</p>
+            <p style="margin-top: 15px; font-size: 0.9em;">
+                <a href="README.md" target="_blank" style="color: #6f9a4c; text-decoration: none; font-weight: 500; border-bottom: 1px solid transparent; transition: border-color 0.3s ease;" onmouseover="this.style.borderColor='#6f9a4c'" onmouseout="this.style.borderColor='transparent'">
+                    📚 About This Research Platform
+                </a>
+            </p>
+            <p style="margin-top: 10px; font-size: 0.8em;">
+                Visit: <a href="https://intuitivelearningfoundation.org" style="color: #6f9a4c;">intuitivelearningfoundation.org</a> • 
+                <a href="https://generateharmony.com" style="color: #6f9a4c;">generateharmony.com</a> • 
+                <a href="https://kerrilake.com" style="color: #6f9a4c;">kerrilake.com</a>
+            </p>
+        </footer>
     </div>
 
     <!-- Community Contribution Modal -->
@@ -1170,6 +1219,11 @@ Focus on consciousness-expanding insights that bridge science and wisdom. Respon
                     </div>
                     
                     <div style="text-align: center; margin-top: 30px; padding: 15px; background: rgba(111, 154, 76, 0.1); border-radius: 10px; border: 1px solid rgba(111, 154, 76, 0.2);">
+                        <div style="margin-bottom: 10px;">
+                            <a href="README.md" target="_blank" style="color: #6f9a4c; text-decoration: none; font-weight: 500; font-size: 13px; border-bottom: 1px solid transparent; transition: border-color 0.3s ease;" onmouseover="this.style.borderColor='#6f9a4c'" onmouseout="this.style.borderColor='transparent'">
+                                📚 About This Research Platform
+                            </a>
+                        </div>
                         <small style="color: #47485f; font-size: 12px;">Enhanced research powered by Claude AI with 6 intelligence dimensions • ${dataArray.reduce((sum, d) => sum + (d.sources?.length || 0), 0)} sources consulted</small>
                     </div>
                 </div>
@@ -1320,7 +1374,7 @@ Focus on consciousness-expanding insights that bridge science and wisdom. Respon
             document.getElementById('species4').value = '';
             document.getElementById('species5').value = '';
             document.getElementById('includeIndigenous').checked = false;
-            document.getElementById('includeBiomicry').checked = false;
+            document.getElementById('includeBiomimicry').checked = false;
             document.getElementById('includeHuman').checked = false;
             document.getElementById('results').innerHTML = '';
             document.getElementById('constellationContainer').style.display = 'none';
@@ -1532,8 +1586,8 @@ Focus on consciousness-expanding insights that bridge science and wisdom. Respon
                 // Footer
                 doc.setFontSize(8);
                 doc.setTextColor(128, 128, 128);
-                doc.text('Generated by Species Intelligence Research Agent • Intuitive Learning Foundation', margin, yPosition);
-                doc.text('Visit: intuitivelearningfoundation.org • generateharmony.com • kerrilake.com', margin, yPosition + 4);
+                doc.text('Generated by Species Intelligence Research Agent • Intuitive Learning Foundation • Generation of Harmony LLC', margin, yPosition);
+                doc.text('Visit: intuitivelearningfoundation.org • generateharmony.com', margin, yPosition + 4);
                 
                 // Save PDF
                 const filename = `Species-Intelligence-Report-${pdfSpeciesNames.replace(/[^a-zA-Z0-9]/g, '-')}-${new Date().toISOString().split('T')[0]}.pdf`;
