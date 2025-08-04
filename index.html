@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Redefining Intelligence App - Redefining Intelligence</title>
+    <title>Living Intelligence Research Agent - Redefining Intelligence</title>
     <!-- PDF Generation Library -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
     <!-- Poppins Font Integration -->
@@ -144,29 +144,6 @@
             background: #9daaec;
             cursor: not-allowed;
             transform: none;
-        }
-
-        .bridge-btn {
-            background: linear-gradient(135deg, #634e87, #9daaec);
-            color: white;
-            border: none;
-            padding: 15px 40px;
-            font-size: 18px;
-            font-family: 'Poppins', sans-serif;
-            font-weight: 600;
-            border-radius: 25px;
-            cursor: pointer;
-            transition: all 0.3s ease;
-            box-shadow: 0 4px 15px rgba(99, 78, 135, 0.3);
-            margin: 20px 10px;
-            text-decoration: none;
-            display: inline-block;
-        }
-
-        .bridge-btn:hover {
-            transform: translateY(-3px);
-            box-shadow: 0 6px 20px rgba(99, 78, 135, 0.4);
-            background: linear-gradient(135deg, #9daaec, #634e87);
         }
 
         .results-container {
@@ -592,12 +569,6 @@
             .action-btn {
                 min-width: auto;
             }
-
-            .research-btn, .bridge-btn {
-                display: block;
-                margin: 10px 0;
-                width: 100%;
-            }
         }
 
         /* Custom scrollbar */
@@ -622,7 +593,7 @@
 <body>
     <div class="container">
         <header class="header glass">
-            <h1>Redefining Intelligence App</h1>
+            <h1>Species Intelligence Research Agent</h1>
             <p>Redefining Intelligence Through the Perceive • Relate • Apply Framework</p>
         </header>
 
@@ -663,10 +634,6 @@
                 🤝 Contribute Knowledge
             </button>
 
-            <a href="https://ai-consciousness-bridge.netlify.app/" class="bridge-btn" target="_blank">
-                🌉 Explore AI Consciousness Bridge
-            </a>
-
             <div style="margin-top: 20px;">
                 <div id="usageDisplay" style="color: #47485f; font-size: 14px; font-weight: 500;"></div>
             </div>
@@ -679,22 +646,6 @@
         <div id="results"></div>
 
         <div class="usage-stats" id="usageStats"></div>
-        
-        <!-- Footer Section -->
-        <footer style="text-align: center; padding: 30px; margin-top: 50px; background: rgba(71, 72, 95, 0.1); border-radius: 15px; color: #47485f; font-size: 0.9em; max-width: 1200px; margin-left: auto; margin-right: auto;">
-            <p><strong>Redefining Intelligence App</strong> • Revolutionary consciousness research platform</p>
-            <p style="margin-top: 10px;">Part of the Intuitive Learning Foundation consciousness research initiative</p>
-            <p style="margin-top: 15px; font-size: 0.9em;">
-                <a href="README.md" target="_blank" style="color: #6f9a4c; text-decoration: none; font-weight: 500; border-bottom: 1px solid transparent; transition: border-color 0.3s ease;" onmouseover="this.style.borderColor='#6f9a4c'" onmouseout="this.style.borderColor='transparent'">
-                    📚 About This Research Platform
-                </a>
-            </p>
-            <p style="margin-top: 10px; font-size: 0.8em;">
-                Visit: <a href="https://intuitivelearningfoundation.org" style="color: #6f9a4c;">intuitivelearningfoundation.org</a> • 
-                <a href="https://generateharmony.com" style="color: #6f9a4c;">generateharmony.com</a> • 
-                <a href="https://kerrilake.com" style="color: #6f9a4c;">kerrilake.com</a>
-            </p>
-        </footer>
     </div>
 
     <!-- Community Contribution Modal -->
@@ -806,657 +757,79 @@
             EMAIL_THRESHOLD: 80
         };
 
-        // Global state with intelligence vectors
+        // Global state
         let currentSpeciesData = [];
         let researchHistory = JSON.parse(localStorage.getItem('researchHistory') || '[]');
         let dailyUsage = JSON.parse(localStorage.getItem('dailyUsage') || '{}');
         let monthlySpend = parseFloat(localStorage.getItem('monthlySpend') || '0');
-        let intelligenceVectors = JSON.parse(localStorage.getItem('intelligenceVectors') || '{}');
-        let constellationData = JSON.parse(localStorage.getItem('constellationData') || '[]');
 
-        // MAIN RESEARCH FUNCTION
-        async function conductResearch() {
-            const speciesInputs = [
-                document.getElementById('species1').value.trim(),
-                document.getElementById('species2').value.trim(),
-                document.getElementById('species3').value.trim(),
-                document.getElementById('species4').value.trim(),
-                document.getElementById('species5').value.trim()
-            ].filter(species => species.length > 0);
-
-            if (speciesInputs.length === 0) {
-                alert('Please enter at least one species name');
-                return;
-            }
-
-            const today = new Date().toDateString();
-            if (!dailyUsage[today]) dailyUsage[today] = 0;
-
-            // Cost limiting enforcement
-            if (dailyUsage[today] >= CONFIG.DAILY_SEARCH_LIMIT) {
-                alert(`Daily search limit reached (${CONFIG.DAILY_SEARCH_LIMIT} searches). Please try again tomorrow to stay within budget limits.`);
-                return;
-            }
-
-            const projectedCost = monthlySpend + (CONFIG.COST_PER_SEARCH * speciesInputs.length);
-            if (projectedCost > CONFIG.MONTHLY_BUDGET) {
-                alert(`Monthly budget limit would be exceeded (${projectedCost.toFixed(2)} > ${CONFIG.MONTHLY_BUDGET}). Please wait until next month or reduce the number of species.`);
-                return;
-            }
-
-            if (projectedCost > (CONFIG.MONTHLY_BUDGET * 0.8) && monthlySpend <= (CONFIG.MONTHLY_BUDGET * 0.8)) {
-                if (!confirm(`Warning: This search will use ${((projectedCost/CONFIG.MONTHLY_BUDGET)*100).toFixed(1)}% of your monthly budget. Continue?`)) {
-                    return;
-                }
-            }
-
-            const options = {
-                includeIndigenous: document.getElementById('includeIndigenous').checked,
-                includeBiomimicry: document.getElementById('includeBiomimicry').checked,
-                includeHuman: document.getElementById('includeHuman').checked
-            };
-
-            if (options.includeHuman) {
-                speciesInputs.push('Human');
-            }
-
-            const resultsDiv = document.getElementById('results');
+        // Initialize
+        document.addEventListener('DOMContentLoaded', function() {
+            updateUsageDisplay();
+            initializeConstellation();
             
-            try {
-                // Show loading
-                resultsDiv.innerHTML = `
-                    <div class="results-container glass fade-in">
-                        <div class="loading-enhanced">
-                            <div class="research-animation">🧬</div>
-                            <h3 style="color: #47485f;">Conducting Deep Species Intelligence Research</h3>
-                            <p style="color: #3e3a44;">Enhanced Claude AI analysis with temporal, energetic, collective, and adaptive intelligence dimensions</p>
-                            <p style="color: #6f9a4c; font-size: 14px; margin-top: 10px;">This comprehensive research may take 15-20 seconds per species...</p>
-                        </div>
-                    </div>
-                `;
-
-                // Call AI API for each species
-                const researchResults = [];
-                for (let i = 0; i < speciesInputs.length; i++) {
-                    const species = speciesInputs[i];
-                    
-                    // Update loading message
-                    resultsDiv.innerHTML = `
-                        <div class="results-container glass fade-in">
-                            <div class="loading-enhanced">
-                                <div class="research-animation">🧬</div>
-                                <h3 style="color: #47485f;">Researching ${species}...</h3>
-                                <p style="color: #3e3a44;">Species ${i + 1} of ${speciesInputs.length} • Enhanced Claude AI</p>
-                                <div style="background: rgba(111, 154, 76, 0.2); padding: 10px; border-radius: 10px; margin: 10px 0;">
-                                    <div style="width: ${(i/speciesInputs.length)*100}%; height: 4px; background: #6f9a4c; border-radius: 2px;"></div>
-                                </div>
-                            </div>
-                        </div>
-                    `;
-                    
-                    const result = await callAnthropicAPI(species, options);
-                    researchResults.push(result);
-                }
-
-                // Update usage tracking
-                dailyUsage[today]++;
-                monthlySpend += CONFIG.COST_PER_SEARCH * speciesInputs.length;
-                localStorage.setItem('dailyUsage', JSON.stringify(dailyUsage));
-                localStorage.setItem('monthlySpend', monthlySpend.toString());
-
-                // Store in research history
-                const searchRecord = {
-                    species: speciesInputs,
-                    timestamp: new Date().toISOString(),
-                    options: options,
-                    results: researchResults
-                };
-                researchHistory.push(searchRecord);
-                localStorage.setItem('researchHistory', JSON.stringify(researchHistory));
-
-                // Display results
-                displayEnhancedResults(researchResults);
-                updateUsageDisplay();
-                
-                // Update Intelligence Mapping System
-                updateIntelligenceMapping(researchResults);
-                
-            } catch (error) {
-                console.error('Research failed:', error);
-                resultsDiv.innerHTML = `
-                    <div class="results-container glass fade-in">
-                        <div style="text-align: center; padding: 40px;">
-                            <h3 style="color: #47485f;">Research Temporarily Unavailable</h3>
-                            <p style="color: #3e3a44;">Error: ${error.message}</p>
-                            <button onclick="conductResearch()" style="background: linear-gradient(135deg, #6f9a4c, #4e6440); color: white; border: none; padding: 12px 25px; border-radius: 20px; cursor: pointer; margin-top: 15px; font-family: 'Poppins', sans-serif;">Try Again</button>
-                        </div>
-                    </div>
-                `;
-            }
-        }
-
-        // UTILITY FUNCTIONS
-        function showContributionForm() {
-            document.getElementById('contributionModal').style.display = 'block';
-        }
-
-        function closeContributionModal() {
-            document.getElementById('contributionModal').style.display = 'none';
-        }
-
-        function resetSearch() {
-            document.getElementById('species1').value = '';
-            document.getElementById('species2').value = '';
-            document.getElementById('species3').value = '';
-            document.getElementById('species4').value = '';
-            document.getElementById('species5').value = '';
-            document.getElementById('includeIndigenous').checked = false;
-            document.getElementById('includeBiomimicry').checked = false;
-            document.getElementById('includeHuman').checked = false;
-            document.getElementById('results').innerHTML = '';
-            document.getElementById('constellationContainer').style.display = 'none';
-            document.getElementById('species1').focus();
-        }
-
-        // Intelligence Vector Generation System
-        function analyzeTextComplexity(text) {
-            if (!text || typeof text !== 'string') return 0.5;
-            
-            const words = text.trim().split(/\s+/);
-            const wordCount = words.length;
-            const uniqueWords = new Set(words.map(w => w.toLowerCase())).size;
-            const avgWordLength = words.join('').length / wordCount;
-            const sentenceCount = text.split(/[.!?]+/).filter(s => s.trim().length > 0).length;
-            
-            // Normalize to 0-1 scale
-            const complexityScore = Math.min(1, (
-                (wordCount / 100) * 0.3 +
-                (uniqueWords / wordCount) * 0.3 +
-                (avgWordLength / 10) * 0.2 +
-                (sentenceCount / 10) * 0.2
-            ));
-            
-            return Math.max(0.1, complexityScore);
-        }
-
-        function calculateOverallComplexity(speciesData) {
-            const dimensions = [
-                speciesData.perceive?.summary || '',
-                speciesData.relate?.summary || '',
-                speciesData.apply?.summary || '',
-                speciesData.temporalIntelligence || '',
-                speciesData.energeticIntelligence || '',
-                speciesData.collectiveWisdom || '',
-                speciesData.adaptiveStrategies || ''
-            ];
-            
-            const avgComplexity = dimensions.reduce((sum, text) => 
-                sum + analyzeTextComplexity(text), 0) / dimensions.length;
-            
-            return avgComplexity;
-        }
-
-        function calculateVectorSimilarity(vector1, vector2) {
-            const dimensions = ['perceive', 'relate', 'apply', 'temporal', 'energetic', 'collective', 'adaptive'];
-            let similarity = 0;
-            
-            dimensions.forEach(dim => {
-                const diff = Math.abs((vector1[dim] || 0.5) - (vector2[dim] || 0.5));
-                similarity += (1 - diff) / dimensions.length;
-            });
-            
-            return similarity;
-        }
-
-        function calculateUniquenessForVector(currentVector) {
-            let uniquenessScore = 1.0;
-            
-            Object.values(intelligenceVectors).forEach(existingVector => {
-                if (existingVector.species !== currentVector.species) {
-                    const similarity = calculateVectorSimilarity(currentVector, existingVector);
-                    uniquenessScore = Math.min(uniquenessScore, 1 - similarity);
-                }
-            });
-            
-            return Math.max(0.1, uniquenessScore);
-        }
-
-        function generateIntelligenceVector(speciesData) {
-            const vector = {
-                species: speciesData.species,
-                timestamp: new Date().toISOString(),
-                
-                // Core P/R/A Dimensions (0-1 scale)
-                perceive: analyzeTextComplexity(speciesData.perceive?.summary || ''),
-                relate: analyzeTextComplexity(speciesData.relate?.summary || ''),
-                apply: analyzeTextComplexity(speciesData.apply?.summary || ''),
-                
-                // Enhanced Dimensions (0-1 scale)
-                temporal: analyzeTextComplexity(speciesData.temporalIntelligence || ''),
-                energetic: analyzeTextComplexity(speciesData.energeticIntelligence || ''),
-                collective: analyzeTextComplexity(speciesData.collectiveWisdom || ''),
-                adaptive: analyzeTextComplexity(speciesData.adaptiveStrategies || ''),
-                
-                // Meta Intelligence Attributes
-                complexity: calculateOverallComplexity(speciesData),
-                humanRelevance: analyzeTextComplexity(speciesData.humanLearnings || ''),
-                conservationUrgency: analyzeTextComplexity(speciesData.conservationWisdom || ''),
-                
-                // Research Quality Indicators
-                researchBacked: speciesData.researchBacked || false,
-                sourceCount: speciesData.sources?.length || 0
-            };
-            
-            // Calculate uniqueness after vector creation
-            vector.uniqueness = calculateUniquenessForVector(vector);
-            
-            return vector;
-        }
-
-        function generateConstellationPosition(vector) {
-            // Use P/R/A as primary axes, enhanced dimensions for fine positioning
-            const x = (vector.perceive - 0.5) * 200 + (vector.temporal - 0.5) * 50;
-            const y = (vector.relate - 0.5) * 200 + (vector.collective - 0.5) * 50;
-            const z = (vector.apply - 0.5) * 200 + (vector.adaptive - 0.5) * 50;
-            
-            return { x, y, z };
-        }
-
-        function updateIntelligenceMapping(speciesDataArray) {
-            speciesDataArray.forEach(speciesData => {
-                // Generate intelligence vector
-                const vector = generateIntelligenceVector(speciesData);
-                intelligenceVectors[speciesData.species] = vector;
-                
-                // Generate 3D constellation position
-                const position = generateConstellationPosition(vector);
-                
-                // Update constellation data
-                const existingIndex = constellationData.findIndex(item => item.species === speciesData.species);
-                const constellationPoint = {
-                    species: speciesData.species,
-                    position: position,
-                    vector: vector,
-                    timestamp: new Date().toISOString(),
-                    researchBacked: speciesData.researchBacked || false
-                };
-                
-                if (existingIndex >= 0) {
-                    constellationData[existingIndex] = constellationPoint;
-                } else {
-                    constellationData.push(constellationPoint);
-                }
-            });
-            
-            // Save to localStorage
-            localStorage.setItem('intelligenceVectors', JSON.stringify(intelligenceVectors));
-            localStorage.setItem('constellationData', JSON.stringify(constellationData));
-            
-            // Update constellation visualization
-            updateAdvancedConstellation();
-        }
-
-        function updateAdvancedConstellation() {
-            const container = document.getElementById('constellationContainer');
-            const canvas = document.getElementById('constellationCanvas');
-            
-            if (!container || !canvas) return;
-            
-            const ctx = canvas.getContext('2d');
-            
-            if (constellationData.length === 0) return;
-            
-            container.style.display = 'block';
-            canvas.width = container.offsetWidth;
-            canvas.height = 400;
-            ctx.clearRect(0, 0, canvas.width, canvas.height);
-            
-            const centerX = canvas.width / 2;
-            const centerY = canvas.height / 2;
-            
-            // Draw constellation background
-            ctx.fillStyle = 'rgba(71, 72, 95, 0.1)';
-            ctx.fillRect(0, 0, canvas.width, canvas.height);
-            
-            // Draw intelligence dimensions axes
-            ctx.strokeStyle = 'rgba(111, 154, 76, 0.3)';
-            ctx.lineWidth = 1;
-            ctx.setLineDash([5, 5]);
-            
-            // X-axis (Perceive)
-            ctx.beginPath();
-            ctx.moveTo(50, centerY);
-            ctx.lineTo(canvas.width - 50, centerY);
-            ctx.stroke();
-            
-            // Y-axis (Relate)  
-            ctx.beginPath();
-            ctx.moveTo(centerX, 50);
-            ctx.lineTo(centerX, canvas.height - 50);
-            ctx.stroke();
-            
-            ctx.setLineDash([]);
-            
-            // Draw species connections (if multiple species)
-            if (constellationData.length > 1) {
-                constellationData.forEach((species1, i) => {
-                    constellationData.slice(i + 1).forEach(species2 => {
-                        const similarity = calculateVectorSimilarity(species1.vector, species2.vector);
-                        
-                        if (similarity > 0.7) { // Only draw strong connections
-                            const x1 = centerX + species1.position.x * 0.8;
-                            const y1 = centerY + species1.position.y * 0.8;
-                            const x2 = centerX + species2.position.x * 0.8;
-                            const y2 = centerY + species2.position.y * 0.8;
-                            
-                            ctx.beginPath();
-                            ctx.moveTo(x1, y1);
-                            ctx.lineTo(x2, y2);
-                            ctx.strokeStyle = `rgba(231, 198, 77, ${similarity * 0.5})`;
-                            ctx.lineWidth = similarity * 3;
-                            ctx.stroke();
-                        }
-                    });
+            // Add enter key support
+            const inputs = document.querySelectorAll('.species-input');
+            inputs.forEach(input => {
+                input.addEventListener('keypress', function(e) {
+                    if (e.key === 'Enter') {
+                        conductResearch();
+                    }
                 });
-            }
-            
-            // Draw species nodes
-            constellationData.forEach(speciesPoint => {
-                const x = centerX + speciesPoint.position.x * 0.8;
-                const y = centerY + speciesPoint.position.y * 0.8;
-                const complexity = speciesPoint.vector.complexity;
-                const radius = 5 + complexity * 10;
-                
-                // Node circle
-                ctx.beginPath();
-                ctx.arc(x, y, radius, 0, 2 * Math.PI);
-                ctx.fillStyle = speciesPoint.researchBacked ? 
-                    `rgba(111, 154, 76, ${0.7 + complexity * 0.3})` : 
-                    `rgba(157, 170, 236, ${0.5 + complexity * 0.2})`;
-                ctx.fill();
-                
-                // Node border
-                ctx.strokeStyle = speciesPoint.researchBacked ? '#6f9a4c' : '#9daaec';
-                ctx.lineWidth = 2;
-                ctx.stroke();
-                
-                // Species name
-                ctx.fillStyle = '#47485f';
-                ctx.font = '10px Poppins';
-                ctx.textAlign = 'center';
-                ctx.fillText(speciesPoint.species, x, y + radius + 15);
-                
-                // Intelligence indicators
-                if (speciesPoint.researchBacked) {
-                    ctx.fillText('✨', x, y + radius + 25);
-                }
             });
-            
-            // Draw dimension labels
-            ctx.fillStyle = '#47485f';
-            ctx.font = '12px Poppins';
-            ctx.textAlign = 'left';
-            ctx.fillText('← Perceive', 60, centerY - 10);
-            ctx.textAlign = 'right';
-            ctx.fillText('Perceive →', canvas.width - 60, centerY - 10);
-            ctx.textAlign = 'center';
-            ctx.fillText('↑ Relate', centerX + 10, 70);
-            ctx.fillText('Relate ↓', centerX + 10, canvas.height - 60);
-            
-            // Constellation statistics
-            ctx.fillStyle = '#6f9a4c';
-            ctx.font = '14px Poppins';
-            ctx.textAlign = 'center';
-            ctx.fillText(`Species Intelligence Constellation: ${constellationData.length} Species Mapped`, centerX, 30);
-        }
-
-        function showIntelligenceMapping() {
-            if (Object.keys(intelligenceVectors).length === 0) {
-                alert('No species intelligence data available yet. Please conduct some research first to build the constellation!');
-                return;
-            }
-            
-            // Show detailed intelligence mapping analysis
-            const mappingAnalysis = generateMappingAnalysis();
-            
-            const resultsDiv = document.getElementById('results');
-            resultsDiv.innerHTML = `
-                <div class="results-container glass fade-in">
-                    <div class="species-header">
-                        <h2>🌌 Species Intelligence Constellation Map</h2>
-                        <div class="research-type">Intelligence Vector Analysis • ${Object.keys(intelligenceVectors).length} Species Mapped</div>
-                    </div>
-                    
-                    <div class="wisdom-insight">
-                        <h3>🧠 Consciousness Topology</h3>
-                        <p>This constellation maps species intelligence across the Perceive/Relate/Apply framework, revealing hidden patterns and connections between different forms of consciousness. Each species becomes a node in a multidimensional intelligence space.</p>
-                    </div>
-                    
-                    ${mappingAnalysis}
-                    
-                    <div class="action-buttons">
-                        <button class="action-btn research-another-btn" onclick="resetSearch()">
-                            🔍 Research More Species
-                        </button>
-                        <button class="action-btn breakdown-btn" onclick="exportConstellationData()">
-                            📊 Export Constellation Data
-                        </button>
-                    </div>
-                </div>
-            `;
-            
-            // Force update the constellation visualization
-            setTimeout(() => updateAdvancedConstellation(), 100);
-        }
-
-        function generateMappingAnalysis() {
-            const vectors = Object.values(intelligenceVectors);
-            if (vectors.length === 0) return '';
-            
-            // Calculate intelligence patterns
-            const avgPerceive = vectors.reduce((sum, v) => sum + v.perceive, 0) / vectors.length;
-            const avgRelate = vectors.reduce((sum, v) => sum + v.relate, 0) / vectors.length;
-            const avgApply = vectors.reduce((sum, v) => sum + v.apply, 0) / vectors.length;
-            
-            // Find clusters
-            const highCollective = vectors.filter(v => v.collective > 0.7).map(v => v.species);
-            const highTemporal = vectors.filter(v => v.temporal > 0.7).map(v => v.species);
-            const highEnergetic = vectors.filter(v => v.energetic > 0.7).map(v => v.species);
-            
-            // Find most unique species
-            const mostUnique = vectors.sort((a, b) => b.uniqueness - a.uniqueness)[0];
-            
-            return `
-                <div class="intelligence-framework">
-                    <div class="framework-section perceive-section">
-                        <h3><span class="framework-badge">PATTERNS</span> Intelligence Clusters Discovered</h3>
-                        <div><strong>Collective Intelligence Hub:</strong> ${highCollective.join(', ') || 'None yet discovered'}</div>
-                        <div><strong>Temporal Masters:</strong> ${highTemporal.join(', ') || 'None yet discovered'}</div>
-                        <div><strong>Energetic Sensitives:</strong> ${highEnergetic.join(', ') || 'None yet discovered'}</div>
-                        <div style="margin-top: 10px;"><strong>Most Unique Intelligence:</strong> ${mostUnique?.species || 'Calculating...'} (${(mostUnique?.uniqueness * 100).toFixed(1)}% unique)</div>
-                    </div>
-                    
-                    <div class="framework-section relate-section">
-                        <h3><span class="framework-badge">AVERAGES</span> Consciousness Baseline</h3>
-                        <div><strong>Average Perceive Intelligence:</strong> ${(avgPerceive * 100).toFixed(1)}%</div>
-                        <div><strong>Average Relate Intelligence:</strong> ${(avgRelate * 100).toFixed(1)}%</div>
-                        <div><strong>Average Apply Intelligence:</strong> ${(avgApply * 100).toFixed(1)}%</div>
-                        <div style="margin-top: 10px;"><strong>Research Quality:</strong> ${vectors.filter(v => v.researchBacked).length}/${vectors.length} AI-enhanced</div>
-                    </div>
-                    
-                    <div class="framework-section apply-section">
-                        <h3><span class="framework-badge">INSIGHTS</span> Emerging Patterns</h3>
-                        <div><strong>Consciousness Diversity:</strong> ${vectors.length} unique intelligence signatures mapped</div>
-                        <div><strong>Vector Complexity:</strong> ${(vectors.reduce((sum, v) => sum + v.complexity, 0) / vectors.length * 100).toFixed(1)}% average</div>
-                        <div><strong>Human Relevance:</strong> ${(vectors.reduce((sum, v) => sum + v.humanRelevance, 0) / vectors.length * 100).toFixed(1)}% learning potential</div>
-                        <div style="margin-top: 10px;"><em>Pattern recognition improving with each species added...</em></div>
-                    </div>
-                </div>
-            `;
-        }
-
-        function exportConstellationData() {
-            const exportData = {
-                metadata: {
-                    generatedAt: new Date().toISOString(),
-                    speciesCount: Object.keys(intelligenceVectors).length,
-                    framework: "Perceive/Relate/Apply Intelligence Mapping",
-                    version: "1.0-enhanced"
-                },
-                intelligenceVectors: intelligenceVectors,
-                constellationData: constellationData,
-                patternAnalysis: generateMappingAnalysis()
-            };
-            
-            const dataStr = JSON.stringify(exportData, null, 2);
-            const dataBlob = new Blob([dataStr], {type: 'application/json'});
-            const url = URL.createObjectURL(dataBlob);
-            
-            const link = document.createElement('a');
-            link.href = url;
-            link.download = `species-intelligence-constellation-${new Date().toISOString().split('T')[0]}.json`;
-            link.click();
-            
-            URL.revokeObjectURL(url);
-            
-            alert('🌌 Species Intelligence Constellation data exported! This JSON file contains all intelligence vectors, 3D positions, and pattern analysis.');
-        }
-
-        // SIMPLIFIED TEST VERSION - Replace your callAnthropicAPI function with this minimal version
-async function callAnthropicAPI(speciesName, options) {
-    console.log('🔍 Testing API call for:', speciesName);
-    
-    try {
-        // Create a very simple prompt for testing
-        const simplePrompt = `Tell me about ${speciesName} intelligence in JSON format with these fields:
-{
-  "species": "${speciesName}",
-  "wisdomInsight": "brief insight",
-  "perceive": {"summary": "how they perceive", "details": ["detail1", "detail2"]},
-  "relate": {"summary": "how they relate", "details": ["detail1", "detail2"]},
-  "apply": {"summary": "how they apply intelligence", "details": ["detail1", "detail2"]},
-  "humanLearnings": "what humans can learn",
-  "conservationWisdom": "conservation insight",
-  "sources": ["source1", "source2"]
-}`;
-
-        console.log('📤 Sending request to Netlify function...');
-        
-        const response = await fetch('/.netlify/functions/research-species', {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json',
-            },
-            body: JSON.stringify({
-                species: speciesName,
-                prompt: simplePrompt,
-                options: options
-            })
         });
 
-        console.log('📨 Response status:', response.status);
-
-        if (!response.ok) {
-            const errorText = await response.text();
-            console.error('❌ Response error:', errorText);
-            throw new Error(`API Error: ${response.status} - ${errorText}`);
-        }
-
-        const data = await response.json();
-        console.log('✅ Response data:', data);
-        
-        if (data.success && data.response) {
-            console.log('🎉 API call successful! Parsing response...');
+        // Enhanced AI API Integration
+        async function callAnthropicAPI(speciesName, options) {
+            console.log('=== CALLING API FOR:', speciesName, '===');
             
-            // Simple parsing - no complex validation
-            let aiResponse;
+            const prompt = createResearchPrompt(speciesName, options);
+            
             try {
-                const cleanResponse = data.response.replace(/```json\n?/g, "").replace(/```\n?/g, "").trim();
-                aiResponse = JSON.parse(cleanResponse);
-            } catch (parseError) {
-                console.warn('Parse error, using simple fallback');
-                aiResponse = {
-                    species: speciesName,
-                    wisdomInsight: "AI provided intelligence insights",
-                    perceive: { summary: "Advanced perception", details: ["Sensory capabilities"] },
-                    relate: { summary: "Social relationships", details: ["Communication"] },
-                    apply: { summary: "Problem solving", details: ["Adaptation"] },
-                    humanLearnings: "Valuable lessons for humans",
-                    conservationWisdom: "Important for ecosystem",
-                    sources: ["AI research"]
-                };
-            }
-            
-            // Add required fields for your existing code
-            return {
-                species: aiResponse.species || speciesName,
-                wisdomInsight: aiResponse.wisdomInsight || "Intelligent species",
-                perceive: aiResponse.perceive || { summary: "Advanced perception", details: [] },
-                relate: aiResponse.relate || { summary: "Social intelligence", details: [] },
-                apply: aiResponse.apply || { summary: "Problem solving", details: [] },
-                humanLearnings: aiResponse.humanLearnings || "Lessons for humans",
-                conservationWisdom: aiResponse.conservationWisdom || "Conservation importance",
-                quantumAspects: "Quantum biology connections",
-                temporalIntelligence: "Time perception abilities", 
-                energeticIntelligence: "Energy sensitivity",
-                collectiveWisdom: "Group intelligence",
-                adaptiveStrategies: "Adaptation mechanisms",
-                sources: aiResponse.sources || ["AI research"],
-                researchBacked: true,
-                timestamp: new Date().toISOString()
-            };
-            
-        } else {
-            throw new Error(data.error || 'API call failed - no success flag');
-        }
-        
-    } catch (error) {
-        console.error('🚨 Final error in callAnthropicAPI:', error);
-        
-        // Return simple fallback
-        return {
-            species: speciesName,
-            wisdomInsight: `${speciesName} demonstrates remarkable intelligence.`,
-            perceive: { summary: "Sophisticated sensory systems", details: ["Environmental awareness"] },
-            relate: { summary: "Complex social relationships", details: ["Communication"] },
-            apply: { summary: "Adaptive problem-solving", details: ["Learning"] },
-            humanLearnings: "Valuable lessons for human understanding",
-            conservationWisdom: "Important for ecosystem balance",
-            quantumAspects: "Potential quantum processes",
-            temporalIntelligence: "Time perception capabilities",
-            energeticIntelligence: "Energy field sensitivity", 
-            collectiveWisdom: "Group decision-making",
-            adaptiveStrategies: "Environmental adaptation",
-            sources: ["General research"],
-            researchBacked: false,
-            fallbackReason: `API Error: ${error.message}`,
-            timestamp: new Date().toISOString()
-        };
-    }
-}
+                console.log('Making request to Netlify function...');
+                
+                const response = await fetch('/.netlify/functions/research-species', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({
+                        species: speciesName,
+                        prompt: prompt,
+                        options: options
+                    })
+                });
 
-// You'll also need this function to generate prompts for each species:
-function generatePrompt(species, options) {
-    let prompt = `Conduct a comprehensive intelligence analysis of ${species}. Provide detailed information about:
-1. **Cognitive Intelligence**: Problem-solving abilities, learning capacity, memory systems
-2. **Social Intelligence**: Communication methods, group dynamics, cooperation strategies  
-3. **Adaptive Intelligence**: Environmental adaptation, behavioral flexibility, survival strategies
-4. **Temporal Intelligence**: Time perception, planning abilities, learning from experience
-5. **Sensory Intelligence**: Sensory capabilities, information processing, environmental awareness
-Format the response with clear sections and specific examples. Include fascinating facts and recent research findings.`;
-    
-    if (options.includeIndigenous) {
-        prompt += `\n\nAlso include traditional indigenous knowledge and cultural perspectives about this species.`;
-    }
-    
-    if (options.includeBiomimicry) {
-        prompt += `\n\nInclude biomimicry applications and how humans have learned from this species.`;
-    }
-    
-    prompt += `\n\nProvide a comprehensive analysis that's both scientifically accurate and engaging to read.`;
-    
-    return prompt;
-}
+                console.log('Response status:', response.status);
+                console.log('Response ok:', response.ok);
+
+                if (!response.ok) {
+                    const errorText = await response.text();
+                    console.error('Response error:', errorText);
+                    throw new Error(`API Error: ${response.status} - ${errorText}`);
+                }
+
+                const data = await response.json();
+                console.log('Received data:', data);
+                
+                if (data.success && data.response) {
+                    console.log('✅ AI API call successful for', speciesName);
+                    return data.response;
+                } else {
+                    console.warn('⚠️ API returned data but no success flag:', data);
+                    return data.response || data;
+                }
+                
+            } catch (error) {
+                console.error('❌ AI API Error for', speciesName, ':', error);
+                console.log('🔄 Falling back to enhanced local data');
+                
+                const fallbackData = createEnhancedFallback(speciesName, options);
+                fallbackData.fallbackReason = `API Error: ${error.message}`;
+                fallbackData.researchBacked = false;
+                return fallbackData;
+            }
+        }
 
         function createResearchPrompt(speciesName, options) {
             const indigenousKnowledge = options.includeIndigenous ? `
@@ -1529,15 +902,14 @@ Focus on consciousness-expanding insights that bridge science and wisdom. Respon
 
         function parseAIResponse(responseText, speciesName) {
             try {
-                let cleanedResponse = responseText;
-                if (typeof responseText === 'string') {
-                    cleanedResponse = responseText
-                        .replace(/```json\n?/g, "")
-                        .replace(/```\n?/g, "")
-                        .trim();
-                }
+                console.log('Parsing AI response for:', speciesName);
                 
-                const data = typeof cleanedResponse === 'string' ? JSON.parse(cleanedResponse) : cleanedResponse;
+                const cleanedResponse = responseText
+                    .replace(/```json\n?/g, "")
+                    .replace(/```\n?/g, "")
+                    .trim();
+                
+                const data = JSON.parse(cleanedResponse);
                 
                 return {
                     species: data.species || speciesName,
@@ -1559,6 +931,135 @@ Focus on consciousness-expanding insights that bridge science and wisdom. Respon
             } catch (parseError) {
                 console.warn("Failed to parse AI response:", parseError);
                 return createEnhancedFallback(speciesName, {});
+            }
+        }
+
+        // Main research function
+        async function conductResearch() {
+            const speciesInputs = [
+                document.getElementById('species1').value.trim(),
+                document.getElementById('species2').value.trim(),
+                document.getElementById('species3').value.trim(),
+                document.getElementById('species4').value.trim(),
+                document.getElementById('species5').value.trim()
+            ].filter(species => species.length > 0);
+
+            if (speciesInputs.length === 0) {
+                alert('Please enter at least one species name');
+                return;
+            }
+
+            const today = new Date().toDateString();
+            if (!dailyUsage[today]) dailyUsage[today] = 0;
+
+            // ✅ COST LIMITING ENFORCEMENT
+            // Check daily limit
+            if (dailyUsage[today] >= CONFIG.DAILY_SEARCH_LIMIT) {
+                alert(`Daily search limit reached (${CONFIG.DAILY_SEARCH_LIMIT} searches). Please try again tomorrow to stay within budget limits.`);
+                return;
+            }
+
+            // Check monthly budget
+            const projectedCost = monthlySpend + (CONFIG.COST_PER_SEARCH * speciesInputs.length);
+            if (projectedCost > CONFIG.MONTHLY_BUDGET) {
+                alert(`Monthly budget limit would be exceeded (${projectedCost.toFixed(2)} > ${CONFIG.MONTHLY_BUDGET}). Please wait until next month or reduce the number of species.`);
+                return;
+            }
+
+            // Warning at 80% of monthly budget
+            if (projectedCost > (CONFIG.MONTHLY_BUDGET * 0.8) && monthlySpend <= (CONFIG.MONTHLY_BUDGET * 0.8)) {
+                if (!confirm(`Warning: This search will use ${((projectedCost/CONFIG.MONTHLY_BUDGET)*100).toFixed(1)}% of your monthly budget. Continue?`)) {
+                    return;
+                }
+            }
+
+            const options = {
+                includeIndigenous: document.getElementById('includeIndigenous').checked,
+                includeBiomimicry: document.getElementById('includeBiomimicry').checked,
+                includeHuman: document.getElementById('includeHuman').checked
+            };
+
+            if (options.includeHuman) {
+                speciesInputs.push('Human');
+            }
+
+            const resultsDiv = document.getElementById('results');
+            
+            try {
+                console.log('🔬 Starting research for:', speciesInputs);
+                
+                // Show loading
+                resultsDiv.innerHTML = `
+                    <div class="results-container glass fade-in">
+                        <div class="loading-enhanced">
+                            <div class="research-animation">🧬</div>
+                            <h3 style="color: #47485f;">Conducting Deep Species Intelligence Research</h3>
+                            <p style="color: #3e3a44;">Enhanced Claude AI analysis with temporal, energetic, collective, and adaptive intelligence dimensions</p>
+                            <p style="color: #6f9a4c; font-size: 14px; margin-top: 10px;">This comprehensive research may take 15-20 seconds per species...</p>
+                        </div>
+                    </div>
+                `;
+
+                // Call AI API for each species
+                const researchResults = [];
+                for (let i = 0; i < speciesInputs.length; i++) {
+                    const species = speciesInputs[i];
+                    console.log(`🔍 Research ${i + 1}/${speciesInputs.length}: ${species}`);
+                    
+                    // Update loading message
+                    resultsDiv.innerHTML = `
+                        <div class="results-container glass fade-in">
+                            <div class="loading-enhanced">
+                                <div class="research-animation">🧬</div>
+                                <h3 style="color: #47485f;">Researching ${species}...</h3>
+                                <p style="color: #3e3a44;">Species ${i + 1} of ${speciesInputs.length} • Enhanced Claude AI</p>
+                                <div style="background: rgba(111, 154, 76, 0.2); padding: 10px; border-radius: 10px; margin: 10px 0;">
+                                    <div style="width: ${(i/speciesInputs.length)*100}%; height: 4px; background: #6f9a4c; border-radius: 2px;"></div>
+                                </div>
+                            </div>
+                        </div>
+                    `;
+                    
+                    const result = await callAnthropicAPI(species, options);
+                    researchResults.push(result);
+                    
+                    console.log(`✅ Research completed for ${species}`);
+                }
+
+                console.log('🎉 All research completed!');
+
+                // Update usage tracking
+                dailyUsage[today]++;
+                monthlySpend += CONFIG.COST_PER_SEARCH * speciesInputs.length;
+                localStorage.setItem('dailyUsage', JSON.stringify(dailyUsage));
+                localStorage.setItem('monthlySpend', monthlySpend.toString());
+
+                // Store in research history
+                const searchRecord = {
+                    species: speciesInputs,
+                    timestamp: new Date().toISOString(),
+                    options: options,
+                    results: researchResults
+                };
+                researchHistory.push(searchRecord);
+                localStorage.setItem('researchHistory', JSON.stringify(researchHistory));
+
+                // Display results with ILF styling
+                displayEnhancedResults(researchResults);
+                updateUsageDisplay();
+                updateConstellation(researchResults);
+                
+            } catch (error) {
+                console.error('❌ Research failed:', error);
+                resultsDiv.innerHTML = `
+                    <div class="results-container glass fade-in">
+                        <div style="text-align: center; padding: 40px;">
+                            <h3 style="color: #47485f;">Research Temporarily Unavailable</h3>
+                            <p style="color: #3e3a44;">Error: ${error.message}</p>
+                            <button onclick="conductResearch()" style="background: linear-gradient(135deg, #6f9a4c, #4e6440); color: white; border: none; padding: 12px 25px; border-radius: 20px; cursor: pointer; margin-top: 15px; font-family: 'Poppins', sans-serif;">Try Again</button>
+                        </div>
+                    </div>
+                `;
             }
         }
 
@@ -1653,7 +1154,7 @@ Focus on consciousness-expanding insights that bridge science and wisdom. Respon
                 html += generateEnhancedComparativeAnalysis(dataArray);
             }
 
-            // Action buttons with Intelligence Mapping button
+            // Action buttons
             html += `
                 <div class="results-container glass">
                     <div class="action-buttons">
@@ -1666,21 +1167,10 @@ Focus on consciousness-expanding insights that bridge science and wisdom. Respon
                         <button class="action-btn research-another-btn" onclick="resetSearch()">
                             🔍 Research More Species
                         </button>
-                        <button class="action-btn" onclick="showIntelligenceMapping()" style="background: linear-gradient(135deg, #634e87, #9daaec);">
-                            🌌 View Intelligence Constellation
-                        </button>
                     </div>
                     
                     <div style="text-align: center; margin-top: 30px; padding: 15px; background: rgba(111, 154, 76, 0.1); border-radius: 10px; border: 1px solid rgba(111, 154, 76, 0.2);">
-                        <div style="margin-bottom: 10px;">
-                            <a href="README.md" target="_blank" style="color: #6f9a4c; text-decoration: none; font-weight: 500; font-size: 13px; border-bottom: 1px solid transparent; transition: border-color 0.3s ease;" onmouseover="this.style.borderColor='#6f9a4c'" onmouseout="this.style.borderColor='transparent'">
-                                📚 About This Research Platform
-                            </a>
-                        </div>
                         <small style="color: #47485f; font-size: 12px;">Enhanced research powered by Claude AI with 6 intelligence dimensions • ${dataArray.reduce((sum, d) => sum + (d.sources?.length || 0), 0)} sources consulted</small>
-                        <div style="margin-top: 8px;">
-                            <small style="color: #634e87; font-size: 11px;">🌌 Species Intelligence Vectors: ${Object.keys(intelligenceVectors).length} mapped</small>
-                        </div>
                     </div>
                 </div>
             `;
@@ -1690,6 +1180,7 @@ Focus on consciousness-expanding insights that bridge science and wisdom. Respon
         }
 
         function generateEnhancedComparativeAnalysis(dataArray) {
+            // FIXED: Changed variable name to avoid conflict
             const reportSpeciesNames = dataArray.map(d => d.species);
             
             return `
@@ -1701,16 +1192,16 @@ Focus on consciousness-expanding insights that bridge science and wisdom. Respon
                         <p>Remarkable commonalities emerge across all studied species, revealing fundamental principles of consciousness:</p>
                         <div class="pattern-list">
                             <div style="margin-bottom: 15px;">
-                                <strong style="color: #47485f;">TEMPORAL INTELLIGENCE:</strong> All species demonstrate sophisticated time perception that extends far beyond basic circadian rhythms, including seasonal anticipation, multi-generational memory patterns, and environmental change prediction.
+                                <strong style="color: #47485f;">TEMPORAL INTELLIGENCE:</strong> All species demonstrate sophisticated time perception that extends far beyond basic circadian rhythms, including seasonal anticipation, multi-generational memory patterns, and environmental change prediction. Their temporal awareness enables precise coordination of life activities, migration timing, and resource optimization across multiple time scales. This suggests time perception is a fundamental aspect of consciousness that manifests uniquely across different evolutionary pathways.
                             </div>
                             <div style="margin-bottom: 15px;">
-                                <strong style="color: #47485f;">ENERGETIC INTELLIGENCE:</strong> Biofield sensitivity and electromagnetic awareness appear as universal traits, enabling navigation, communication, and environmental monitoring beyond conventional sensory ranges.
+                                <strong style="color: #47485f;">ENERGETIC INTELLIGENCE:</strong> Biofield sensitivity and electromagnetic awareness appear as universal traits, enabling navigation, communication, and environmental monitoring beyond conventional sensory ranges. Each species has evolved specific mechanisms for energy optimization and conservation that maintain their ecological roles. Their ability to detect and respond to subtle energy fluctuations suggests consciousness operates through energetic dimensions that science is only beginning to understand.
                             </div>
                             <div style="margin-bottom: 15px;">
-                                <strong style="color: #47485f;">COLLECTIVE INTELLIGENCE:</strong> Group consciousness and distributed decision-making characterize all studied species, creating emergent behaviors that exceed individual capabilities.
+                                <strong style="color: #47485f;">COLLECTIVE INTELLIGENCE:</strong> Group consciousness and distributed decision-making characterize all studied species, creating emergent behaviors that exceed individual capabilities. Their collective intelligence enables complex coordination, information sharing, and adaptive responses that have been refined over millions of years. This demonstrates that consciousness naturally tends toward connection and collaboration rather than isolation.
                             </div>
                             <div>
-                                <strong style="color: #47485f;">ADAPTIVE INTELLIGENCE:</strong> Remarkable resilience and real-time adaptation strategies unite these consciousness expressions, enabling survival across changing environmental conditions.
+                                <strong style="color: #47485f;">ADAPTIVE INTELLIGENCE:</strong> Remarkable resilience and real-time adaptation strategies unite these consciousness expressions, enabling survival across changing environmental conditions. Each species maintains behavioral flexibility while preserving essential characteristics, demonstrating that intelligence includes the wisdom of knowing when and how to change. Their adaptive mechanisms represent evolutionary intelligence that operates across individual, generational, and species-wide scales.
                             </div>
                         </div>
                     </div>
@@ -1723,10 +1214,10 @@ Focus on consciousness-expanding insights that bridge science and wisdom. Respon
                             return `
                                 <div class="species-comparison">
                                     <h4>${species}</h4>
-                                    <div><strong>Temporal Gift:</strong> ${(speciesData.temporalIntelligence || 'Sophisticated time perception abilities').substring(0, 120)}...</div>
-                                    <div><strong>Energetic Gift:</strong> ${(speciesData.energeticIntelligence || 'Biofield sensitivity and electromagnetic awareness').substring(0, 120)}...</div>
-                                    <div><strong>Collective Gift:</strong> ${(speciesData.collectiveWisdom || 'Group consciousness enabling distributed intelligence').substring(0, 120)}...</div>
-                                    <div><strong>Adaptive Gift:</strong> ${(speciesData.adaptiveStrategies || 'Remarkable resilience mechanisms').substring(0, 120)}...</div>
+                                    <div><strong>Temporal Gift:</strong> ${(speciesData.temporalIntelligence || 'Sophisticated time perception abilities that coordinate environmental synchronization').substring(0, 120)}...</div>
+                                    <div><strong>Energetic Gift:</strong> ${(speciesData.energeticIntelligence || 'Biofield sensitivity and electromagnetic awareness for navigation and communication').substring(0, 120)}...</div>
+                                    <div><strong>Collective Gift:</strong> ${(speciesData.collectiveWisdom || 'Group consciousness enabling distributed intelligence and emergent problem-solving').substring(0, 120)}...</div>
+                                    <div><strong>Adaptive Gift:</strong> ${(speciesData.adaptiveStrategies || 'Remarkable resilience mechanisms enabling survival across changing conditions').substring(0, 120)}...</div>
                                 </div>
                             `;
                         }).join('')}
@@ -1734,7 +1225,7 @@ Focus on consciousness-expanding insights that bridge science and wisdom. Respon
                     
                     <div class="collective-wisdom">
                         <h3>🌐 Planetary Intelligence Symphony</h3>
-                        <p>Together, these ${reportSpeciesNames.length} life forms reveal that intelligence is not a hierarchy but a multidimensional symphony of consciousness, where each species contributes unique temporal, energetic, collective, and adaptive gifts essential for planetary health.</p>
+                        <p>Together, these ${reportSpeciesNames.length} life forms reveal that intelligence is not a hierarchy but a multidimensional symphony of consciousness, where each species contributes unique temporal, energetic, collective, and adaptive gifts essential for planetary health. Their combined intelligence creates a living network of awareness that has evolved over millions of years to maintain Earth's biosphere. Each species represents an irreplaceable note in this cosmic composition, with their loss diminishing the entire symphony of planetary consciousness. Human intelligence finds its highest expression not in dominance over other forms of awareness, but in recognizing, protecting, and learning from these diverse expressions of consciousness. This research demonstrates that Earth hosts a magnificent intelligence experiment where cooperation, rather than competition, creates the conditions for all life to flourish and evolve toward ever-greater awareness and complexity.</p>
                     </div>
                 </div>
             `;
@@ -1746,22 +1237,17 @@ Focus on consciousness-expanding insights that bridge science and wisdom. Respon
             const todayUsage = dailyUsage[today] || 0;
             const budgetPercent = (monthlySpend / CONFIG.MONTHLY_BUDGET * 100).toFixed(1);
             
-            const displayElement = document.getElementById('usageDisplay');
-            if (displayElement) {
-                displayElement.innerHTML = `
-                    Enhanced searches today: ${todayUsage}/${CONFIG.DAILY_SEARCH_LIMIT} | 
-                    Monthly budget: ${budgetPercent}% of ${CONFIG.MONTHLY_BUDGET}
-                `;
-            }
+            document.getElementById('usageDisplay').innerHTML = `
+                Enhanced searches today: ${todayUsage}/${CONFIG.DAILY_SEARCH_LIMIT} | 
+                Monthly budget: ${budgetPercent}% of ${CONFIG.MONTHLY_BUDGET}
+            `;
         }
 
         function initializeConstellation() {
             const canvas = document.getElementById('constellationCanvas');
-            const container = document.getElementById('constellationContainer');
-            
-            if (!canvas || !container) return;
-            
             const ctx = canvas.getContext('2d');
+            
+            const container = document.getElementById('constellationContainer');
             canvas.width = container.offsetWidth;
             canvas.height = 400;
             
@@ -1769,6 +1255,84 @@ Focus on consciousness-expanding insights that bridge science and wisdom. Respon
             ctx.font = '16px Poppins';
             ctx.textAlign = 'center';
             ctx.fillText('Enhanced Species Constellation will appear here after research', canvas.width/2, canvas.height/2);
+        }
+
+        function updateConstellation(speciesData) {
+            const container = document.getElementById('constellationContainer');
+            const canvas = document.getElementById('constellationCanvas');
+            const ctx = canvas.getContext('2d');
+            
+            container.style.display = 'block';
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+            canvas.width = container.offsetWidth;
+            canvas.height = 400;
+            
+            const centerX = canvas.width / 2;
+            const centerY = canvas.height / 2;
+            const radius = Math.min(canvas.width, canvas.height) / 3;
+            
+            speciesData.forEach((species, index) => {
+                const angle = (index / speciesData.length) * 2 * Math.PI;
+                const x = centerX + Math.cos(angle) * radius;
+                const y = centerY + Math.sin(angle) * radius;
+                
+                // Draw connections
+                ctx.beginPath();
+                ctx.moveTo(centerX, centerY);
+                ctx.lineTo(x, y);
+                ctx.lineWidth = species.researchBacked ? 3 : 1;
+                ctx.strokeStyle = species.researchBacked ? '#6f9a4c' : 'rgba(111, 154, 76, 0.5)';
+                ctx.stroke();
+                
+                // Draw species node
+                ctx.beginPath();
+                ctx.arc(x, y, 10, 0, 2 * Math.PI);
+                ctx.fillStyle = species.researchBacked ? '#6f9a4c' : 'rgba(111, 154, 76, 0.7)';
+                ctx.fill();
+                
+                // Draw species name
+                ctx.font = '12px Poppins';
+                ctx.textAlign = 'center';
+                ctx.fillStyle = '#47485f';
+                ctx.fillText(species.species, x, y + 25);
+                if (species.researchBacked) {
+                    ctx.fillText('✨', x, y + 35);
+                }
+            });
+            
+            // Draw center node
+            ctx.beginPath();
+            ctx.arc(centerX, centerY, 15, 0, 2 * Math.PI);
+            ctx.fillStyle = '#e7c64d';
+            ctx.fill();
+            
+            ctx.fillStyle = '#47485f';
+            ctx.font = '14px Poppins';
+            ctx.fillText('Enhanced', centerX, centerY - 8);
+            ctx.fillText('Planetary', centerX, centerY + 5);
+            ctx.fillText('Intelligence', centerX, centerY + 18);
+        }
+
+        function resetSearch() {
+            document.getElementById('species1').value = '';
+            document.getElementById('species2').value = '';
+            document.getElementById('species3').value = '';
+            document.getElementById('species4').value = '';
+            document.getElementById('species5').value = '';
+            document.getElementById('includeIndigenous').checked = false;
+            document.getElementById('includeBiomicry').checked = false;
+            document.getElementById('includeHuman').checked = false;
+            document.getElementById('results').innerHTML = '';
+            document.getElementById('constellationContainer').style.display = 'none';
+            document.getElementById('species1').focus();
+        }
+
+        function showContributionForm() {
+            document.getElementById('contributionModal').style.display = 'block';
+        }
+
+        function closeContributionModal() {
+            document.getElementById('contributionModal').style.display = 'none';
         }
 
         // Enhanced PDF Generation Function
@@ -1788,80 +1352,196 @@ Focus on consciousness-expanding insights that bridge science and wisdom. Respon
                 const { jsPDF } = window.jspdf;
                 const doc = new jsPDF();
                 
-                // Title Page
-                doc.setFontSize(20);
-                doc.text('Species Intelligence Research Report', 20, 30);
+                const pageWidth = doc.internal.pageSize.getWidth();
+                const pageHeight = doc.internal.pageSize.getHeight();
+                const margin = 20;
+                let yPosition = margin;
                 
-                doc.setFontSize(14);
-                doc.text('Perceive • Relate • Apply Framework with Enhanced Dimensions', 20, 45);
+                // ILF Color palette for PDF
+                const primaryColor = [71, 72, 95]; // #47485f
+                const secondaryColor = [111, 154, 76]; // #6f9a4c
+                const accentColor = [231, 198, 77]; // #e7c64d
+                
+                function checkAndAddPage(requiredHeight = 30) {
+                    if (yPosition + requiredHeight > pageHeight - margin) {
+                        doc.addPage();
+                        yPosition = margin;
+                        return true;
+                    }
+                    return false;
+                }
+                
+                function addWrappedText(text, fontSize = 10, lineHeight = 5, color = [62, 58, 68]) {
+                    if (!text || typeof text !== 'string') {
+                        text = 'Information not available';
+                    }
+                    
+                    doc.setFontSize(fontSize);
+                    doc.setTextColor(...color);
+                    const lines = doc.splitTextToSize(text, pageWidth - (margin * 2) - 20);
+                    
+                    for (let line of lines) {
+                        checkAndAddPage();
+                        doc.text(line, margin + 10, yPosition);
+                        yPosition += lineHeight;
+                    }
+                    yPosition += 2;
+                }
+                
+                // Title Page with ILF styling
+                doc.setFontSize(24);
+                doc.setTextColor(...primaryColor);
+                doc.text('Species Intelligence Research Report', margin, yPosition);
+                yPosition += 15;
+                
+                doc.setFontSize(16);
+                doc.setTextColor(...secondaryColor);
+                doc.text('Perceive • Relate • Apply Framework with Enhanced Dimensions', margin, yPosition);
+                yPosition += 12;
                 
                 doc.setFontSize(12);
-                const speciesNames = currentSpeciesData.map(d => d.species || 'Unknown Species').join(', ');
-                doc.text(`Research Focus: ${speciesNames}`, 20, 60);
+                doc.setTextColor(62, 58, 68);
+                
+                // FIXED: Changed variable name to avoid conflict
+                const pdfSpeciesNames = currentSpeciesData.map(d => d.species || 'Unknown Species').join(', ');
+                doc.text(`Research Focus: ${pdfSpeciesNames}`, margin, yPosition);
+                yPosition += 8;
                 
                 const reportDate = new Date().toLocaleDateString('en-US', { 
                     year: 'numeric', 
                     month: 'long', 
                     day: 'numeric' 
                 });
-                doc.text(`Generated: ${reportDate}`, 20, 70);
-                doc.text('Powered by Claude AI & Intuitive Learning Foundation Framework', 20, 80);
+                doc.text(`Generated: ${reportDate}`, margin, yPosition);
+                yPosition += 8;
                 
-                let yPos = 100;
+                doc.text('Powered by Claude AI & Intuitive Learning Foundation Framework', margin, yPosition);
+                yPosition += 20;
+                
+                // Executive Summary
+                doc.setFontSize(16);
+                doc.setTextColor(...secondaryColor);
+                doc.text('Executive Summary', margin, yPosition);
+                yPosition += 10;
+                
+                const executiveSummary = `This comprehensive research explores ${currentSpeciesData.length} species through the revolutionary Perceive/Relate/Apply framework with enhanced intelligence dimensions. The research reveals sophisticated temporal awareness, energetic intelligence, collective wisdom, and adaptive strategies that challenge traditional views of intelligence. Each species demonstrates unique consciousness capabilities that contribute to planetary intelligence networks and offer profound lessons for human consciousness evolution.`;
+                addWrappedText(executiveSummary, 10, 5);
+                yPosition += 10;
                 
                 // Individual Species Reports
                 currentSpeciesData.forEach((species, index) => {
-                    if (yPos > 250) {
-                        doc.addPage();
-                        yPos = 30;
-                    }
+                    checkAndAddPage(40);
                     
-                    doc.setFontSize(16);
-                    doc.text(`${species.species || 'Unknown Species'} Intelligence Profile`, 20, yPos);
-                    yPos += 15;
+                    // Species Header
+                    doc.setFontSize(18);
+                    doc.setTextColor(...primaryColor);
+                    doc.text(`${species.species || 'Unknown Species'} Intelligence Profile`, margin, yPosition);
+                    yPosition += 8;
                     
+                    // Research type
                     doc.setFontSize(10);
-                    doc.text(`Research Type: ${species.researchBacked ? 'AI-Enhanced Research' : 'Framework Analysis'}`, 20, yPos);
-                    yPos += 15;
+                    doc.setTextColor(...accentColor);
+                    const researchType = species.researchBacked ? 'AI-Enhanced Research' : 'Framework Analysis';
+                    doc.text(`Research Type: ${researchType}`, margin, yPosition);
+                    yPosition += 12;
                     
                     // Wisdom Insight
-                    doc.setFontSize(12);
-                    doc.text('Key Wisdom Insight', 20, yPos);
-                    yPos += 8;
+                    doc.setFontSize(14);
+                    doc.setTextColor(...secondaryColor);
+                    doc.text('Key Wisdom Insight', margin, yPosition);
+                    yPosition += 8;
+                    addWrappedText(species.wisdomInsight || 'This species demonstrates unique intelligence worthy of deeper study.', 10, 5);
+                    yPosition += 5;
                     
-                    doc.setFontSize(10);
-                    const wisdomLines = doc.splitTextToSize(species.wisdomInsight || 'No wisdom insight available', 170);
-                    doc.text(wisdomLines, 20, yPos);
-                    yPos += wisdomLines.length * 5 + 10;
-                    
-                    // Framework sections
+                    // Framework Sections
                     ['perceive', 'relate', 'apply'].forEach(section => {
-                        if (yPos > 250) {
-                            doc.addPage();
-                            yPos = 30;
-                        }
+                        checkAndAddPage(25);
+                        const sectionTitle = section.toUpperCase() + ' • ' + 
+                            (section === 'perceive' ? 'How They Perceive Their World' :
+                             section === 'relate' ? 'How They Relate To Their World' :
+                             'How They Apply Their Intelligence');
                         
-                        doc.setFontSize(12);
-                        const sectionTitle = section.toUpperCase() + ' - How They ' + 
-                            (section === 'perceive' ? 'Perceive' : section === 'relate' ? 'Relate' : 'Apply Intelligence');
-                        doc.text(sectionTitle, 20, yPos);
-                        yPos += 8;
+                        doc.setFontSize(14);
+                        doc.setTextColor(...primaryColor);
+                        doc.text(sectionTitle, margin, yPosition);
+                        yPosition += 8;
                         
                         const sectionData = species[section];
                         if (sectionData && sectionData.summary) {
-                            doc.setFontSize(10);
-                            const summaryLines = doc.splitTextToSize(sectionData.summary, 170);
-                            doc.text(summaryLines, 20, yPos);
-                            yPos += summaryLines.length * 5 + 5;
+                            addWrappedText(sectionData.summary, 10, 5);
+                            
+                            if (sectionData.details && Array.isArray(sectionData.details)) {
+                                doc.setFontSize(10);
+                                doc.setTextColor(62, 58, 68);
+                                sectionData.details.forEach(detail => {
+                                    if (detail) {
+                                        checkAndAddPage();
+                                        doc.text(`• ${detail}`, margin + 5, yPosition);
+                                        yPosition += 5;
+                                    }
+                                });
+                            }
                         }
-                        yPos += 10;
+                        yPosition += 8;
+                    });
+                    
+                    // Enhanced Dimensions
+                    const enhancedDimensions = [
+                        { key: 'temporalIntelligence', title: 'Temporal Intelligence' },
+                        { key: 'energeticIntelligence', title: 'Energetic Intelligence' },
+                        { key: 'collectiveWisdom', title: 'Collective Wisdom' },
+                        { key: 'adaptiveStrategies', title: 'Adaptive Strategies' },
+                        { key: 'quantumAspects', title: 'Quantum Biology & Consciousness' },
+                        { key: 'humanLearnings', title: 'Human Learning Opportunities' },
+                        { key: 'conservationWisdom', title: 'Conservation Intelligence' }
+                    ];
+                    
+                    enhancedDimensions.forEach(dimension => {
+                        if (species[dimension.key]) {
+                            checkAndAddPage(15);
+                            doc.setFontSize(12);
+                            doc.setTextColor(...secondaryColor);
+                            doc.text(dimension.title, margin, yPosition);
+                            yPosition += 6;
+                            addWrappedText(species[dimension.key], 9, 4);
+                            yPosition += 5;
+                        }
                     });
                 });
                 
-                const filename = `Species-Intelligence-Report-${speciesNames.replace(/[^a-zA-Z0-9]/g, '-')}-${new Date().toISOString().split('T')[0]}.pdf`;
+                // Sources
+                checkAndAddPage(30);
+                doc.setFontSize(16);
+                doc.setTextColor(...primaryColor);
+                doc.text('Sources and References', margin, yPosition);
+                yPosition += 10;
+                
+                const allSources = [...new Set(currentSpeciesData.flatMap(d => d.sources || ['Enhanced research framework']))];
+                doc.setFontSize(9);
+                doc.setTextColor(62, 58, 68);
+                
+                allSources.forEach((source, index) => {
+                    if (source) {
+                        checkAndAddPage();
+                        doc.text(`${index + 1}. ${source}`, margin, yPosition);
+                        yPosition += 4;
+                    }
+                });
+                yPosition += 10;
+                
+                // Footer
+                doc.setFontSize(8);
+                doc.setTextColor(128, 128, 128);
+                doc.text('Generated by Species Intelligence Research Agent • Intuitive Learning Foundation', margin, yPosition);
+                doc.text('Visit: intuitivelearningfoundation.org • generateharmony.com • kerrilake.com', margin, yPosition + 4);
+                
+                // Save PDF
+                const filename = `Species-Intelligence-Report-${pdfSpeciesNames.replace(/[^a-zA-Z0-9]/g, '-')}-${new Date().toISOString().split('T')[0]}.pdf`;
                 doc.save(filename);
                 
-                alert(`✅ PDF Report Generated Successfully!\n\nFile: ${filename}`);
+                setTimeout(() => {
+                    alert(`✅ PDF Report Generated Successfully!\n\nFile: ${filename}\n\nThe report includes comprehensive research with enhanced intelligence dimensions and ILF styling.`);
+                }, 500);
                 
             } catch (error) {
                 console.error('PDF Generation Error:', error);
@@ -1873,26 +1553,26 @@ Focus on consciousness-expanding insights that bridge science and wisdom. Respon
         function createEnhancedFallback(speciesName, options) {
             return {
                 species: speciesName,
-                wisdomInsight: `${speciesName} represents a remarkable form of consciousness that has evolved unique ways of perceiving, relating to, and applying intelligence within their environment.`,
+                wisdomInsight: `${speciesName} represents a remarkable form of consciousness that has evolved unique ways of perceiving, relating to, and applying intelligence within their environment. Their cognitive abilities demonstrate that intelligence manifests in diverse forms across the natural world, each adapted to specific ecological niches. Understanding their intelligence offers profound insights into alternative ways of being conscious and aware.`,
                 perceive: {
-                    summary: `${speciesName} perceives their world through sophisticated sensory systems adapted to their environmental niche.`,
+                    summary: `${speciesName} perceives their world through sophisticated sensory systems adapted to their environmental niche. Their perceptual capabilities enable complex information gathering about surroundings and social dynamics. These adaptations support survival and environmental interaction.`,
                     details: ["Specialized sensory capabilities", "Environmental awareness systems", "Social perception abilities", "Quantum field sensitivity"]
                 },
                 relate: {
-                    summary: `${speciesName} maintains relationships through communication and social structures.`,
+                    summary: `${speciesName} maintains relationships through communication and social structures. Their intelligence encompasses species connections and ecosystem relationships. These interactions support survival and ecosystem balance.`,
                     details: ["Social communication systems", "Ecological partnerships", "Community cooperation", "Consciousness connections"]
                 },
                 apply: {
-                    summary: `${speciesName} applies intelligence through problem-solving and adaptive strategies.`,
+                    summary: `${speciesName} applies intelligence through problem-solving and adaptive strategies. Their abilities enable environmental manipulation and learning from experience. These applications contribute to survival and ecosystem health.`,
                     details: ["Problem-solving behaviors", "Environmental adaptation", "Learning systems", "Ecosystem contributions"]
                 },
-                temporalIntelligence: `${speciesName} demonstrates sophisticated temporal intelligence through synchronization with natural cycles and environmental rhythms.`,
-                energeticIntelligence: `${speciesName} exhibits remarkable energetic intelligence through sensitivity to electromagnetic fields and biofield interactions.`,
-                collectiveWisdom: `${speciesName} displays sophisticated collective wisdom through group decision-making and information sharing capabilities.`,
-                adaptiveStrategies: `${speciesName} exhibits extraordinary adaptive strategies enabling survival across changing environmental conditions.`,
-                humanLearnings: `Humans can learn valuable lessons from ${speciesName} about intelligence and environmental adaptation.`,
-                conservationWisdom: `${speciesName} plays crucial ecosystem roles requiring conservation for environmental stability.`,
-                quantumAspects: `${speciesName} may utilize quantum processes in sensory systems and cognitive processing.`,
+                temporalIntelligence: `${speciesName} demonstrates sophisticated temporal intelligence through synchronization with natural cycles and environmental rhythms. They possess internal biological clocks that coordinate with seasonal changes and daily patterns. Their temporal awareness enables precise timing for critical activities and long-term environmental adaptation. This time perception supports migration, reproduction, and resource management across multiple temporal scales.`,
+                energeticIntelligence: `${speciesName} exhibits remarkable energetic intelligence through sensitivity to electromagnetic fields and biofield interactions. They have evolved mechanisms for energy conservation and optimization in their daily activities. Their systems detect subtle energy fluctuations that guide navigation and social interactions. This energetic awareness contributes to health maintenance and ecosystem coordination.`,
+                collectiveWisdom: `${speciesName} displays sophisticated collective wisdom through group decision-making and information sharing capabilities. Their social structures enable distributed intelligence where individual knowledge contributes to collective problem-solving. They demonstrate emergent behaviors where group intelligence exceeds individual capabilities. This collective consciousness enables survival through cooperation and coordinated responses.`,
+                adaptiveStrategies: `${speciesName} exhibits extraordinary adaptive strategies enabling survival across changing environmental conditions. They possess rapid response mechanisms for environmental threats and resource fluctuations. Their behavioral flexibility allows strategy modification based on experience and circumstances. These adaptive mechanisms enable continuous environmental adaptation while maintaining species integrity.`,
+                humanLearnings: `Humans can learn valuable lessons from ${speciesName} about intelligence and environmental adaptation. Their strategies offer insights into sustainable living and community cooperation. Their approaches may inspire technological and social innovations. Understanding expands concepts of consciousness across species.`,
+                conservationWisdom: `${speciesName} plays crucial ecosystem roles requiring conservation for environmental stability. Their intelligence supports biodiversity and habitat integrity. Threats include habitat loss and human disruption of natural behaviors. Conservation must consider their intelligence and social requirements.`,
+                quantumAspects: `${speciesName} may utilize quantum processes in sensory systems and cognitive processing. Research suggests quantum effects in navigation and environmental sensitivity. Understanding reveals insights into consciousness across species.`,
                 sources: ["Species intelligence research", "Consciousness studies", "Ecological research"],
                 researchBacked: false,
                 fallbackReason: "Enhanced fallback with ILF integration",
@@ -1902,7 +1582,6 @@ Focus on consciousness-expanding insights that bridge science and wisdom. Respon
 
         // Community contribution handling
         function submitContribution() {
-            // Collect form data
             const data = {
                 contributorName: document.getElementById('contributorName').value,
                 contributorEmail: document.getElementById('contributorEmail').value,
@@ -1919,49 +1598,70 @@ Focus on consciousness-expanding insights that bridge science and wisdom. Respon
                 accuracy: document.getElementById('accuracy').checked,
                 permission: document.getElementById('permission').checked
             };
-
-            // Basic validation
-            if (!data.contributorName || !data.contributorEmail || !data.speciesName || 
-                !data.wisdomInsight || !data.perceiveData || !data.relateData || 
-                !data.applyData || !data.humanLearnings || !data.conservationWisdom || 
-                !data.sources || !data.experienceType || !data.accuracy || !data.permission) {
-                alert('Please fill in all required fields and check the verification boxes.');
+            
+            if (data.contributorName.length < 2 || data.contributorEmail.length < 5) {
+                alert('Please provide valid name and email.');
                 return;
             }
-
-            // For now, just show success message and close modal
-            alert(`Thank you for your contribution about ${data.speciesName}! Your knowledge has been recorded and will be reviewed for inclusion in our research database.`);
-            closeContributionModal();
             
-            // Clear the form
-            document.getElementById('contributionForm').reset();
+            if (data.sources.split('\n').filter(s => s.trim().length > 10).length < 2) {
+                alert('Please provide at least 2 detailed sources.');
+                return;
+            }
+            
+            if (!data.accuracy || !data.permission) {
+                alert('Please check both required acknowledgment boxes.');
+                return;
+            }
+            
+            try {
+                alert('Thank you! Your contribution has been submitted for review. (Note: This is a demo - no actual submission occurred)');
+                closeContributionModal();
+                
+                // Reset form
+                document.getElementById('contributorName').value = '';
+                document.getElementById('contributorEmail').value = '';
+                document.getElementById('contributorCredentials').value = '';
+                document.getElementById('speciesName').value = '';
+                document.getElementById('wisdomInsight').value = '';
+                document.getElementById('perceiveData').value = '';
+                document.getElementById('relateData').value = '';
+                document.getElementById('applyData').value = '';
+                document.getElementById('humanLearnings').value = '';
+                document.getElementById('conservationWisdom').value = '';
+                document.getElementById('sources').value = '';
+                document.getElementById('experienceType').value = '';
+                document.getElementById('accuracy').checked = false;
+                document.getElementById('permission').checked = false;
+                
+            } catch (error) {
+                alert('Error submitting contribution. Please try again or contact info@kerrilake.com');
+            }
         }
 
-        // Initialize when DOM is loaded
-        document.addEventListener('DOMContentLoaded', function() {
-            updateUsageDisplay();
-            initializeConstellation();
-            
-            // Add enter key support
-            const inputs = document.querySelectorAll('.species-input');
-            inputs.forEach(input => {
-                input.addEventListener('keypress', function(e) {
-                    if (e.key === 'Enter') {
-                        conductResearch();
-                    }
-                });
-            });
+        // Event listeners
+        window.addEventListener('click', function(event) {
+            const modal = document.getElementById('contributionModal');
+            if (event.target === modal) {
+                closeContributionModal();
+            }
         });
 
-        // Make all functions globally accessible for HTML onclick handlers
-        window.conductResearch = conductResearch;
-        window.showContributionForm = showContributionForm;
-        window.closeContributionModal = closeContributionModal;
-        window.submitContribution = submitContribution;
-        window.generateEnhancedPDFReport = generateEnhancedPDFReport;
-        window.resetSearch = resetSearch;
-        window.showIntelligenceMapping = showIntelligenceMapping;
-        window.exportConstellationData = exportConstellationData;
+        document.addEventListener('keydown', function(e) {
+            if (e.key === 'Escape') {
+                closeContributionModal();
+            }
+            
+            if ((e.ctrlKey || e.metaKey) && e.key === 'Enter') {
+                conductResearch();
+            }
+        });
+
+        console.log('🧬 Enhanced Species Intelligence Research Agent loaded with ILF styling!');
+        console.log('🌍 Ready to explore intelligence through the enhanced framework with beautiful ILF design');
+        console.log('✨ Integrated with Poppins typography and natural color palette');
     </script>
 </body>
 </html>
+
+
