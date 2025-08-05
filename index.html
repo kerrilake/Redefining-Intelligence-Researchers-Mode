@@ -1025,16 +1025,14 @@ function generatePDFReport(report) {
         doc.setGlobalAlpha(1);
     }
 
-    // Helper function to add gradient line
-    function addGradientLine(x, y, width) {
-        doc.setDrawColor(...colors.primaryGreen);
-        doc.setLineWidth(3);
-        doc.line(x, y, x + width/3, y);
-        doc.setDrawColor(...colors.primaryGold);
-        doc.line(x + width/3, y, x + 2*width/3, y);
-        doc.setDrawColor(...colors.primaryPurple);
-        doc.line(x + 2*width/3, y, x + width, y);
-    }
+    // Helper function to add colored header panel
+    function addColoredHeader(y, height, color1, color2) {
+    // Simulate gradient with overlapping shapes
+    doc.setFillColor(...color1);
+    doc.roundedRect(margin - 10, y - 10, contentWidth + 20, height + 20, 10, 10, 'F');
+    doc.setFillColor(...color2);
+    doc.roundedRect(margin + contentWidth/2, y - 10, contentWidth/2 - 10, height + 20, 10, 10, 'F');
+}
 
     // Helper function to check page break
     function checkPageBreak(neededSpace) {
