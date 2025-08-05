@@ -60,7 +60,7 @@ This is part of a three-app ecosystem exploring consciousness:
 
 **Kerri Lake**
 - Author of "Redefining Intelligence" framework
-- Founder of Intuitive Learning Foundation
+- Founder of Intuitive Learning Foundation and Generation of Harmony LLC
 - Pioneer in consciousness studies and interspecies communication
 
 ### Learn More
@@ -77,7 +77,7 @@ This is part of a three-app ecosystem exploring consciousness:
 
 ## 📄 License
 
-Copyright © 2025 Kerri Lake / Intuitive Learning Foundation. All rights reserved.
+Copyright © 2025 Kerri Lake / Generation of Harmony LLC / Intuitive Learning Foundation. All rights reserved.
 
 ---
 
