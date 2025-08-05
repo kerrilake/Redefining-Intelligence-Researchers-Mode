@@ -934,159 +934,403 @@ function displayEnhancedResults(dataArray) {
     resultsDiv.innerHTML = html;
 }
 
-// Generate PDF Report
-function generatePDFReport() {
-    if (!currentSpeciesData || currentSpeciesData.length === 0) {
-        alert('No research data available for PDF generation.');
-        return;
+// COMPLETE ENHANCED generatePDFReport FUNCTION WITH UNSPECIATED LOGO
+// This replaces your existing generatePDFReport function in index.html
+
+function generatePDFReport(report) {
+    const { jsPDF } = window.jspdf;
+    const doc = new jsPDF({
+        orientation: 'portrait',
+        unit: 'pt',
+        format: 'letter'
+    });
+
+    // ILF Color palette
+    const colors = {
+        primaryGreen: [111, 154, 76],
+        primaryGold: [231, 199, 77],
+        primaryPurple: [71, 72, 95],
+        secondaryPurple: [99, 78, 135],
+        lightGray: [102, 102, 102],
+        darkGray: [62, 58, 68],
+        white: [255, 255, 255],
+        panelBg: [248, 250, 255],
+        lightPanelBg: [245, 248, 255]
+    };
+
+    let yPosition = 40;
+    const margin = 40;
+    const pageWidth = doc.internal.pageSize.width;
+    const contentWidth = pageWidth - (margin * 2);
+    const lineHeight = 14;
+
+    // Helper function to add panel backgrounds
+    function addPanel(y, height, isGradient = false) {
+        if (isGradient) {
+            // Subtle gradient effect with two tones
+            doc.setFillColor(245, 248, 255);
+            doc.roundedRect(margin - 10, y - 10, contentWidth + 20, height + 20, 10, 10, 'F');
+            doc.setFillColor(248, 250, 255);
+            doc.roundedRect(margin - 5, y - 5, contentWidth + 10, height + 10, 8, 8, 'F');
+        } else {
+            doc.setFillColor(...colors.panelBg);
+            doc.roundedRect(margin - 10, y - 10, contentWidth + 20, height + 20, 10, 10, 'F');
+        }
     }
+
+    // Helper function to add colored header panel
+    function addColoredHeader(y, height, color1, color2) {
+        // Simulate gradient with overlapping shapes
+        doc.setFillColor(...color1);
+        doc.roundedRect(margin - 10, y - 10, contentWidth + 20, height + 20, 10, 10, 'F');
+        doc.setFillColor(...color2);
+        doc.setGlobalAlpha(0.5);
+        doc.roundedRect(margin + contentWidth/2, y - 10, contentWidth/2 - 10, height + 20, 10, 10, 'F');
+        doc.setGlobalAlpha(1);
+    }
+
+    // Helper function to add gradient line
+    function addGradientLine(x, y, width) {
+        doc.setDrawColor(...colors.primaryGreen);
+        doc.setLineWidth(3);
+        doc.line(x, y, x + width/3, y);
+        doc.setDrawColor(...colors.primaryGold);
+        doc.line(x + width/3, y, x + 2*width/3, y);
+        doc.setDrawColor(...colors.primaryPurple);
+        doc.line(x + 2*width/3, y, x + width, y);
+    }
+
+    // Helper function to check page break
+    function checkPageBreak(neededSpace) {
+        if (yPosition + neededSpace > doc.internal.pageSize.height - 60) {
+            doc.addPage();
+            yPosition = 40;
+            return true;
+        }
+        return false;
+    }
+
+    // Helper function to add page number
+    function addPageNumber(pageNum) {
+        doc.setFont('helvetica', 'normal');
+        doc.setFontSize(10);
+        doc.setTextColor(...colors.lightGray);
+        doc.text(pageNum.toString(), pageWidth - margin, doc.internal.pageSize.height - 30);
+    }
+
+    // PAGE 1: TITLE PAGE
+    // Unspeciated Logo
+    yPosition = 80;
+    const logoUrl = 'https://images.squarespace-cdn.com/content/6404d194cd10dd208e6bcde9/49bc47d7-006d-4c53-9400-b3fc684b02d2/Unspeciated+logo+round+trspbknd.png?content-type=image%2Fpng';
     
     try {
-        const { jsPDF } = window.jspdf;
-        const doc = new jsPDF();
+        doc.addImage(logoUrl, 'PNG', pageWidth/2 - 90, yPosition, 180, 180);
+    } catch (error) {
+        console.error('Logo loading failed:', error);
+        // Fallback to placeholder if logo fails to load
+        doc.setFillColor(...colors.lightPanelBg);
+        doc.circle(pageWidth/2, yPosition + 90, 90, 'F');
+        doc.setFont('helvetica', 'normal');
+        doc.setFontSize(12);
+        doc.setTextColor(...colors.primaryPurple);
+        doc.text('[Logo]', pageWidth/2, yPosition + 90, { align: 'center' });
+    }
+    
+    yPosition += 220;
+
+    // Title
+    doc.setFont('helvetica', 'bold');
+    doc.setFontSize(36);
+    doc.setTextColor(...colors.primaryPurple);
+    doc.text('Unspeciated: Redefining Intelligence', pageWidth/2, yPosition, { align: 'center' });
+    
+    yPosition += 50;
+    doc.setFontSize(32);
+    doc.text('Research', pageWidth/2, yPosition, { align: 'center' });
+    
+    // Subtitle
+    yPosition += 40;
+    doc.setFont('helvetica', 'normal');
+    doc.setFontSize(18);
+    doc.setTextColor(...colors.secondaryPurple);
+    doc.text('Perceive • Relate • Apply Framework with Enhanced Dimensions', pageWidth/2, yPosition, { align: 'center' });
+    
+    // Gradient line
+    yPosition += 40;
+    addGradientLine(pageWidth/2 - 60, yPosition, 120);
+    
+    // Meta info panel
+    yPosition += 40;
+    addPanel(yPosition, 100, true);
+    
+    doc.setFont('helvetica', 'normal');
+    doc.setFontSize(14);
+    doc.setTextColor(...colors.primaryPurple);
+    const speciesText = `Research Focus: ${report.species}`;
+    doc.text(speciesText, pageWidth/2, yPosition + 20, { align: 'center' });
+    
+    doc.setFontSize(13);
+    doc.setTextColor(...colors.lightGray);
+    doc.text(`Generated: ${new Date().toLocaleDateString()}`, pageWidth/2, yPosition + 45, { align: 'center' });
+    
+    doc.setTextColor(...colors.secondaryPurple);
+    doc.text('Powered by Claude AI & Intuitive Learning Foundation Framework', pageWidth/2, yPosition + 70, { align: 'center' });
+    
+    // Footer
+    yPosition = doc.internal.pageSize.height - 120;
+    addPanel(yPosition, 60, true);
+    
+    doc.setFont('helvetica', 'bold');
+    doc.setFontSize(16);
+    doc.setTextColor(...colors.primaryPurple);
+    doc.text('Generation of Harmony LLC', pageWidth/2, yPosition + 20, { align: 'center' });
+    
+    doc.setFont('helvetica', 'normal');
+    doc.setFontSize(12);
+    doc.setTextColor(...colors.lightGray);
+    doc.text('intuitivelearningfoundation.org • generateharmony.com • kerrilake.com', pageWidth/2, yPosition + 40, { align: 'center' });
+
+    // PAGE 2: KEY WISDOM INSIGHTS + SPECIES PROFILE START
+    doc.addPage();
+    yPosition = 40;
+    
+    // Key Wisdom Insights
+    doc.setFont('helvetica', 'bold');
+    doc.setFontSize(28);
+    doc.setTextColor(...colors.primaryGreen);
+    doc.text('Key Wisdom Insights', margin, yPosition);
+    
+    yPosition += 40;
+    
+    // Key insights panel
+    const introHeight = 120; // Approximate height
+    addPanel(yPosition, introHeight, true);
+    
+    doc.setFont('helvetica', 'normal');
+    doc.setFontSize(14);
+    doc.setTextColor(...colors.darkGray);
+    const introLines = doc.splitTextToSize(report.introduction || 
+        "This research explores consciousness through the revolutionary Perceive/Relate/Apply framework.", 
+        contentWidth - 20);
+    doc.text(introLines, margin + 10, yPosition + 20);
+    
+    yPosition += introHeight + 40;
+    
+    // Species header
+    addColoredHeader(yPosition, 70, colors.primaryGreen, colors.secondaryPurple);
+    
+    doc.setFont('helvetica', 'bold');
+    doc.setFontSize(30);
+    doc.setTextColor(...colors.white);
+    doc.text(`${report.species} Intelligence Profile`, margin + 10, yPosition + 30);
+    
+    doc.setFont('helvetica', 'italic');
+    doc.setFontSize(13);
+    doc.text('AI-Enhanced Research', margin + 10, yPosition + 50);
+    
+    yPosition += 90;
+    
+    // Key Wisdom panel
+    const wisdomHeight = Math.max(80, report.keyWisdom ? doc.splitTextToSize(report.keyWisdom, contentWidth - 20).length * lineHeight + 40 : 80);
+    addPanel(yPosition, wisdomHeight);
+    
+    doc.setFont('helvetica', 'bold');
+    doc.setFontSize(18);
+    doc.setTextColor(...colors.primaryPurple);
+    doc.text('Key Wisdom Insight', margin + 10, yPosition + 20);
+    
+    if (report.keyWisdom) {
+        doc.setFont('helvetica', 'normal');
+        doc.setFontSize(14);
+        doc.setTextColor(...colors.darkGray);
+        const wisdomLines = doc.splitTextToSize(report.keyWisdom, contentWidth - 20);
+        doc.text(wisdomLines, margin + 10, yPosition + 45);
+    }
+    
+    addPageNumber(2);
+
+    // PAGE 3: PERCEIVE, RELATE, APPLY
+    doc.addPage();
+    yPosition = 40;
+    
+    // Framework sections
+    const frameworkSections = [
+        { title: 'PERCEIVE • How They Perceive Their World', content: report.perceive },
+        { title: 'RELATE • How They Relate To Their World', content: report.relate },
+        { title: 'APPLY • How They Apply Their Intelligence', content: report.apply }
+    ];
+    
+    frameworkSections.forEach((section, index) => {
+        checkPageBreak(200);
         
-        // Helper function to add text with automatic page breaks
-        function addTextWithPageBreak(text, fontSize = 10, isBold = false) {
-            if (yPos > 260) {
-                doc.addPage();
-                yPos = 20;
-            }
+        // Calculate height needed
+        const textLines = section.content ? doc.splitTextToSize(section.content.split('\n')[0], contentWidth - 30) : [];
+        const bulletPoints = section.content ? section.content.split('\n').slice(1).filter(line => line.trim().startsWith('•')) : [];
+        const sectionHeight = textLines.length * lineHeight + bulletPoints.length * 18 + 60;
+        
+        addPanel(yPosition, sectionHeight);
+        
+        // Section title with dot
+        doc.setFillColor(...colors.primaryGold);
+        doc.circle(margin + 5, yPosition + 15, 5, 'F');
+        
+        doc.setFont('helvetica', 'bold');
+        doc.setFontSize(14);
+        doc.setTextColor(...colors.secondaryPurple);
+        doc.text(section.title, margin + 20, yPosition + 20);
+        
+        yPosition += 35;
+        
+        // Content
+        if (section.content) {
+            doc.setFont('helvetica', 'normal');
+            doc.setFontSize(14);
+            doc.setTextColor(...colors.darkGray);
             
-            doc.setFontSize(fontSize);
-            if (isBold) {
-                doc.setFont(undefined, 'bold');
-            } else {
-                doc.setFont(undefined, 'normal');
-            }
+            const parts = section.content.split('\n');
+            const mainText = parts[0];
+            const mainLines = doc.splitTextToSize(mainText, contentWidth - 30);
+            doc.text(mainLines, margin + 10, yPosition);
+            yPosition += mainLines.length * lineHeight + 10;
             
-            const lines = doc.splitTextToSize(text, 170);
-            doc.text(lines, 20, yPos);
-            yPos += lines.length * (fontSize * 0.5) + 5;
+            // Bullet points
+            parts.slice(1).forEach(line => {
+                if (line.trim().startsWith('•')) {
+                    doc.setFillColor(...colors.primaryGold);
+                    doc.circle(margin + 15, yPosition - 3, 3, 'F');
+                    
+                    doc.setTextColor(...colors.darkGray);
+                    const bulletText = line.replace('•', '').trim();
+                    const bulletLines = doc.splitTextToSize(bulletText, contentWidth - 40);
+                    doc.text(bulletLines, margin + 25, yPosition);
+                    yPosition += bulletLines.length * lineHeight + 4;
+                }
+            });
         }
         
-        // Title Page
-        doc.setFontSize(24);
-        doc.setFont(undefined, 'bold');
-        doc.text('Species Intelligence Research Report', 105, 40, { align: 'center' });
-        
-        doc.setFontSize(14);
-        doc.setFont(undefined, 'normal');
-        doc.text('Perceive • Relate • Apply Framework with Enhanced Dimensions', 105, 55, { align: 'center' });
-        
+        yPosition += 20;
+    });
+    
+    addPageNumber(3);
+
+    // PAGE 4+: ENHANCED DIMENSIONS
+    doc.addPage();
+    yPosition = 40;
+    let pageNum = 4;
+    
+    const dimensions = [
+        { num: '1', title: 'Temporal Intelligence', content: report.temporal },
+        { num: '2', title: 'Energetic Intelligence', content: report.energetic },
+        { num: '3', title: 'Collective Wisdom', content: report.collective },
+        { num: '4', title: 'Adaptive Strategies', content: report.adaptive },
+        { num: '5', title: 'Quantum Biology & Consciousness', content: report.quantum },
+        { num: '6', title: 'Human Learning Opportunities', content: report.humanLearning },
+        { num: '7', title: 'Conservation Intelligence', content: report.conservation }
+    ];
+    
+    dimensions.forEach((dim, index) => {
+        if (dim.content) {
+            const contentLines = doc.splitTextToSize(dim.content, contentWidth - 30);
+            const neededHeight = contentLines.length * lineHeight + 60;
+            
+            if (checkPageBreak(neededHeight)) {
+                pageNum++;
+            }
+            
+            // Number circle
+            doc.setFillColor(...colors.primaryGold);
+            doc.circle(margin + 15, yPosition + 15, 15, 'F');
+            doc.setFont('helvetica', 'bold');
+            doc.setFontSize(14);
+            doc.setTextColor(...colors.white);
+            doc.text(dim.num, margin + 15, yPosition + 20, { align: 'center' });
+            
+            // Title
+            doc.setFont('helvetica', 'bold');
+            doc.setFontSize(18);
+            doc.setTextColor(...colors.primaryPurple);
+            doc.text(dim.title, margin + 40, yPosition + 20);
+            
+            yPosition += 35;
+            
+            // Content panel with alternating colors
+            const panelHeight = contentLines.length * lineHeight + 20;
+            addPanel(yPosition, panelHeight);
+            
+            // Add colored left border
+            if (index % 2 === 0) {
+                doc.setFillColor(...colors.primaryGreen);
+            } else {
+                doc.setFillColor(...colors.primaryGold);
+            }
+            doc.rect(margin - 10, yPosition - 10, 4, panelHeight + 20, 'F');
+            
+            doc.setFont('helvetica', 'normal');
+            doc.setFontSize(14);
+            doc.setTextColor(...colors.darkGray);
+            doc.text(contentLines, margin + 10, yPosition + 10);
+            
+            yPosition += panelHeight + 30;
+        }
+    });
+    
+    addPageNumber(pageNum);
+
+    // SOURCES PAGE
+    doc.addPage();
+    yPosition = 40;
+    pageNum++;
+    
+    doc.setFont('helvetica', 'bold');
+    doc.setFontSize(28);
+    doc.setTextColor(...colors.primaryGreen);
+    doc.text('Sources and References', margin, yPosition);
+    
+    yPosition += 30;
+    addGradientLine(margin, yPosition, 80);
+    yPosition += 30;
+    
+    // Sources panel
+    const sourcesHeight = report.sources ? report.sources.length * 20 + 60 : 100;
+    addPanel(yPosition, sourcesHeight);
+    
+    doc.setFont('helvetica', 'bold');
+    doc.setFontSize(14);
+    doc.setTextColor(...colors.primaryGreen);
+    doc.text(`${report.species} Research Sources:`, margin + 10, yPosition + 20);
+    
+    yPosition += 40;
+    
+    if (report.sources && report.sources.length > 0) {
+        doc.setFont('helvetica', 'normal');
         doc.setFontSize(12);
-        doc.text(`Research Focus: ${currentSpeciesData.map(s => s.species).join(', ')}`, 105, 70, { align: 'center' });
-        doc.text(`Generated: ${new Date().toLocaleDateString()}`, 105, 80, { align: 'center' });
-        doc.text('Powered by Claude AI & Intuitive Learning Foundation Framework', 105, 90, { align: 'center' });
+        doc.setTextColor(...colors.darkGray);
         
-        // Executive Summary
-        let yPos = 120;
-        addTextWithPageBreak('Executive Summary', 16, true);
-        addTextWithPageBreak(`This comprehensive research explores ${currentSpeciesData.length} species through the revolutionary Perceive/Relate/Apply framework with enhanced intelligence dimensions. The research reveals sophisticated temporal awareness, energetic intelligence, collective wisdom, and adaptive strategies that challenge traditional views of intelligence. Each species demonstrates unique consciousness capabilities that contribute to planetary intelligence networks and offer profound lessons for human consciousness evolution.`);
-        
-        // Process each species
-        currentSpeciesData.forEach((species, index) => {
-            // New page for each species
-            doc.addPage();
-            yPos = 20;
-            
-            // Species Header
-            addTextWithPageBreak(`${species.species} Intelligence Profile`, 20, true);
-            addTextWithPageBreak(`Research Type: ${species.researchBacked ? 'AI-Enhanced Research' : 'Enhanced Framework Analysis'}`, 12);
-            
-            // Key Wisdom Insight
-            addTextWithPageBreak('Key Wisdom Insight', 14, true);
-            addTextWithPageBreak(species.wisdomInsight);
-            
-            // PERCEIVE Section
-            addTextWithPageBreak('PERCEIVE • How They Perceive Their World', 14, true);
-            addTextWithPageBreak(species.perceive.summary);
-            if (species.perceive.details && species.perceive.details.length > 0) {
-                species.perceive.details.forEach(detail => {
-                    addTextWithPageBreak(`• ${detail}`);
-                });
-            }
-            
-            // RELATE Section
-            addTextWithPageBreak('RELATE • How They Relate To Their World', 14, true);
-            addTextWithPageBreak(species.relate.summary);
-            if (species.relate.details && species.relate.details.length > 0) {
-                species.relate.details.forEach(detail => {
-                    addTextWithPageBreak(`• ${detail}`);
-                });
-            }
-            
-            // APPLY Section
-            addTextWithPageBreak('APPLY • How They Apply Their Intelligence', 14, true);
-            addTextWithPageBreak(species.apply.summary);
-            if (species.apply.details && species.apply.details.length > 0) {
-                species.apply.details.forEach(detail => {
-                    addTextWithPageBreak(`• ${detail}`);
-                });
-            }
-            
-            // Enhanced Dimensions
-            if (species.temporalIntelligence) {
-                addTextWithPageBreak('Temporal Intelligence', 14, true);
-                addTextWithPageBreak(species.temporalIntelligence);
-            }
-            
-            if (species.energeticIntelligence) {
-                addTextWithPageBreak('Energetic Intelligence', 14, true);
-                addTextWithPageBreak(species.energeticIntelligence);
-            }
-            
-            if (species.collectiveWisdom) {
-                addTextWithPageBreak('Collective Wisdom', 14, true);
-                addTextWithPageBreak(species.collectiveWisdom);
-            }
-            
-            if (species.adaptiveStrategies) {
-                addTextWithPageBreak('Adaptive Strategies', 14, true);
-                addTextWithPageBreak(species.adaptiveStrategies);
-            }
-            
-            if (species.quantumAspects) {
-                addTextWithPageBreak('Quantum Biology & Consciousness', 14, true);
-                addTextWithPageBreak(species.quantumAspects);
-            }
-            
-            if (species.humanLearnings) {
-                addTextWithPageBreak('Human Learning Opportunities', 14, true);
-                addTextWithPageBreak(species.humanLearnings);
-            }
-            
-            if (species.conservationWisdom) {
-                addTextWithPageBreak('Conservation Intelligence', 14, true);
-                addTextWithPageBreak(species.conservationWisdom);
-            }
+        report.sources.forEach((source, index) => {
+            doc.text(`${index + 1}. ${source}`, margin + 20, yPosition);
+            yPosition += 20;
         });
-        
-        // Sources and References Page
-        doc.addPage();
-        yPos = 20;
-        addTextWithPageBreak('Sources and References', 16, true);
-        
-        currentSpeciesData.forEach((species) => {
-            if (species.sources && species.sources.length > 0) {
-                addTextWithPageBreak(`${species.species} Research Sources:`, 12, true);
-                species.sources.forEach((source, idx) => {
-                    addTextWithPageBreak(`${idx + 1}. ${source}`);
-                });
-                yPos += 5;
-            }
-        });
-        
-        // Footer
-        addTextWithPageBreak('Generated by Species Intelligence Research Agent • Intuitive Learning Foundation', 10);
-        addTextWithPageBreak('Visit: intuitivelearningfoundation.org • generateharmony.com • kerrilake.com', 10);
-        
-        // Save
-        doc.save(`Species-Intelligence-Report-${new Date().toISOString().split('T')[0]}.pdf`);
-        
-    } catch (error) {
-        console.error('PDF generation error:', error);
-        alert('Error generating PDF. Please try again.');
     }
+    
+    // Final footer
+    yPosition = doc.internal.pageSize.height - 100;
+    addPanel(yPosition, 70, true);
+    
+    doc.setFont('helvetica', 'bold');
+    doc.setFontSize(14);
+    doc.setTextColor(...colors.primaryPurple);
+    doc.text('Generated by Species Intelligence Research Agent', pageWidth/2, yPosition + 20, { align: 'center' });
+    doc.text('Generation of Harmony LLC', pageWidth/2, yPosition + 40, { align: 'center' });
+    
+    doc.setFont('helvetica', 'normal');
+    doc.setFontSize(11);
+    doc.setTextColor(...colors.lightGray);
+    doc.text('Visit: intuitivelearningfoundation.org • generateharmony.com • kerrilake.com', pageWidth/2, yPosition + 55, { align: 'center' });
+    
+    addPageNumber(pageNum);
+
+    // Save the PDF
+    doc.save(`${report.species}_intelligence_research.pdf`);
 }
 
 // Reset search
