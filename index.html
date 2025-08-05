@@ -945,31 +945,140 @@ function generatePDFReport() {
         const { jsPDF } = window.jspdf;
         const doc = new jsPDF();
         
-        // Title
-        doc.setFontSize(20);
-        doc.text('Species Intelligence Research Report', 20, 20);
-        
-        doc.setFontSize(12);
-        doc.text('Perceive • Relate • Apply Framework with Enhanced Dimensions', 20, 30);
-        doc.text(`Generated: ${new Date().toLocaleDateString()}`, 20, 40);
-        
-        // Add species data
-        let yPos = 60;
-        currentSpeciesData.forEach((species, index) => {
-            if (yPos > 250) {
+        // Helper function to add text with automatic page breaks
+        function addTextWithPageBreak(text, fontSize = 10, isBold = false) {
+            if (yPos > 260) {
                 doc.addPage();
                 yPos = 20;
             }
             
-            doc.setFontSize(16);
-            doc.text(`${species.species} Intelligence Profile`, 20, yPos);
-            yPos += 10;
+            doc.setFontSize(fontSize);
+            if (isBold) {
+                doc.setFont(undefined, 'bold');
+            } else {
+                doc.setFont(undefined, 'normal');
+            }
             
-            doc.setFontSize(10);
-            const wisdom = doc.splitTextToSize(species.wisdomInsight, 170);
-            doc.text(wisdom, 20, yPos);
-            yPos += wisdom.length * 5 + 10;
+            const lines = doc.splitTextToSize(text, 170);
+            doc.text(lines, 20, yPos);
+            yPos += lines.length * (fontSize * 0.5) + 5;
+        }
+        
+        // Title Page
+        doc.setFontSize(24);
+        doc.setFont(undefined, 'bold');
+        doc.text('Species Intelligence Research Report', 105, 40, { align: 'center' });
+        
+        doc.setFontSize(14);
+        doc.setFont(undefined, 'normal');
+        doc.text('Perceive • Relate • Apply Framework with Enhanced Dimensions', 105, 55, { align: 'center' });
+        
+        doc.setFontSize(12);
+        doc.text(`Research Focus: ${currentSpeciesData.map(s => s.species).join(', ')}`, 105, 70, { align: 'center' });
+        doc.text(`Generated: ${new Date().toLocaleDateString()}`, 105, 80, { align: 'center' });
+        doc.text('Powered by Claude AI & Intuitive Learning Foundation Framework', 105, 90, { align: 'center' });
+        
+        // Executive Summary
+        let yPos = 120;
+        addTextWithPageBreak('Executive Summary', 16, true);
+        addTextWithPageBreak(`This comprehensive research explores ${currentSpeciesData.length} species through the revolutionary Perceive/Relate/Apply framework with enhanced intelligence dimensions. The research reveals sophisticated temporal awareness, energetic intelligence, collective wisdom, and adaptive strategies that challenge traditional views of intelligence. Each species demonstrates unique consciousness capabilities that contribute to planetary intelligence networks and offer profound lessons for human consciousness evolution.`);
+        
+        // Process each species
+        currentSpeciesData.forEach((species, index) => {
+            // New page for each species
+            doc.addPage();
+            yPos = 20;
+            
+            // Species Header
+            addTextWithPageBreak(`${species.species} Intelligence Profile`, 20, true);
+            addTextWithPageBreak(`Research Type: ${species.researchBacked ? 'AI-Enhanced Research' : 'Enhanced Framework Analysis'}`, 12);
+            
+            // Key Wisdom Insight
+            addTextWithPageBreak('Key Wisdom Insight', 14, true);
+            addTextWithPageBreak(species.wisdomInsight);
+            
+            // PERCEIVE Section
+            addTextWithPageBreak('PERCEIVE • How They Perceive Their World', 14, true);
+            addTextWithPageBreak(species.perceive.summary);
+            if (species.perceive.details && species.perceive.details.length > 0) {
+                species.perceive.details.forEach(detail => {
+                    addTextWithPageBreak(`• ${detail}`);
+                });
+            }
+            
+            // RELATE Section
+            addTextWithPageBreak('RELATE • How They Relate To Their World', 14, true);
+            addTextWithPageBreak(species.relate.summary);
+            if (species.relate.details && species.relate.details.length > 0) {
+                species.relate.details.forEach(detail => {
+                    addTextWithPageBreak(`• ${detail}`);
+                });
+            }
+            
+            // APPLY Section
+            addTextWithPageBreak('APPLY • How They Apply Their Intelligence', 14, true);
+            addTextWithPageBreak(species.apply.summary);
+            if (species.apply.details && species.apply.details.length > 0) {
+                species.apply.details.forEach(detail => {
+                    addTextWithPageBreak(`• ${detail}`);
+                });
+            }
+            
+            // Enhanced Dimensions
+            if (species.temporalIntelligence) {
+                addTextWithPageBreak('Temporal Intelligence', 14, true);
+                addTextWithPageBreak(species.temporalIntelligence);
+            }
+            
+            if (species.energeticIntelligence) {
+                addTextWithPageBreak('Energetic Intelligence', 14, true);
+                addTextWithPageBreak(species.energeticIntelligence);
+            }
+            
+            if (species.collectiveWisdom) {
+                addTextWithPageBreak('Collective Wisdom', 14, true);
+                addTextWithPageBreak(species.collectiveWisdom);
+            }
+            
+            if (species.adaptiveStrategies) {
+                addTextWithPageBreak('Adaptive Strategies', 14, true);
+                addTextWithPageBreak(species.adaptiveStrategies);
+            }
+            
+            if (species.quantumAspects) {
+                addTextWithPageBreak('Quantum Biology & Consciousness', 14, true);
+                addTextWithPageBreak(species.quantumAspects);
+            }
+            
+            if (species.humanLearnings) {
+                addTextWithPageBreak('Human Learning Opportunities', 14, true);
+                addTextWithPageBreak(species.humanLearnings);
+            }
+            
+            if (species.conservationWisdom) {
+                addTextWithPageBreak('Conservation Intelligence', 14, true);
+                addTextWithPageBreak(species.conservationWisdom);
+            }
         });
+        
+        // Sources and References Page
+        doc.addPage();
+        yPos = 20;
+        addTextWithPageBreak('Sources and References', 16, true);
+        
+        currentSpeciesData.forEach((species) => {
+            if (species.sources && species.sources.length > 0) {
+                addTextWithPageBreak(`${species.species} Research Sources:`, 12, true);
+                species.sources.forEach((source, idx) => {
+                    addTextWithPageBreak(`${idx + 1}. ${source}`);
+                });
+                yPos += 5;
+            }
+        });
+        
+        // Footer
+        addTextWithPageBreak('Generated by Species Intelligence Research Agent • Intuitive Learning Foundation', 10);
+        addTextWithPageBreak('Visit: intuitivelearningfoundation.org • generateharmony.com • kerrilake.com', 10);
         
         // Save
         doc.save(`Species-Intelligence-Report-${new Date().toISOString().split('T')[0]}.pdf`);
