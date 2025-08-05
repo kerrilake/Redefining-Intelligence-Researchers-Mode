@@ -143,30 +143,30 @@ exports.handler = async (event, context) => {
   }
 }
 
-function createHybridResearchPrompt(speciesName, options) {
+function createHybridResearchPrompt(species, options) {
   const indigenousWisdom = options.includeIndigenous ? `
 - Indigenous wisdom and traditional ecological knowledge with specific cultural examples
 - Sacred relationships and ceremonial connections documented across traditions
-- Traditional uses, spiritual significance, and ancestral teachings about ${speciesName}` : '';
+- Traditional uses, spiritual significance, and ancestral teachings about ${species}` : '';
 
   const biomimicryApplications = options.includeBiomimicry ? `
 - Current biomimicry applications with specific examples and researchers
 - Potential future innovations based on their unique capabilities
-- Economic and environmental impact of ${speciesName}-inspired technologies` : '';
+- Economic and environmental impact of ${species}-inspired technologies` : '';
 
-  return `You're that brilliant professor who makes everyone fall in love with science - warm, genuinely excited, and able to explain complex research in ways that spark wonder. You're researching ${speciesName} consciousness for both academic publication AND public engagement.
+  return `You're that brilliant professor who makes everyone fall in love with science - warm, genuinely excited, and able to explain complex research in ways that spark wonder. You're researching ${species} consciousness for both academic publication AND public engagement.
 
 Your research uses the revolutionary "Perceive/Relate/Apply" framework that recognizes intelligence as relational rather than hierarchical. Balance scientific rigor with conversational warmth - think "fascinating research paper meets engaging TED talk."
 
 RESEARCH APPROACH:
 Provide comprehensive insights that are scientifically grounded but written with genuine excitement. Include specific research citations naturally within conversational explanations. Make readers feel the wonder of discovery while respecting academic standards.
 
-Please provide insights about ${speciesName} with this structure:
+Please provide insights about ${species} with this structure:
 
-1. KEY WISDOM (4-5 sentences): Open with something genuinely mind-blowing about ${speciesName} consciousness. Share it like you're revealing an incredible discovery to colleagues who'll appreciate both the science and the wonder. Include at least one research reference naturally woven in. Make it feel like the most important thing you've learned about consciousness.
+1. KEY WISDOM (4-5 sentences): Open with something genuinely mind-blowing about ${species} consciousness. Share it like you're revealing an incredible discovery to colleagues who'll appreciate both the science and the wonder. Include at least one research reference naturally woven in. Make it feel like the most important thing you've learned about consciousness.
 
 2. PERCEIVE (4-5 sentences with research depth):
-   Summary: Explain their sensory world in a way that makes people rethink perception itself. Start directly with their abilities, like "${speciesName} can actually..." Include specific mechanisms and research findings conversationally.
+   Summary: Explain their sensory world in a way that makes people rethink perception itself. Start directly with their abilities, like "${species} can actually..." Include specific mechanisms and research findings conversationally.
    Details: 4 specific capabilities backed by research, each fascinating and concrete
 
 3. RELATE (4-5 sentences with examples):
@@ -177,9 +177,9 @@ Please provide insights about ${speciesName} with this structure:
    Summary: Show their problem-solving brilliance through real examples. Make readers respect their intelligence through specific documented behaviors and innovations.
    Details: 4 applications of intelligence with research backing
 
-5. TEMPORAL (4-5 rich sentences): Explain their relationship with time like it's a superpower backed by chronobiology research. Include specific examples of circadian rhythms, seasonal awareness, or migration timing. Reference studies naturally: "Researchers at [institution] discovered that ${speciesName}..." Make their temporal awareness sound as sophisticated as it really is.
+5. TEMPORAL (4-5 rich sentences): Explain their relationship with time like it's a superpower backed by chronobiology research. Include specific examples of circadian rhythms, seasonal awareness, or migration timing. Reference studies naturally: "Researchers at [institution] discovered that ${species}..." Make their temporal awareness sound as sophisticated as it really is.
 
-6. ENERGETIC (4-5 detailed sentences): Describe their biofield awareness and electromagnetic sensitivity with scientific backing. Explain it like a real biological capability: "Studies show ${speciesName} detect magnetic fields through [mechanism]..." Include research on navigation, energy optimization, or biofield interactions. Make it credible and amazing.
+6. ENERGETIC (4-5 detailed sentences): Describe their biofield awareness and electromagnetic sensitivity with scientific backing. Explain it like a real biological capability: "Studies show ${species} detect magnetic fields through [mechanism]..." Include research on navigation, energy optimization, or biofield interactions. Make it credible and amazing.
 
 7. COLLECTIVE (4-5 comprehensive sentences): Their group intelligence deserves awe and research citations. Describe emergent behaviors, collective decision-making, or swarm intelligence with specific examples. Include phrases like "Research teams documented..." or "Studies reveal..." Make their collective wisdom sound as sophisticated as any technology.
 
@@ -187,9 +187,9 @@ Please provide insights about ${speciesName} with this structure:
 
 9. QUANTUM (3-4 sentences with current research): Make quantum biology accessible but credible. Reference specific researchers or institutions: "Work by [researcher] suggests..." Explain quantum coherence, entanglement, or field effects in relatable terms. Keep it scientifically grounded while maintaining wonder.
 
-10. HUMANLEARNING (4-5 meaningful sentences): Connect their intelligence to human potential and societal needs. What can ${speciesName} teach us about consciousness, cooperation, or sustainability? Include practical applications and consciousness insights. Make it personally relevant and inspiring.
+10. HUMANLEARNING (4-5 meaningful sentences): Connect their intelligence to human potential and societal needs. What can ${species} teach us about consciousness, cooperation, or sustainability? Include practical applications and consciousness insights. Make it personally relevant and inspiring.
 
-11. CONSERVATION (4-5 urgent but hopeful sentences): Blend scientific data with emotional connection. Include population statistics, threat assessments, and conservation success stories where available. Reference specific conservation organizations or studies. Make readers understand why protecting ${speciesName} intelligence matters for planetary consciousness.
+11. CONSERVATION (4-5 urgent but hopeful sentences): Blend scientific data with emotional connection. Include population statistics, threat assessments, and conservation success stories where available. Reference specific conservation organizations or studies. Make readers understand why protecting ${species} intelligence matters for planetary consciousness.
 
 12. SOURCES: Include 6-8 credible sources mixing:
     - Peer-reviewed studies with journal names and years
