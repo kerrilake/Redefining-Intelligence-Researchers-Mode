@@ -44,29 +44,29 @@ export async function handler(event, context) {
 
 Please share insights about ${species} in a conversational, wonder-filled way:
 
-1. KEY WISDOM (3-5 sentences): Start with something that makes the reader go "wow!" Like "You know what blows my mind about ${species}?" or "Here's the thing that gets me every time..." Share how they're absolutely brilliant in their own unique way. Talk about their consciousness like you're letting someone in on the coolest secret about how intelligence shows up in nature. Make it feel like an exciting discovery you just have to share!
+1. KEY WISDOM (3-5 sentences): Share something that makes the reader go "wow!" about ${species} consciousness. Talk about their unique brilliance and how they contribute to Earth's intelligence network. Make it feel like an exciting discovery about how consciousness shows up in unexpected ways in nature.
 
-2. PERCEIVE (3-5 sentences): Get specific and visual! Start with "Here's something wild -" or "Get this -" Share concrete examples that help readers imagine experiencing the world through their senses. Like "While we're limited to our eyes and ears, these magnificent beings..." Make it vivid and use phrases like "What really gets me excited is..."
+2. PERCEIVE (3-5 sentences): Start directly with specific, visual examples like "${species} can actually sense..." or "${species} detect..." Share concrete examples that help readers imagine experiencing the world through their senses. Use phrases like "What really gets me excited is..." within the description.
 
-3. RELATE (3-5 sentences): Tell stories about their relationships! Start with "You're going to love this -" or "Check this out -" Paint pictures of how they communicate and care for each other. Use phrases like "I've seen..." or "They've actually figured out..." Share it like you're describing the most fascinating social dynamics you've ever witnessed.
+3. RELATE (3-5 sentences): Jump right into stories about their relationships like "${species} have figured out..." or "When ${species} communicate..." Paint pictures of how they connect and care for each other. Include phrases like "I've seen..." or "Scientists discovered..." within the flow.
 
-4. APPLY (3-5 sentences): Show their intelligence in action! Start with "Watch this -" or "Here's where it gets really cool -" Give specific examples like "During drought, they'll actually..." Use phrases like "And my favorite part?" Make readers appreciate their everyday genius with real, amazing behaviors.
+4. APPLY (3-5 sentences): Start with action like "When ${species} face challenges..." or "${species} have mastered..." Give specific examples of their intelligence in action. Weave in phrases like "And my favorite part?" naturally within the description.
 
-5. TEMPORAL (3-5 sentences): Talk about their relationship with time like it's mind-blowing! Start with "Okay, this is where it gets really incredible -" or "You won't believe how they..." Explain how they know when to migrate or prepare for seasons with genuine excitement. Use phrases like "Scientists are still figuring out how they..." or "What amazes me is..."
+5. TEMPORAL (3-5 sentences): Begin with their time abilities like "${species} somehow know..." or "Every spring, ${species}..." Explain their relationship with cycles and seasons. Include natural phrases like "Scientists are still figuring out how..." within the narrative.
 
-6. ENERGETIC (3-5 sentences): Share their energy awareness like it's a superpower! Start with "Here's something that sounds like science fiction but is totally real -" Talk about their electromagnetic sensitivity or energy optimization. Use phrases like "They've basically figured out..." or "It's like they have a sixth sense for..."
+6. ENERGETIC (3-5 sentences): Start with their energy awareness like "${species} can detect..." or "${species} use electromagnetic..." Share their energy sensitivity as amazing abilities. Include "It's basically like..." to make it relatable.
 
-7. COLLECTIVE (3-5 sentences): Describe their group intelligence with awe! Start with "This is the part that gives me goosebumps -" or "You know what's absolutely mind-blowing?" Share how they work together in ways that seem almost magical. Use phrases like "Together, they can..." or "The whole group somehow knows..."
+7. COLLECTIVE (3-5 sentences): Begin with their group intelligence like "When ${species} work together..." or "The entire colony..." Describe their collective abilities with genuine awe. Use "somehow they all know..." type phrases naturally.
 
-8. ADAPTIVE (3-5 sentences): Show their adaptability like it's genius! Start with "Here's what really shows their brilliance -" Talk about how they adjust and innovate. Use phrases like "When faced with..." or "They've developed this incredible ability to..."
+8. ADAPTIVE (3-5 sentences): Start with their adaptability like "${species} have developed..." or "Faced with new challenges, ${species}..." Show their innovative responses to change.
 
-9. QUANTUM (2-3 sentences): Make quantum biology accessible! Start with "Scientists are discovering something absolutely wild -" Explain it simply like "It's basically like they're tapped into..." or "Think of it as nature's version of..."
+9. QUANTUM (2-3 sentences): Make quantum biology simple like "Scientists are discovering that ${species}..." Explain it accessibly with "It's basically nature's version of..." type comparisons.
 
-10. HUMANLEARNING (3-4 sentences): Connect it to us! Start with "Here's what ${species} can teach us -" or "What I love about learning from ${species} is..." Make it personal and practical. Use phrases like "Imagine if we could..." or "They're basically showing us..."
+10. HUMANLEARNING (3-4 sentences): Connect directly like "${species} teach us..." or "We could learn from ${species}..." Make it personal and practical for human life.
 
-11. CONSERVATION (3-4 sentences): Make it matter! Start with "Here's why protecting ${species} is so crucial -" or "What breaks my heart is..." Connect their unique intelligence to why we need them. Use phrases like "When we lose ${species}, we lose..." Make it feel urgent but hopeful.
+11. CONSERVATION (3-4 sentences): Make it matter immediately like "When we lose ${species}, we lose..." or "Protecting ${species} means..." Connect their intelligence to why they're irreplaceable.
 
-Format as JSON, but write everything conversationally. Remember: you're sharing the coolest nature facts with your best friend - scientifically accurate but absolutely captivating and relatable!
+Format as JSON. Write everything conversationally - like you're sharing amazing discoveries with a friend!
 
 {
   "keyWisdom": "conversational key wisdom",
@@ -130,7 +130,13 @@ Format as JSON, but write everything conversationally. Remember: you're sharing 
         perceive: "Perception details being researched",
         relate: "Relationship details being researched",
         apply: "Application details being researched",
-        temporal: "Temporal insights being researched"
+        temporal: "Temporal insights being researched",
+        energetic: "Energetic insights being researched",
+        collective: "Collective insights being researched",
+        adaptive: "Adaptive insights being researched",
+        quantumBiology: "Quantum insights being researched",
+        humanLearning: "Learning insights being researched",
+        conservation: "Conservation insights being researched"
       };
     }
     
