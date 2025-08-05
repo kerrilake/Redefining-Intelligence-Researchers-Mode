@@ -144,7 +144,8 @@ Format as JSON. Write like you're genuinely excited to share this with people wh
     const formattedResponse = {
       success: true,
       response: {
-        keyWisdom: parsedResponse.keyWisdom,
+        // Key wisdom needs to be 'wisdomInsight' not 'keyWisdom' for the frontend
+        wisdomInsight: parsedResponse.keyWisdom,
         perceive: {
           summary: "How they perceive their world",
           details: [parsedResponse.perceive]
@@ -162,7 +163,8 @@ Format as JSON. Write like you're genuinely excited to share this with people wh
         energeticIntelligence: parsedResponse.energetic || parsedResponse.energeticIntelligence,
         collectiveWisdom: parsedResponse.collective || parsedResponse.collectiveWisdom,
         adaptiveStrategies: parsedResponse.adaptive || parsedResponse.adaptiveStrategies,
-        quantumBiology: parsedResponse.quantumBiology,
+        // Quantum biology needs to be 'quantumAspects' not 'quantumBiology'
+        quantumAspects: parsedResponse.quantumBiology,
         humanLearnings: parsedResponse.humanLearning || parsedResponse.humanLearnings,
         conservationWisdom: parsedResponse.conservation || parsedResponse.conservationWisdom
       }
