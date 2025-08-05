@@ -639,6 +639,9 @@
     <script>
         console.log('🚀 Starting Species Intelligence Research Agent...');
         
+        // Global variable to store current PDF data
+        let currentPDFData = null;
+        
         // Update usage display on load
         document.addEventListener('DOMContentLoaded', function() {
             updateUsageDisplay();
@@ -822,6 +825,35 @@ async function conductResearch() {
 function displayEnhancedResults(dataArray) {
     const resultsDiv = document.getElementById('results');
     
+    // Prepare PDF data for the first species (or modify to handle multiple)
+    if (dataArray.length > 0) {
+        const firstSpecies = dataArray[0];
+        
+        // Format the content for PDF
+        currentPDFData = {
+            species: firstSpecies.species,
+            introduction: `This comprehensive research explores ${firstSpecies.species} through the revolutionary Perceive/Relate/Apply framework with enhanced intelligence dimensions. The research reveals sophisticated temporal awareness, energetic intelligence, collective wisdom, and adaptive strategies that challenge traditional views of intelligence.`,
+            keyWisdom: firstSpecies.wisdomInsight || firstSpecies.keyWisdom,
+            perceive: `${firstSpecies.perceive.summary}\n${firstSpecies.perceive.details.map(d => `• ${d}`).join('\n')}`,
+            relate: `${firstSpecies.relate.summary}\n${firstSpecies.relate.details.map(d => `• ${d}`).join('\n')}`,
+            apply: `${firstSpecies.apply.summary}\n${firstSpecies.apply.details.map(d => `• ${d}`).join('\n')}`,
+            temporal: firstSpecies.temporalIntelligence,
+            energetic: firstSpecies.energeticIntelligence,
+            collective: firstSpecies.collectiveWisdom,
+            adaptive: firstSpecies.adaptiveStrategies,
+            quantum: firstSpecies.quantumAspects,
+            humanLearning: firstSpecies.humanLearnings,
+            conservation: firstSpecies.conservationWisdom,
+            sources: firstSpecies.sources || [
+                "Anthropic Claude AI Enhanced Research",
+                "Intuitive Learning Foundation Framework",
+                "Quantum Biology Research Database",
+                "Indigenous Knowledge Systems",
+                "Contemporary Consciousness Studies"
+            ]
+        };
+    }
+    
     let html = '<div class="fade-in">';
     
     // Display each species result
@@ -913,7 +945,7 @@ function displayEnhancedResults(dataArray) {
     html += `
         <div class="results-container glass">
             <div class="action-buttons" style="display: flex; gap: 15px; justify-content: center; flex-wrap: wrap; margin: 30px 0;">
-                <button class="action-btn" onclick="generatePDFReport()" style="background: linear-gradient(135deg, #47485f, #3e3a44); color: white; padding: 15px 30px; border-radius: 25px;">
+                <button class="action-btn" onclick="generatePDFReport(currentPDFData)" style="background: linear-gradient(135deg, #47485f, #3e3a44); color: white; padding: 15px 30px; border-radius: 25px;">
                     📄 Download PDF Report
                 </button>
                 <button class="action-btn" onclick="resetSearch()" style="background: linear-gradient(135deg, #9daaec, #634e87); color: white; padding: 15px 30px; border-radius: 25px;">
@@ -935,9 +967,13 @@ function displayEnhancedResults(dataArray) {
 }
 
 // COMPLETE ENHANCED generatePDFReport FUNCTION WITH UNSPECIATED LOGO
-// This replaces your existing generatePDFReport function in index.html
-
 function generatePDFReport(report) {
+    // Check if report data exists
+    if (!report) {
+        alert('No research data available. Please conduct research first.');
+        return;
+    }
+    
     const { jsPDF } = window.jspdf;
     const doc = new jsPDF({
         orientation: 'portrait',
