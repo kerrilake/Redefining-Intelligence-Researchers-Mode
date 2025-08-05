@@ -82,15 +82,26 @@ exports.handler = async (event, context) => {
     let parsedResponse;
     try {
       const responseText = data.content[0].text;
-      parsedResponse = JSON.parse(responseText);
+      // Clean the response more thoroughly
+      const cleanedResponse = responseText
+        .replace(/```json\s*/g, '')
+        .replace(/```\s*/g, '')
+        .replace(/^\s+|\s+$/g, '')
+        .trim();
+      
+      parsedResponse = JSON.parse(cleanedResponse);
     } catch (e) {
-      // If JSON parsing fails, return error
+      console.error('JSON parsing error:', e.message);
+      console.error('Raw response substring:', data.content[0].text.substring(0, 500));
+      
+      // If JSON parsing fails, return error with details
       return {
         statusCode: 500,
         headers,
         body: JSON.stringify({ 
           error: 'Failed to parse AI response',
-          details: e.message 
+          details: e.message,
+          rawResponse: data.content[0].text.substring(0, 200) + '...'
         })
       };
     }
@@ -198,29 +209,30 @@ Please provide insights about ${species} with this structure:
     - Indigenous knowledge sources where documented
     ${indigenousWisdom}${biomimicryApplications}
 
-Format as JSON. Write everything with the warm excitement of sharing incredible discoveries, while maintaining scientific credibility through specific examples and research references woven naturally into the narrative.
-
+Format as JSON with this EXACT structure (ensure all property names are in quotes):
 {
-  "keyWisdom": "engaging wisdom with research backing",
+  "keyWisdom": "engaging wisdom with research backing (4-5 sentences)",
   "perceive": {
-    "summary": "conversational but detailed perception overview",
-    "details": ["specific capability with research", "second capability with mechanism", "third capability with example", "fourth capability with study reference"]
+    "summary": "conversational perception overview (4-5 sentences)",
+    "details": ["capability 1", "capability 2", "capability 3", "capability 4"]
   },
   "relate": {
-    "summary": "warm but comprehensive relationship overview",
-    "details": ["social structure with research", "communication with documented signals", "ecological relationship with examples", "consciousness connection with evidence"]
+    "summary": "relationship overview (4-5 sentences)",
+    "details": ["aspect 1", "aspect 2", "aspect 3", "aspect 4"]
   },
   "apply": {
-    "summary": "exciting but detailed application overview",
-    "details": ["problem-solving with case study", "innovation with documentation", "learning with research backing", "ecosystem contribution with examples"]
+    "summary": "application overview (4-5 sentences)",
+    "details": ["example 1", "example 2", "example 3", "example 4"]
   },
-  "temporal": "rich temporal intelligence description with research citations woven naturally",
-  "energetic": "detailed energetic intelligence with scientific backing presented conversationally",
-  "collective": "comprehensive collective wisdom with research examples shared excitedly",
-  "adaptive": "rich adaptive strategies with documented cases presented warmly",
-  "quantumBiology": "accessible quantum biology with current research explained clearly",
-  "humanLearning": "meaningful human connections with practical applications",
-  "conservation": "urgent conservation message with data and hope",
-  "sources": ["Specific journal article with year", "Research team and institution", "Conservation organization and program", "Additional credible sources..."]
-}`;
+  "temporal": "temporal intelligence with research (4-5 sentences)",
+  "energetic": "energetic intelligence with science (4-5 sentences)",
+  "collective": "collective wisdom with examples (4-5 sentences)",
+  "adaptive": "adaptive strategies with cases (4-5 sentences)",
+  "quantumBiology": "quantum biology explained simply (3-4 sentences)",
+  "humanLearning": "human connections (4-5 sentences)",
+  "conservation": "conservation message (4-5 sentences)",
+  "sources": ["Source 1", "Source 2", "Source 3", "Source 4", "Source 5", "Source 6"]
+}
+
+CRITICAL: Return ONLY the JSON object above with your content. No other text before or after the JSON.`;
 }
