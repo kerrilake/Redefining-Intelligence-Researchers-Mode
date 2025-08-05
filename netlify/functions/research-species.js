@@ -27,7 +27,7 @@ export async function handler(event, context) {
   }
 
   try {
-    const { species } = JSON.parse(event.body);
+    const { species, prompt, options } = JSON.parse(event.body || '{}');
     
     if (!species) {
       return {
@@ -39,50 +39,10 @@ export async function handler(event, context) {
 
     console.log(`Researching species: ${species}`);
     
-    // Streamlined prompt for faster, warmer responses matching PDF tone
-    const prompt = `You're that cool biology professor who makes everyone actually excited about nature - friendly, genuinely stoked about your subject, and great at explaining complex stuff in ways that click. Share discoveries about ${species} consciousness like you're talking to curious college students who want the real story.
+    // Hybrid prompt combining depth with conversational warmth
+    const researchPrompt = createHybridResearchPrompt(species, options || {});
 
-Please share insights about ${species} in a conversational, engaging way that young adults will connect with:
-
-1. KEY WISDOM (3-5 sentences): Share something genuinely mind-blowing about ${species} consciousness. Make it feel like you're letting them in on something most people don't know about how intelligence works in nature. Keep it real but amazing.
-
-2. PERCEIVE (3-5 sentences): Jump into specific examples like "${species} can actually sense..." Share concrete stuff that makes people rethink what perception even means. Weave in "what's wild is..." or "the crazy part is..." naturally.
-
-3. RELATE (3-5 sentences): Tell real stories about how they connect, like "${species} basically figured out..." Make their social lives sound as interesting as they actually are. Use "researchers found..." or "we've seen..." to back it up.
-
-4. APPLY (3-5 sentences): Show their problem-solving in action. Start with "When ${species} need to..." Give examples that make people respect their intelligence. Include "what's clever is..." type observations.
-
-5. TEMPORAL (3-5 sentences): Explain their time sense like "${species} somehow track..." Make it relatable - like how we know when seasons change but way more precise. Include "scientists think..." to show it's cutting-edge.
-
-6. ENERGETIC (3-5 sentences): Describe their energy awareness simply. "${species} pick up on electromagnetic..." Explain it like a real ability, not magic. Use comparisons like "kind of like how we feel static electricity but way more refined."
-
-7. COLLECTIVE (3-5 sentences): Their group intelligence - "${species} coordinate..." Make it sound as sophisticated as it is. Include "the whole group somehow..." to capture the mystery.
-
-8. ADAPTIVE (3-5 sentences): How they handle change - "${species} adapt by..." Show they're not just reacting but actually strategizing. Make it clear why this matters for survival.
-
-9. QUANTUM (2-3 sentences): Keep quantum stuff accessible - "New research shows ${species} might use quantum effects for..." Compare to everyday tech when possible.
-
-10. HUMANLEARNING (3-4 sentences): Make it relevant - "${species} show us..." Connect to things college students care about - creativity, problem-solving, community, sustainability.
-
-11. CONSERVATION (3-4 sentences): Why it matters now - "Losing ${species} means losing..." Make it personal and urgent without preaching. Connect to their future.
-
-Format as JSON. Write like you're genuinely excited to share this with people who'll appreciate how cool it is!
-
-{
-  "keyWisdom": "engaging key wisdom",
-  "perceive": "engaging perception insights",
-  "relate": "engaging relationship insights", 
-  "apply": "engaging application insights",
-  "temporal": "engaging temporal insights",
-  "energetic": "engaging energetic insights",
-  "collective": "engaging collective insights",
-  "adaptive": "engaging adaptive insights",
-  "quantumBiology": "engaging quantum insights",
-  "humanLearning": "engaging human learning insights",
-  "conservation": "engaging conservation insights"
-}`;
-
-    // Call Anthropic API with adjusted timeout expectations
+    // Call Anthropic API
     const response = await fetch('https://api.anthropic.com/v1/messages', {
       method: 'POST',
       headers: {
@@ -92,11 +52,11 @@ Format as JSON. Write like you're genuinely excited to share this with people wh
       },
       body: JSON.stringify({
         model: 'claude-3-5-sonnet-20241022',
-        max_tokens: 2500, // Increased for all sections
-        temperature: 0.8, // Slightly higher for more conversational tone
+        max_tokens: 3500, // Increased for comprehensive content
+        temperature: 0.75, // Balanced for accuracy and warmth
         messages: [{
           role: 'user',
-          content: prompt
+          content: researchPrompt
         }]
       })
     });
@@ -124,19 +84,14 @@ Format as JSON. Write like you're genuinely excited to share this with people wh
       const responseText = data.content[0].text;
       parsedResponse = JSON.parse(responseText);
     } catch (e) {
-      // If JSON parsing fails, use the text as key wisdom
-      parsedResponse = {
-        keyWisdom: data.content[0].text,
-        perceive: "Perception details being researched",
-        relate: "Relationship details being researched",
-        apply: "Application details being researched",
-        temporal: "Temporal insights being researched",
-        energetic: "Energetic insights being researched",
-        collective: "Collective insights being researched",
-        adaptive: "Adaptive insights being researched",
-        quantumBiology: "Quantum insights being researched",
-        humanLearning: "Learning insights being researched",
-        conservation: "Conservation insights being researched"
+      // If JSON parsing fails, return error
+      return {
+        statusCode: 500,
+        headers,
+        body: JSON.stringify({ 
+          error: 'Failed to parse AI response',
+          details: e.message 
+        })
       };
     }
     
@@ -144,29 +99,27 @@ Format as JSON. Write like you're genuinely excited to share this with people wh
     const formattedResponse = {
       success: true,
       response: {
-        // Key wisdom needs to be 'wisdomInsight' not 'keyWisdom' for the frontend
         wisdomInsight: parsedResponse.keyWisdom,
         perceive: {
-          summary: "How they perceive their world",
-          details: [parsedResponse.perceive]
+          summary: parsedResponse.perceive.summary || "How they perceive their world",
+          details: parsedResponse.perceive.details || [parsedResponse.perceive]
         },
         relate: {
-          summary: "How they relate to their world",
-          details: [parsedResponse.relate]
+          summary: parsedResponse.relate.summary || "How they relate to their world",
+          details: parsedResponse.relate.details || [parsedResponse.relate]
         },
         apply: {
-          summary: "How they apply their intelligence",
-          details: [parsedResponse.apply]
+          summary: parsedResponse.apply.summary || "How they apply their intelligence",
+          details: parsedResponse.apply.details || [parsedResponse.apply]
         },
-        // These need to be at the root level of 'response' for the frontend to find them
         temporalIntelligence: parsedResponse.temporal,
-        energeticIntelligence: parsedResponse.energetic || parsedResponse.energeticIntelligence,
-        collectiveWisdom: parsedResponse.collective || parsedResponse.collectiveWisdom,
-        adaptiveStrategies: parsedResponse.adaptive || parsedResponse.adaptiveStrategies,
-        // Quantum biology needs to be 'quantumAspects' not 'quantumBiology'
+        energeticIntelligence: parsedResponse.energetic,
+        collectiveWisdom: parsedResponse.collective,
+        adaptiveStrategies: parsedResponse.adaptive,
         quantumAspects: parsedResponse.quantumBiology,
-        humanLearnings: parsedResponse.humanLearning || parsedResponse.humanLearnings,
-        conservationWisdom: parsedResponse.conservation || parsedResponse.conservationWisdom
+        humanLearnings: parsedResponse.humanLearning,
+        conservationWisdom: parsedResponse.conservation,
+        sources: parsedResponse.sources || []
       }
     };
     
@@ -188,4 +141,86 @@ Format as JSON. Write like you're genuinely excited to share this with people wh
       })
     };
   }
+}
+
+function createHybridResearchPrompt(speciesName, options) {
+  const indigenousWisdom = options.includeIndigenous ? `
+- Indigenous wisdom and traditional ecological knowledge with specific cultural examples
+- Sacred relationships and ceremonial connections documented across traditions
+- Traditional uses, spiritual significance, and ancestral teachings about ${speciesName}` : '';
+
+  const biomimicryApplications = options.includeBiomimicry ? `
+- Current biomimicry applications with specific examples and researchers
+- Potential future innovations based on their unique capabilities
+- Economic and environmental impact of ${speciesName}-inspired technologies` : '';
+
+  return `You're that brilliant professor who makes everyone fall in love with science - warm, genuinely excited, and able to explain complex research in ways that spark wonder. You're researching ${speciesName} consciousness for both academic publication AND public engagement.
+
+Your research uses the revolutionary "Perceive/Relate/Apply" framework that recognizes intelligence as relational rather than hierarchical. Balance scientific rigor with conversational warmth - think "fascinating research paper meets engaging TED talk."
+
+RESEARCH APPROACH:
+Provide comprehensive insights that are scientifically grounded but written with genuine excitement. Include specific research citations naturally within conversational explanations. Make readers feel the wonder of discovery while respecting academic standards.
+
+Please provide insights about ${speciesName} with this structure:
+
+1. KEY WISDOM (4-5 sentences): Open with something genuinely mind-blowing about ${species} consciousness. Share it like you're revealing an incredible discovery to colleagues who'll appreciate both the science and the wonder. Include at least one research reference naturally woven in. Make it feel like the most important thing you've learned about consciousness.
+
+2. PERCEIVE (4-5 sentences with research depth):
+   Summary: Explain their sensory world in a way that makes people rethink perception itself. Start directly with their abilities, like "${species} can actually..." Include specific mechanisms and research findings conversationally.
+   Details: 4 specific capabilities backed by research, each fascinating and concrete
+
+3. RELATE (4-5 sentences with examples):
+   Summary: Share how they connect and communicate like you're describing a sophisticated society. Include documented behaviors and research observations that showcase their relational intelligence.
+   Details: 4 specific relationship aspects with examples from field studies
+
+4. APPLY (4-5 sentences with documented cases):
+   Summary: Show their problem-solving brilliance through real examples. Make readers respect their intelligence through specific documented behaviors and innovations.
+   Details: 4 applications of intelligence with research backing
+
+5. TEMPORAL (4-5 rich sentences): Explain their relationship with time like it's a superpower backed by chronobiology research. Include specific examples of circadian rhythms, seasonal awareness, or migration timing. Reference studies naturally: "Researchers at [institution] discovered that ${species}..." Make their temporal awareness sound as sophisticated as it really is.
+
+6. ENERGETIC (4-5 detailed sentences): Describe their biofield awareness and electromagnetic sensitivity with scientific backing. Explain it like a real biological capability: "Studies show ${species} detect magnetic fields through [mechanism]..." Include research on navigation, energy optimization, or biofield interactions. Make it credible and amazing.
+
+7. COLLECTIVE (4-5 comprehensive sentences): Their group intelligence deserves awe and research citations. Describe emergent behaviors, collective decision-making, or swarm intelligence with specific examples. Include phrases like "Research teams documented..." or "Studies reveal..." Make their collective wisdom sound as sophisticated as any technology.
+
+8. ADAPTIVE (4-5 rich sentences): Show their resilience and innovation through documented examples. Include specific cases of adaptation, behavioral flexibility, or evolutionary responses. Reference conservation studies or behavioral research. Make their adaptability sound like the survival genius it is.
+
+9. QUANTUM (3-4 sentences with current research): Make quantum biology accessible but credible. Reference specific researchers or institutions: "Work by [researcher] suggests..." Explain quantum coherence, entanglement, or field effects in relatable terms. Keep it scientifically grounded while maintaining wonder.
+
+10. HUMANLEARNING (4-5 meaningful sentences): Connect their intelligence to human potential and societal needs. What can ${species} teach us about consciousness, cooperation, or sustainability? Include practical applications and consciousness insights. Make it personally relevant and inspiring.
+
+11. CONSERVATION (4-5 urgent but hopeful sentences): Blend scientific data with emotional connection. Include population statistics, threat assessments, and conservation success stories where available. Reference specific conservation organizations or studies. Make readers understand why protecting ${species} intelligence matters for planetary consciousness.
+
+12. SOURCES: Include 6-8 credible sources mixing:
+    - Peer-reviewed studies with journal names and years
+    - Leading researchers and their institutions
+    - Conservation organizations with specific programs
+    - Indigenous knowledge sources where documented
+    ${indigenousWisdom}${biomimicryApplications}
+
+Format as JSON. Write everything with the warm excitement of sharing incredible discoveries, while maintaining scientific credibility through specific examples and research references woven naturally into the narrative.
+
+{
+  "keyWisdom": "engaging wisdom with research backing",
+  "perceive": {
+    "summary": "conversational but detailed perception overview",
+    "details": ["specific capability with research", "second capability with mechanism", "third capability with example", "fourth capability with study reference"]
+  },
+  "relate": {
+    "summary": "warm but comprehensive relationship overview",
+    "details": ["social structure with research", "communication with documented signals", "ecological relationship with examples", "consciousness connection with evidence"]
+  },
+  "apply": {
+    "summary": "exciting but detailed application overview",
+    "details": ["problem-solving with case study", "innovation with documentation", "learning with research backing", "ecosystem contribution with examples"]
+  },
+  "temporal": "rich temporal intelligence description with research citations woven naturally",
+  "energetic": "detailed energetic intelligence with scientific backing presented conversationally",
+  "collective": "comprehensive collective wisdom with research examples shared excitedly",
+  "adaptive": "rich adaptive strategies with documented cases presented warmly",
+  "quantumBiology": "accessible quantum biology with current research explained clearly",
+  "humanLearning": "meaningful human connections with practical applications",
+  "conservation": "urgent conservation message with data and hope",
+  "sources": ["Specific journal article with year", "Research team and institution", "Conservation organization and program", "Additional credible sources..."]
+}`;
 }
