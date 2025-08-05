@@ -90,19 +90,22 @@ Write in a warm, accessible tone that would resonate with someone interested in 
     // Extract the content from Claude's response
     const keyWisdom = data.content[0].text;
     
-    // Format the response to match the expected structure
+    // Format the response to match what the frontend expects
     const formattedResponse = {
-      keyWisdom: keyWisdom,
-      perceive: "Full perception details available through expanded research",
-      relate: "Full relationship details available through expanded research",
-      apply: "Full application details available through expanded research",
-      temporal: "Temporal intelligence insights available through expanded research",
-      energetic: "Energetic intelligence insights available through expanded research",
-      collective: "Collective wisdom insights available through expanded research",
-      adaptive: "Adaptive strategies available through expanded research",
-      quantumBiology: "Quantum biology insights available through expanded research",
-      humanLearning: "Human learning opportunities available through expanded research",
-      conservation: "Conservation intelligence available through expanded research"
+      success: true,
+      response: {
+        keyWisdom: keyWisdom,
+        perceive: "Full perception details available through expanded research",
+        relate: "Full relationship details available through expanded research", 
+        apply: "Full application details available through expanded research",
+        temporal: "Temporal intelligence insights available through expanded research",
+        energetic: "Energetic intelligence insights available through expanded research",
+        collective: "Collective wisdom insights available through expanded research",
+        adaptive: "Adaptive strategies available through expanded research",
+        quantumBiology: "Quantum biology insights available through expanded research",
+        humanLearning: "Human learning opportunities available through expanded research",
+        conservation: "Conservation intelligence available through expanded research"
+      }
     };
     
     return {
