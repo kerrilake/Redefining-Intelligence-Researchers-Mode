@@ -39,19 +39,33 @@ export async function handler(event, context) {
 
     console.log(`Researching species: ${species}`);
     
-    // Streamlined prompt for faster, warmer responses
-    const prompt = `You are a warm, compassionate researcher exploring the consciousness of ${species} through Kerri Lake's Perceive/Relate/Apply framework.
+    // Streamlined prompt for faster, warmer responses matching PDF tone
+    const prompt = `You are channeling the warm, wonder-filled voice from Kerri Lake's Redefining Intelligence research. Write about ${species} consciousness with deep respect and scientific grounding, revealing how they demonstrate intelligence that expands beyond human definitions.
 
-In 3-5 sentences, share an insight about ${species} that:
-- Reveals their unique form of intelligence and consciousness
-- Shows how they're equal participants in Earth's family of life (not inferior or superior)
-- Connects their wisdom to the larger planetary intelligence network
-- Feels both scientifically grounded and personally meaningful
-- Inspires wonder and respect rather than hierarchy
+Please provide inspiring insights about ${species}:
 
-Write in a warm, accessible tone that would resonate with someone interested in interspecies communication and consciousness. Focus on one key insight that shifts perspective from human-centric to life-centric understanding.`;
+1. KEY WISDOM (3-5 sentences): Like the PDFs, reveal how ${species} embodies a unique expression of consciousness with extraordinary ways of perceiving, relating to, and applying intelligence. Show how their awareness demonstrates that intelligence is not a hierarchy but a magnificent spectrum where each species contributes irreplaceable gifts to the planetary intelligence network.
 
-    // Call Anthropic API with shorter timeout expectations
+2. PERCEIVE (3-5 sentences): Describe their remarkable sensory capabilities and how they process information through multiple channels. Include specific examples of their perception abilities that showcase forms of awareness very different from our own.
+
+3. RELATE (3-5 sentences): Explore their sophisticated social bonds, communication methods, and emotional intelligence. Show how they maintain relationships within their species and across the ecosystem in ways that demonstrate deep awareness.
+
+4. APPLY (3-5 sentences): Illustrate how they use their intelligence through specific behaviors, problem-solving, and daily life applications. Include examples that show their mastery and wisdom in action.
+
+5. TEMPORAL (3-5 sentences): Describe their relationship with time, cycles, and seasonal patterns. Show how they demonstrate temporal intelligence through migration, breeding, hibernation, or other time-based behaviors.
+
+Format your response as JSON:
+{
+  "keyWisdom": "your key wisdom insight",
+  "perceive": "detailed perception insights",
+  "relate": "detailed relationship insights", 
+  "apply": "detailed application insights",
+  "temporal": "detailed temporal insights"
+}
+
+Match the tone from the research samples - scientifically accurate yet filled with wonder, showing each species as an equal participant in Earth's living intelligence network. Write as if helping readers fall in love with the profound intelligence of all life forms.`;
+
+    // Call Anthropic API with adjusted timeout expectations
     const response = await fetch('https://api.anthropic.com/v1/messages', {
       method: 'POST',
       headers: {
@@ -61,8 +75,8 @@ Write in a warm, accessible tone that would resonate with someone interested in 
       },
       body: JSON.stringify({
         model: 'claude-3-5-sonnet-20241022',
-        max_tokens: 300, // Reduced for faster response
-        temperature: 0.7, // Balanced creativity and consistency
+        max_tokens: 1500, // Increased for richer content
+        temperature: 0.7,
         messages: [{
           role: 'user',
           content: prompt
@@ -87,27 +101,40 @@ Write in a warm, accessible tone that would resonate with someone interested in 
 
     const data = await response.json();
     
-    // Extract the content from Claude's response
-    const keyWisdom = data.content[0].text;
+    // Parse the JSON response from Claude
+    let parsedResponse;
+    try {
+      const responseText = data.content[0].text;
+      parsedResponse = JSON.parse(responseText);
+    } catch (e) {
+      // If JSON parsing fails, use the text as key wisdom
+      parsedResponse = {
+        keyWisdom: data.content[0].text,
+        perceive: "Perception details being researched",
+        relate: "Relationship details being researched",
+        apply: "Application details being researched",
+        temporal: "Temporal insights being researched"
+      };
+    }
     
     // Format the response to match what the frontend expects
     const formattedResponse = {
       success: true,
       response: {
-        keyWisdom: keyWisdom,
+        keyWisdom: parsedResponse.keyWisdom,
         perceive: {
           summary: "How they perceive their world",
-          details: ["Full perception details available through expanded research"]
+          details: [parsedResponse.perceive]
         },
         relate: {
           summary: "How they relate to their world",
-          details: ["Full relationship details available through expanded research"]
+          details: [parsedResponse.relate]
         },
         apply: {
           summary: "How they apply their intelligence",
-          details: ["Full application details available through expanded research"]
+          details: [parsedResponse.apply]
         },
-        temporal: "Temporal intelligence insights available through expanded research",
+        temporal: parsedResponse.temporal,
         energetic: "Energetic intelligence insights available through expanded research",
         collective: "Collective wisdom insights available through expanded research",
         adaptive: "Adaptive strategies available through expanded research",
