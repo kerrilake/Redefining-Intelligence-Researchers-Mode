@@ -40,7 +40,7 @@ exports.handler = async (event, context) => {
     console.log(`Researching species: ${species}`);
     
     // Hybrid prompt combining depth with conversational warmth
-    const researchPrompt = createHybridResearchPrompt(species, options || {});
+    const researchPrompt = createHybridResearchPrompt(species, {});
 
     // Call Anthropic API
     const response = await fetch('https://api.anthropic.com/v1/messages', {
