@@ -95,9 +95,18 @@ Write in a warm, accessible tone that would resonate with someone interested in 
       success: true,
       response: {
         keyWisdom: keyWisdom,
-        perceive: "Full perception details available through expanded research",
-        relate: "Full relationship details available through expanded research", 
-        apply: "Full application details available through expanded research",
+        perceive: {
+          summary: "How they perceive their world",
+          details: ["Full perception details available through expanded research"]
+        },
+        relate: {
+          summary: "How they relate to their world",
+          details: ["Full relationship details available through expanded research"]
+        },
+        apply: {
+          summary: "How they apply their intelligence",
+          details: ["Full application details available through expanded research"]
+        },
         temporal: "Temporal intelligence insights available through expanded research",
         energetic: "Energetic intelligence insights available through expanded research",
         collective: "Collective wisdom insights available through expanded research",
