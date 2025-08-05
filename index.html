@@ -691,6 +691,319 @@
                 }
             });
         });
+        // Add this JavaScript to your index.html file, right before the closing </script> tag
+// This connects your UI to the species-research.js functions
+
+// Configuration
+const CONFIG = {
+    DAILY_SEARCH_LIMIT: 10,
+    MONTHLY_BUDGET: 100,
+    COST_PER_SEARCH: 0.50
+};
+
+// Global state
+let currentSpeciesData = [];
+let researchHistory = JSON.parse(localStorage.getItem('researchHistory') || '[]');
+let dailyUsage = JSON.parse(localStorage.getItem('dailyUsage') || '{}');
+let monthlySpend = parseFloat(localStorage.getItem('monthlySpend') || '0');
+
+// Main research function
+async function conductResearch() {
+    console.log('🔬 Starting AI-powered research...');
+    
+    const speciesInputs = [
+        document.getElementById('species1').value.trim(),
+        document.getElementById('species2').value.trim(),
+        document.getElementById('species3').value.trim(),
+        document.getElementById('species4').value.trim(),
+        document.getElementById('species5').value.trim()
+    ].filter(species => species.length > 0);
+    
+    if (speciesInputs.length === 0) {
+        alert('Please enter at least one species name');
+        return;
+    }
+    
+    // Check daily limit
+    const today = new Date().toDateString();
+    if (!dailyUsage[today]) dailyUsage[today] = 0;
+    
+    if (dailyUsage[today] >= CONFIG.DAILY_SEARCH_LIMIT) {
+        alert(`Daily search limit reached (${CONFIG.DAILY_SEARCH_LIMIT} searches). Please try again tomorrow.`);
+        return;
+    }
+    
+    // Get options
+    const options = {
+        includeIndigenous: document.getElementById('includeIndigenous').checked,
+        includeBiomimicry: document.getElementById('includeBiomimicry').checked,
+        includeHuman: document.getElementById('includeHuman').checked
+    };
+    
+    if (options.includeHuman && !speciesInputs.includes('Human')) {
+        speciesInputs.push('Human');
+    }
+    
+    const resultsDiv = document.getElementById('results');
+    currentSpeciesData = []; // Reset current data
+    
+    try {
+        // Show loading with DNA animation
+        resultsDiv.innerHTML = `
+            <div class="results-container glass fade-in">
+                <div class="loading-enhanced">
+                    <div class="research-animation">🧬</div>
+                    <h3 style="color: #47485f;">Conducting Deep Species Intelligence Research</h3>
+                    <p style="color: #3e3a44;">Enhanced quantum-consciousness analysis across ${speciesInputs.length} species</p>
+                    <p style="color: #6f9a4c; font-size: 14px; margin-top: 10px;">Integrating indigenous wisdom, quantum biology, and unified physics...</p>
+                </div>
+            </div>
+        `;
+        
+        // Research each species
+        const researchResults = [];
+        for (let i = 0; i < speciesInputs.length; i++) {
+            const species = speciesInputs[i];
+            console.log(`🔍 Researching ${i + 1}/${speciesInputs.length}: ${species}`);
+            
+            // Update loading message
+            resultsDiv.innerHTML = `
+                <div class="results-container glass fade-in">
+                    <div class="loading-enhanced">
+                        <div class="research-animation">🧬</div>
+                        <h3 style="color: #47485f;">Researching ${species}...</h3>
+                        <p style="color: #3e3a44;">Species ${i + 1} of ${speciesInputs.length}</p>
+                        <div style="background: rgba(111, 154, 76, 0.2); padding: 10px; border-radius: 10px; margin: 20px auto; max-width: 400px;">
+                            <div style="width: ${((i + 1)/speciesInputs.length)*100}%; height: 6px; background: linear-gradient(135deg, #6f9a4c, #4e6440); border-radius: 3px; transition: width 0.5s ease;"></div>
+                        </div>
+                        <p style="color: #6f9a4c; font-size: 13px;">Accessing consciousness research databases...</p>
+                    </div>
+                </div>
+            `;
+            
+            // Call the API
+            const result = await callAnthropicAPI(species, options);
+            researchResults.push(result);
+            console.log(`✅ Research completed for ${species}`);
+        }
+        
+        // Update usage
+        dailyUsage[today]++;
+        localStorage.setItem('dailyUsage', JSON.stringify(dailyUsage));
+        
+        // Store results
+        currentSpeciesData = researchResults;
+        
+        // Display results
+        displayEnhancedResults(researchResults);
+        
+        // Update usage display
+        updateUsageDisplay();
+        
+        console.log('✅ All research completed successfully');
+        
+    } catch (error) {
+        console.error('❌ Research failed:', error);
+        resultsDiv.innerHTML = `
+            <div class="results-container glass fade-in">
+                <div style="text-align: center; padding: 40px;">
+                    <h3 style="color: #47485f;">Research Temporarily Unavailable</h3>
+                    <p style="color: #3e3a44;">Error: ${error.message}</p>
+                    <button onclick="conductResearch()" class="action-btn research-btn" style="margin: 20px auto;">
+                        Try Again
+                    </button>
+                </div>
+            </div>
+        `;
+    }
+}
+
+// Display the research results
+function displayEnhancedResults(dataArray) {
+    const resultsDiv = document.getElementById('results');
+    
+    let html = '<div class="fade-in">';
+    
+    // Display each species result
+    dataArray.forEach((data, index) => {
+        const fallbackNote = data.researchBacked === false ? 
+            '<p style="background: rgba(231, 198, 77, 0.2); padding: 10px; border-radius: 8px; margin: 10px 0; font-size: 0.9em; text-align: center;">Note: This is enhanced framework data provided when live research is temporarily unavailable.</p>' : '';
+        
+        html += `
+            <div class="results-container glass">
+                <div class="species-header">
+                    <h2>${data.species}</h2>
+                    <div class="research-type">
+                        ${data.researchBacked ? '🔬 Quantum-Enhanced AI Research' : '📋 Enhanced Framework Analysis'}
+                    </div>
+                </div>
+                
+                ${fallbackNote}
+                
+                <div class="wisdom-insight">
+                    <h3>💡 Key Wisdom</h3>
+                    <p>${data.wisdomInsight}</p>
+                </div>
+                
+                <div class="intelligence-framework">
+                    <div class="framework-section perceive-section">
+                        <h3><span class="framework-badge">PERCEIVE</span> How They Perceive</h3>
+                        <p>${data.perceive.summary}</p>
+                        <ul class="framework-details">
+                            ${data.perceive.details.map(detail => `<li>${detail}</li>`).join('')}
+                        </ul>
+                    </div>
+                    
+                    <div class="framework-section relate-section">
+                        <h3><span class="framework-badge">RELATE</span> How They Relate</h3>
+                        <p>${data.relate.summary}</p>
+                        <ul class="framework-details">
+                            ${data.relate.details.map(detail => `<li>${detail}</li>`).join('')}
+                        </ul>
+                    </div>
+                    
+                    <div class="framework-section apply-section">
+                        <h3><span class="framework-badge">APPLY</span> How They Apply Intelligence</h3>
+                        <p>${data.apply.summary}</p>
+                        <ul class="framework-details">
+                            ${data.apply.details.map(detail => `<li>${detail}</li>`).join('')}
+                        </ul>
+                    </div>
+                </div>
+                
+                <div class="wisdom-insight temporal-dimension">
+                    <h3>⏰ Temporal Intelligence</h3>
+                    <p>${data.temporalIntelligence}</p>
+                </div>
+                
+                <div class="wisdom-insight energetic-dimension">
+                    <h3>⚡ Energetic Intelligence</h3>
+                    <p>${data.energeticIntelligence}</p>
+                </div>
+                
+                <div class="wisdom-insight collective-dimension">
+                    <h3>🤝 Collective Wisdom</h3>
+                    <p>${data.collectiveWisdom}</p>
+                </div>
+                
+                <div class="wisdom-insight adaptive-dimension">
+                    <h3>🔄 Adaptive Strategies</h3>
+                    <p>${data.adaptiveStrategies}</p>
+                </div>
+                
+                <div class="wisdom-insight enhanced-dimension">
+                    <h3>🌌 Quantum Biology & Consciousness</h3>
+                    <p>${data.quantumAspects}</p>
+                </div>
+                
+                <div class="wisdom-insight enhanced-dimension">
+                    <h3>🌱 Human Learning Opportunities</h3>
+                    <p>${data.humanLearnings}</p>
+                </div>
+                
+                <div class="wisdom-insight enhanced-dimension">
+                    <h3>🌍 Conservation Intelligence</h3>
+                    <p>${data.conservationWisdom}</p>
+                </div>
+            </div>
+        `;
+    });
+    
+    // Action buttons after all results
+    html += `
+        <div class="results-container glass">
+            <div class="action-buttons" style="display: flex; gap: 15px; justify-content: center; flex-wrap: wrap; margin: 30px 0;">
+                <button class="action-btn" onclick="generatePDFReport()" style="background: linear-gradient(135deg, #47485f, #3e3a44); color: white; padding: 15px 30px; border-radius: 25px;">
+                    📄 Download PDF Report
+                </button>
+                <button class="action-btn" onclick="resetSearch()" style="background: linear-gradient(135deg, #9daaec, #634e87); color: white; padding: 15px 30px; border-radius: 25px;">
+                    🔍 Research More Species
+                </button>
+            </div>
+            <div style="text-align: center; margin-top: 20px; padding: 15px; background: rgba(111, 154, 76, 0.1); border-radius: 10px;">
+                <small style="color: #47485f; font-size: 12px;">
+                    Enhanced research with 7 intelligence dimensions • 
+                    ${dataArray.reduce((sum, d) => sum + (d.sources?.length || 0), 0)} sources consulted • 
+                    Quantum biology integrated
+                </small>
+            </div>
+        </div>
+    `;
+    
+    html += '</div>';
+    resultsDiv.innerHTML = html;
+}
+
+// Generate PDF Report
+function generatePDFReport() {
+    if (!currentSpeciesData || currentSpeciesData.length === 0) {
+        alert('No research data available for PDF generation.');
+        return;
+    }
+    
+    try {
+        const { jsPDF } = window.jspdf;
+        const doc = new jsPDF();
+        
+        // Title
+        doc.setFontSize(20);
+        doc.text('Species Intelligence Research Report', 20, 20);
+        
+        doc.setFontSize(12);
+        doc.text('Perceive • Relate • Apply Framework with Enhanced Dimensions', 20, 30);
+        doc.text(`Generated: ${new Date().toLocaleDateString()}`, 20, 40);
+        
+        // Add species data
+        let yPos = 60;
+        currentSpeciesData.forEach((species, index) => {
+            if (yPos > 250) {
+                doc.addPage();
+                yPos = 20;
+            }
+            
+            doc.setFontSize(16);
+            doc.text(`${species.species} Intelligence Profile`, 20, yPos);
+            yPos += 10;
+            
+            doc.setFontSize(10);
+            const wisdom = doc.splitTextToSize(species.wisdomInsight, 170);
+            doc.text(wisdom, 20, yPos);
+            yPos += wisdom.length * 5 + 10;
+        });
+        
+        // Save
+        doc.save(`Species-Intelligence-Report-${new Date().toISOString().split('T')[0]}.pdf`);
+        
+    } catch (error) {
+        console.error('PDF generation error:', error);
+        alert('Error generating PDF. Please try again.');
+    }
+}
+
+// Reset search
+function resetSearch() {
+    document.getElementById('species1').value = '';
+    document.getElementById('species2').value = '';
+    document.getElementById('species3').value = '';
+    document.getElementById('species4').value = '';
+    document.getElementById('species5').value = '';
+    document.getElementById('includeIndigenous').checked = false;
+    document.getElementById('includeBiomimicry').checked = false;
+    document.getElementById('includeHuman').checked = false;
+    document.getElementById('results').innerHTML = '';
+    document.getElementById('species1').focus();
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+}
+
+// Update usage display
+function updateUsageDisplay() {
+    const today = new Date().toDateString();
+    const todayUsage = dailyUsage[today] || 0;
+    const remaining = CONFIG.DAILY_SEARCH_LIMIT - todayUsage;
+    
+    document.getElementById('usageDisplay').innerHTML = 
+        `Searches today: ${todayUsage}/${CONFIG.DAILY_SEARCH_LIMIT} • Remaining: ${remaining} • Monthly budget: $${CONFIG.MONTHLY_BUDGET}`;
+}
     </script>
 </body>
 </html>
