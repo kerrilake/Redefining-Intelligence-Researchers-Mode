@@ -941,37 +941,298 @@ function displayEnhancedResults(dataArray) {
         `;
     });
     
-    // Add comparative sections if multiple species
+// Display the research results with dynamic comparative analysis
+function displayEnhancedResults(dataArray) {
+    const resultsDiv = document.getElementById('results');
+    
+    // Prepare PDF data for the first species (or modify to handle multiple)
+    if (dataArray.length > 0) {
+        const firstSpecies = dataArray[0];
+        
+        // Format the content for PDF
+        currentPDFData = {
+            species: dataArray.map(d => d.species).join(', '),
+            speciesData: dataArray, // Pass all species data for comparative analysis
+            introduction: `This comprehensive research explores ${dataArray.map(d => d.species).join(', ')} through the revolutionary Perceive/Relate/Apply framework with enhanced intelligence dimensions. The research reveals sophisticated temporal awareness, energetic intelligence, collective wisdom, and adaptive strategies that challenge traditional views of intelligence.`,
+            keyWisdom: firstSpecies.wisdomInsight || firstSpecies.keyWisdom,
+            perceive: `${firstSpecies.perceive.summary}\n${firstSpecies.perceive.details.map(d => `• ${d}`).join('\n')}`,
+            relate: `${firstSpecies.relate.summary}\n${firstSpecies.relate.details.map(d => `• ${d}`).join('\n')}`,
+            apply: `${firstSpecies.apply.summary}\n${firstSpecies.apply.details.map(d => `• ${d}`).join('\n')}`,
+            temporal: firstSpecies.temporalIntelligence,
+            energetic: firstSpecies.energeticIntelligence,
+            collective: firstSpecies.collectiveWisdom,
+            adaptive: firstSpecies.adaptiveStrategies,
+            quantum: firstSpecies.quantumAspects,
+            humanLearning: firstSpecies.humanLearnings,
+            conservation: firstSpecies.conservationWisdom,
+            sources: firstSpecies.sources || [
+                "Anthropic Claude AI Enhanced Research",
+                "Intuitive Learning Foundation Framework",
+                "Quantum Biology Research Database",
+                "Indigenous Knowledge Systems",
+                "Contemporary Consciousness Studies"
+            ]
+        };
+    }
+    
+    let html = '<div class="fade-in">';
+    
+    // Display each species result
+    dataArray.forEach((data, index) => {
+        const fallbackNote = data.researchBacked === false ? 
+            '<p style="background: rgba(231, 198, 77, 0.2); padding: 10px; border-radius: 8px; margin: 10px 0; font-size: 0.9em; text-align: center;">Note: This is enhanced framework data provided when live research is temporarily unavailable.</p>' : '';
+        
+        html += `
+            <div class="results-container glass">
+                <div class="species-header">
+                    <h2>${data.species}</h2>
+                    <div class="research-type">
+                        ${data.researchBacked ? '🔬 Quantum-Enhanced AI Research' : '📋 Enhanced Framework Analysis'}
+                    </div>
+                </div>
+                
+                ${fallbackNote}
+                
+                <div class="wisdom-insight">
+                    <h3>💡 Key Wisdom</h3>
+                    <p>${data.wisdomInsight}</p>
+                </div>
+                
+                <div class="intelligence-framework">
+                    <div class="framework-section perceive-section">
+                        <h3><span class="framework-badge">PERCEIVE</span> How They Perceive</h3>
+                        <p>${data.perceive.summary}</p>
+                        <ul class="framework-details">
+                            ${data.perceive.details.map(detail => `<li>${detail}</li>`).join('')}
+                        </ul>
+                    </div>
+                    
+                    <div class="framework-section relate-section">
+                        <h3><span class="framework-badge">RELATE</span> How They Relate</h3>
+                        <p>${data.relate.summary}</p>
+                        <ul class="framework-details">
+                            ${data.relate.details.map(detail => `<li>${detail}</li>`).join('')}
+                        </ul>
+                    </div>
+                    
+                    <div class="framework-section apply-section">
+                        <h3><span class="framework-badge">APPLY</span> How They Apply Intelligence</h3>
+                        <p>${data.apply.summary}</p>
+                        <ul class="framework-details">
+                            ${data.apply.details.map(detail => `<li>${detail}</li>`).join('')}
+                        </ul>
+                    </div>
+                </div>
+                
+                <div class="wisdom-insight temporal-dimension">
+                    <h3>⏰ Temporal Intelligence</h3>
+                    <p>${data.temporalIntelligence}</p>
+                </div>
+                
+                <div class="wisdom-insight energetic-dimension">
+                    <h3>⚡ Energetic Intelligence</h3>
+                    <p>${data.energeticIntelligence}</p>
+                </div>
+                
+                <div class="wisdom-insight collective-dimension">
+                    <h3>🤝 Collective Wisdom</h3>
+                    <p>${data.collectiveWisdom}</p>
+                </div>
+                
+                <div class="wisdom-insight adaptive-dimension">
+                    <h3>🔄 Adaptive Strategies</h3>
+                    <p>${data.adaptiveStrategies}</p>
+                </div>
+                
+                <div class="wisdom-insight enhanced-dimension">
+                    <h3>🌌 Quantum Biology & Consciousness</h3>
+                    <p>${data.quantumAspects}</p>
+                </div>
+                
+                <div class="wisdom-insight enhanced-dimension">
+                    <h3>🌱 Human Learning Opportunities</h3>
+                    <p>${data.humanLearnings}</p>
+                </div>
+                
+                <div class="wisdom-insight enhanced-dimension">
+                    <h3>🌍 Conservation Intelligence</h3>
+                    <p>${data.conservationWisdom}</p>
+                </div>
+            </div>
+        `;
+    });
+    
+    // Add DYNAMIC comparative sections if multiple species
     if (dataArray.length > 1) {
+        // Generate dynamic comparisons based on actual species data
+        const alikeAnalysis = generateDynamicAlikeAnalysis(dataArray);
+        const uniqueGifts = generateDynamicUniqueGifts(dataArray);
+        
         html += `
             <div class="results-container glass">
                 <h2 style="color: #47485f; text-align: center; margin-bottom: 30px; font-size: 2em;">Where Intelligence Is Alike</h2>
                 <div class="wisdom-insight" style="background: linear-gradient(135deg, rgba(157, 170, 236, 0.15), rgba(99, 78, 135, 0.15));">
-                    <p style="font-size: 1.1em; line-height: 1.8;">
-                        These remarkable beings, though inhabiting different realms and expressing through diverse forms, 
-                        share profound commonalities in their consciousness. Each demonstrates sophisticated sensory perception 
-                        systems perfectly attuned to their environment. All exhibit complex social intelligence, forming 
-                        meaningful relationships and communicating through intricate languages we're only beginning to understand. 
-                        Most remarkably, each species shows clear evidence of emotional depth, memory, and the ability to learn 
-                        and adapt - revealing that consciousness flows through myriad channels, each equally valid and essential 
-                        to the web of life.
+                    <p style="font-size: 1.1em; line-height: 1.8; margin-bottom: 20px;">
+                        ${alikeAnalysis.introduction}
                     </p>
+                    <ul style="list-style: none; padding-left: 20px;">
+                        ${alikeAnalysis.points.map(point => 
+                            `<li style="margin-bottom: 12px; position: relative; padding-left: 25px;">
+                                <span style="position: absolute; left: 0; color: #9370db; font-weight: bold;">•</span>
+                                ${point}
+                            </li>`
+                        ).join('')}
+                    </ul>
                 </div>
                 
                 <h2 style="color: #47485f; text-align: center; margin: 40px 0 30px; font-size: 2em;">Unique Gifts</h2>
                 <div class="wisdom-insight" style="background: linear-gradient(135deg, rgba(231, 199, 77, 0.15), rgba(111, 154, 76, 0.15));">
-                    <p style="font-size: 1.1em; line-height: 1.8;">
-                        Each species brings irreplaceable gifts to our planetary consciousness. Their unique perceptual abilities 
-                        reveal dimensions of reality invisible to others. Their specialized forms of intelligence solve ecological 
-                        challenges in ways that benefit entire ecosystems. Their presence maintains critical balance in the web 
-                        of relationships that sustains all life. When we truly see and honor these gifts, we recognize that 
-                        losing any species is like removing notes from a symphony - the music continues, but something essential 
-                        is forever diminished.
-                    </p>
+                    ${uniqueGifts}
                 </div>
             </div>
         `;
     }
+    
+    // Add Symphony of Life section to every search
+    html += `
+        <div class="results-container glass" style="background: linear-gradient(135deg, rgba(231, 199, 77, 0.1), rgba(157, 170, 236, 0.1));">
+            <h2 style="color: #634e87; text-align: center; margin-bottom: 25px; font-size: 2.2em; font-weight: 600;">
+                The Symphony of Life
+            </h2>
+            <p style="font-size: 1.15em; line-height: 1.9; text-align: center; color: #47485f; font-style: italic; padding: 0 30px;">
+                "Together, these life forms demonstrate that intelligence is not a hierarchy but a symphony. 
+                Each contributes irreplaceable notes to the greater composition of planetary consciousness. 
+                Human intelligence finds its highest expression not in dominance, but in recognizing and 
+                honoring the unique gifts that each form of life brings to our shared evolutionary journey."
+            </p>
+        </div>
+    `;
+    
+    // Action buttons after all results
+    html += `
+        <div class="results-container glass">
+            <div class="action-buttons" style="display: flex; gap: 15px; justify-content: center; flex-wrap: wrap; margin: 30px 0;">
+                <button class="action-btn" onclick="generatePDFReport(currentPDFData)" style="background: linear-gradient(135deg, #9daaec, #634e87); color: white; padding: 15px 30px; border-radius: 25px; font-weight: 600;">
+                    📄 Break it down for me (download a pdf report)
+                </button>
+                <button class="action-btn" onclick="resetSearch()" style="background: linear-gradient(135deg, #6f9a4c, #4e6440); color: white; padding: 15px 30px; border-radius: 25px;">
+                    🔍 Research More Species
+                </button>
+            </div>
+            <div style="text-align: center; margin-top: 20px; padding: 15px; background: rgba(111, 154, 76, 0.1); border-radius: 10px;">
+                <small style="color: #47485f; font-size: 12px;">
+                    Enhanced research with 7 intelligence dimensions • 
+                    ${dataArray.reduce((sum, d) => sum + (d.sources?.length || 0), 0)} sources consulted • 
+                    Quantum biology integrated
+                </small>
+            </div>
+        </div>
+    `;
+    
+    html += '</div>';
+    resultsDiv.innerHTML = html;
+}
+
+// Generate dynamic "Where Intelligence Is Alike" analysis
+function generateDynamicAlikeAnalysis(dataArray) {
+    const species = dataArray.map(d => d.species);
+    
+    // Analyze commonalities from actual data
+    const introduction = `These ${species.length} remarkable beings - ${species.join(', ')} - though inhabiting vastly different realms and expressing through diverse forms, reveal profound patterns of shared consciousness:`;
+    
+    // Extract common themes from the actual research data
+    const points = [];
+    
+    // Check for perception commonalities
+    const allHaveAdvancedPerception = dataArray.every(d => 
+        d.perceive && (d.perceive.summary.includes('sense') || d.perceive.summary.includes('detect') || d.perceive.summary.includes('perceive'))
+    );
+    if (allHaveAdvancedPerception) {
+        points.push(`All ${species.length} species demonstrate sophisticated sensory perception systems, each perfectly calibrated to decode the unique information streams of their environment`);
+    }
+    
+    // Check for social/relational intelligence
+    const allHaveSocialIntelligence = dataArray.every(d => 
+        d.relate && (d.relate.summary.includes('social') || d.relate.summary.includes('communication') || d.relate.summary.includes('bond'))
+    );
+    if (allHaveSocialIntelligence) {
+        points.push(`Each exhibits complex forms of communication and social intelligence, creating intricate webs of relationship that extend far beyond mere survival`);
+    }
+    
+    // Check for adaptive/learning abilities
+    const allShowAdaptation = dataArray.every(d => 
+        d.adaptive || (d.apply && d.apply.summary.includes('learn'))
+    );
+    if (allShowAdaptation) {
+        points.push(`All demonstrate remarkable abilities to learn, adapt, and pass knowledge through generations, showing that intelligence is fundamentally about relationship with change`);
+    }
+    
+    // Add consciousness insight
+    points.push(`Each contributes essential wisdom to Earth's collective intelligence, reminding us that consciousness flows through infinite channels, each one irreplaceable in the symphony of life`);
+    
+    return { introduction, points };
+}
+
+// Generate dynamic unique gifts for each species
+function generateDynamicUniqueGifts(dataArray) {
+    let giftsHtml = '';
+    
+    dataArray.forEach(data => {
+        const gifts = extractUniqueGifts(data);
+        
+        giftsHtml += `
+            <div style="margin-bottom: 30px;">
+                <h3 style="color: #6f9a4c; font-size: 1.3em; margin-bottom: 15px;">${data.species}:</h3>
+                <ul style="list-style: none; padding-left: 20px;">
+                    ${gifts.map(gift => 
+                        `<li style="margin-bottom: 10px; position: relative; padding-left: 25px;">
+                            <span style="position: absolute; left: 0; color: #e7c64d; font-weight: bold;">•</span>
+                            ${gift}
+                        </li>`
+                    ).join('')}
+                </ul>
+            </div>
+        `;
+    });
+    
+    return giftsHtml;
+}
+
+// Extract unique gifts from species data
+function extractUniqueGifts(speciesData) {
+    const gifts = [];
+    
+    // Extract from perceive dimension
+    if (speciesData.perceive && speciesData.perceive.details.length > 0) {
+        const perceptionGift = speciesData.perceive.details[0];
+        gifts.push(`Unique perceptual gift: ${perceptionGift}`);
+    }
+    
+    // Extract from relate dimension
+    if (speciesData.relate && speciesData.relate.summary) {
+        const relateInsight = speciesData.relate.summary.split('.')[0];
+        gifts.push(`Relational wisdom: ${relateInsight}`);
+    }
+    
+    // Extract from temporal or energetic intelligence
+    if (speciesData.temporalIntelligence) {
+        const temporalGift = speciesData.temporalIntelligence.split('.')[0];
+        gifts.push(`Temporal mastery: ${temporalGift}`);
+    }
+    
+    // Extract from conservation wisdom
+    if (speciesData.conservationWisdom) {
+        const conservationInsight = speciesData.conservationWisdom.split('.')[0];
+        gifts.push(`Ecological contribution: ${conservationInsight}`);
+    }
+    
+    // Ensure we have at least 3-4 gifts
+    while (gifts.length < 3) {
+        gifts.push(`Teaching us about forms of intelligence beyond human comprehension`);
+    }
+    
+    return gifts.slice(0, 4); // Return maximum 4 gifts
+}
     
     // Add Symphony of Life section to every search
     html += `
