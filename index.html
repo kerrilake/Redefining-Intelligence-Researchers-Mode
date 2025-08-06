@@ -1199,8 +1199,19 @@ function generatePDFReport(report) {
     
     yPosition += introHeight + 40;
     
-    // Species header
-    addColoredHeader(yPosition, 70, colors.primaryGreen, colors.secondaryPurple);
+    // Species header with soft purple gradient
+    const headerHeight = 70;
+    
+    // Create soft purple gradient background
+    for (let i = 0; i < 10; i++) {
+        const ratio = i / 10;
+        const r = Math.round(157 * (1 - ratio) + 99 * ratio);
+        const g = Math.round(170 * (1 - ratio) + 78 * ratio);
+        const b = Math.round(236 * (1 - ratio) + 135 * ratio);
+        
+        doc.setFillColor(r, g, b);
+        doc.rect(margin - 10, yPosition - 10 + (i * 8), contentWidth + 20, 9, 'F');
+    }
     
     doc.setFont('helvetica', 'bold');
     doc.setFontSize(30);
