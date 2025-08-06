@@ -941,14 +941,61 @@ function displayEnhancedResults(dataArray) {
         `;
     });
     
+    // Add comparative sections if multiple species
+    if (dataArray.length > 1) {
+        html += `
+            <div class="results-container glass">
+                <h2 style="color: #47485f; text-align: center; margin-bottom: 30px; font-size: 2em;">Where Intelligence Is Alike</h2>
+                <div class="wisdom-insight" style="background: linear-gradient(135deg, rgba(157, 170, 236, 0.15), rgba(99, 78, 135, 0.15));">
+                    <p style="font-size: 1.1em; line-height: 1.8;">
+                        These remarkable beings, though inhabiting different realms and expressing through diverse forms, 
+                        share profound commonalities in their consciousness. Each demonstrates sophisticated sensory perception 
+                        systems perfectly attuned to their environment. All exhibit complex social intelligence, forming 
+                        meaningful relationships and communicating through intricate languages we're only beginning to understand. 
+                        Most remarkably, each species shows clear evidence of emotional depth, memory, and the ability to learn 
+                        and adapt - revealing that consciousness flows through myriad channels, each equally valid and essential 
+                        to the web of life.
+                    </p>
+                </div>
+                
+                <h2 style="color: #47485f; text-align: center; margin: 40px 0 30px; font-size: 2em;">Unique Gifts</h2>
+                <div class="wisdom-insight" style="background: linear-gradient(135deg, rgba(231, 199, 77, 0.15), rgba(111, 154, 76, 0.15));">
+                    <p style="font-size: 1.1em; line-height: 1.8;">
+                        Each species brings irreplaceable gifts to our planetary consciousness. Their unique perceptual abilities 
+                        reveal dimensions of reality invisible to others. Their specialized forms of intelligence solve ecological 
+                        challenges in ways that benefit entire ecosystems. Their presence maintains critical balance in the web 
+                        of relationships that sustains all life. When we truly see and honor these gifts, we recognize that 
+                        losing any species is like removing notes from a symphony - the music continues, but something essential 
+                        is forever diminished.
+                    </p>
+                </div>
+            </div>
+        `;
+    }
+    
+    // Add Symphony of Life section to every search
+    html += `
+        <div class="results-container glass" style="background: linear-gradient(135deg, rgba(231, 199, 77, 0.1), rgba(157, 170, 236, 0.1));">
+            <h2 style="color: #634e87; text-align: center; margin-bottom: 25px; font-size: 2.2em; font-weight: 600;">
+                The Symphony of Life
+            </h2>
+            <p style="font-size: 1.15em; line-height: 1.9; text-align: center; color: #47485f; font-style: italic; padding: 0 30px;">
+                "Together, these life forms demonstrate that intelligence is not a hierarchy but a symphony. 
+                Each contributes irreplaceable notes to the greater composition of planetary consciousness. 
+                Human intelligence finds its highest expression not in dominance, but in recognizing and 
+                honoring the unique gifts that each form of life brings to our shared evolutionary journey."
+            </p>
+        </div>
+    `;
+    
     // Action buttons after all results
     html += `
         <div class="results-container glass">
             <div class="action-buttons" style="display: flex; gap: 15px; justify-content: center; flex-wrap: wrap; margin: 30px 0;">
-                <button class="action-btn" onclick="generatePDFReport(currentPDFData)" style="background: linear-gradient(135deg, #47485f, #3e3a44); color: white; padding: 15px 30px; border-radius: 25px;">
-                    📄 Download PDF Report
+                <button class="action-btn" onclick="generatePDFReport(currentPDFData)" style="background: linear-gradient(135deg, #9daaec, #634e87); color: white; padding: 15px 30px; border-radius: 25px; font-weight: 600;">
+                    📄 Break it down for me (download a pdf report)
                 </button>
-                <button class="action-btn" onclick="resetSearch()" style="background: linear-gradient(135deg, #9daaec, #634e87); color: white; padding: 15px 30px; border-radius: 25px;">
+                <button class="action-btn" onclick="resetSearch()" style="background: linear-gradient(135deg, #6f9a4c, #4e6440); color: white; padding: 15px 30px; border-radius: 25px;">
                     🔍 Research More Species
                 </button>
             </div>
@@ -1014,25 +1061,27 @@ function generatePDFReport(report) {
         }
     }
 
-// Helper function to add gradient line
-function addGradientLine(x, y, width) {
-    doc.setDrawColor(...colors.primaryGreen);
-    doc.setLineWidth(3);
-    doc.line(x, y, x + width/3, y);
-    doc.setDrawColor(...colors.primaryGold);
-    doc.line(x + width/3, y, x + 2*width/3, y);
-    doc.setDrawColor(...colors.primaryPurple);
-    doc.line(x + 2*width/3, y, x + width, y);
-}
-
     // Helper function to add colored header panel
     function addColoredHeader(y, height, color1, color2) {
-    // Simulate gradient with overlapping shapes
-    doc.setFillColor(...color1);
-    doc.roundedRect(margin - 10, y - 10, contentWidth + 20, height + 20, 10, 10, 'F');
-    doc.setFillColor(...color2);
-    doc.roundedRect(margin + contentWidth/2, y - 10, contentWidth/2 - 10, height + 20, 10, 10, 'F');
-}
+        // Simulate gradient with overlapping shapes
+        doc.setFillColor(...color1);
+        doc.roundedRect(margin - 10, y - 10, contentWidth + 20, height + 20, 10, 10, 'F');
+        doc.setFillColor(...color2);
+        doc.setGlobalAlpha(0.5);
+        doc.roundedRect(margin + contentWidth/2, y - 10, contentWidth/2 - 10, height + 20, 10, 10, 'F');
+        doc.setGlobalAlpha(1);
+    }
+
+    // Helper function to add gradient line
+    function addGradientLine(x, y, width) {
+        doc.setDrawColor(...colors.primaryGreen);
+        doc.setLineWidth(3);
+        doc.line(x, y, x + width/3, y);
+        doc.setDrawColor(...colors.primaryGold);
+        doc.line(x + width/3, y, x + 2*width/3, y);
+        doc.setDrawColor(...colors.primaryPurple);
+        doc.line(x + 2*width/3, y, x + width, y);
+    }
 
     // Helper function to check page break
     function checkPageBreak(neededSpace) {
@@ -1360,6 +1409,111 @@ function addGradientLine(x, y, width) {
     doc.setFontSize(11);
     doc.setTextColor(...colors.lightGray);
     doc.text('Visit: intuitivelearningfoundation.org • generateharmony.com • kerrilake.com', pageWidth/2, yPosition + 55, { align: 'center' });
+    
+    addPageNumber(pageNum);
+
+    // Add comparative sections if multiple species
+    if (report.species && report.species.includes(',')) {
+        doc.addPage();
+        yPosition = 40;
+        pageNum++;
+        
+        // "Where Intelligence Is Alike" section
+        doc.setFont('helvetica', 'bold');
+        doc.setFontSize(24);
+        doc.setTextColor(...colors.primaryPurple);
+        doc.text('Where Intelligence Is Alike', margin, yPosition);
+        
+        yPosition += 35;
+        
+        const alikePanel = 140;
+        addPanel(yPosition, alikePanel, true);
+        
+        doc.setFont('helvetica', 'normal');
+        doc.setFontSize(14);
+        doc.setTextColor(...colors.darkGray);
+        
+        const alikeText = "These remarkable beings, though inhabiting different realms and expressing through " +
+            "diverse forms, share profound commonalities in their consciousness. Each demonstrates sophisticated " +
+            "sensory perception systems perfectly attuned to their environment. All exhibit complex social intelligence, " +
+            "forming meaningful relationships and communicating through intricate languages we're only beginning to " +
+            "understand. Most remarkably, each species shows clear evidence of emotional depth, memory, and the " +
+            "ability to learn and adapt - revealing that consciousness flows through myriad channels, each equally valid " +
+            "and essential to the web of life.";
+        
+        const alikeLines = doc.splitTextToSize(alikeText, contentWidth - 20);
+        doc.text(alikeLines, margin + 10, yPosition + 20);
+        
+        yPosition += alikePanel + 30;
+        
+        // "Unique Gifts" section
+        doc.setFont('helvetica', 'bold');
+        doc.setFontSize(24);
+        doc.setTextColor(...colors.primaryPurple);
+        doc.text('Unique Gifts', margin, yPosition);
+        
+        yPosition += 35;
+        
+        const giftsPanel = 140;
+        addPanel(yPosition, giftsPanel, true);
+        
+        doc.setFont('helvetica', 'normal');
+        doc.setFontSize(14);
+        doc.setTextColor(...colors.darkGray);
+        
+        const giftsText = "Each species brings irreplaceable gifts to our planetary consciousness. Their unique " +
+            "perceptual abilities reveal dimensions of reality invisible to others. Their specialized forms of intelligence " +
+            "solve ecological challenges in ways that benefit entire ecosystems. Their presence maintains critical " +
+            "balance in the web of relationships that sustains all life. When we truly see and honor these gifts, " +
+            "we recognize that losing any species is like removing notes from a symphony - the music continues, " +
+            "but something essential is forever diminished.";
+        
+        const giftsLines = doc.splitTextToSize(giftsText, contentWidth - 20);
+        doc.text(giftsLines, margin + 10, yPosition + 20);
+        
+        yPosition += giftsPanel + 40;
+    }
+    
+    // Add Symphony of Life message to every report
+    if (yPosition > doc.internal.pageSize.height - 200) {
+        doc.addPage();
+        yPosition = 40;
+        pageNum++;
+    }
+    
+    // Symphony section with special styling
+    const symphonyHeight = 120;
+    
+    // Create gradient background
+    for (let i = 0; i < 20; i++) {
+        const ratio = i / 20;
+        const r = Math.round(231 * (1 - ratio) + 157 * ratio);
+        const g = Math.round(199 * (1 - ratio) + 170 * ratio);
+        const b = Math.round(77 * (1 - ratio) + 236 * ratio);
+        
+        doc.setFillColor(r, g, b);
+        doc.rect(margin - 10, yPosition - 10 + (i * 6), contentWidth + 20, 7, 'F');
+    }
+    
+    // Add text
+    doc.setFont('helvetica', 'bold');
+    doc.setFontSize(20);
+    doc.setTextColor(...colors.white);
+    doc.text('The Symphony of Life', pageWidth/2, yPosition + 25, { align: 'center' });
+    
+    doc.setFont('helvetica', 'italic');
+    doc.setFontSize(14);
+    const symphonyText = "Together, these life forms demonstrate that intelligence is not a hierarchy but a symphony. " +
+        "Each contributes irreplaceable notes to the greater composition of planetary consciousness. Human intelligence " +
+        "finds its highest expression not in dominance, but in recognizing and honoring the unique gifts that each " +
+        "form of life brings to our shared evolutionary journey.";
+    
+    const symphonyLines = doc.splitTextToSize(symphonyText, contentWidth - 30);
+    yPosition += 45;
+    symphonyLines.forEach(line => {
+        doc.text(line, pageWidth/2, yPosition, { align: 'center' });
+        yPosition += 18;
+    });
     
     addPageNumber(pageNum);
 
