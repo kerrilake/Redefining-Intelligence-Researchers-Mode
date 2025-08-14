@@ -155,61 +155,60 @@ exports.handler = async (event, context) => {
 }
 
 function createHybridResearchPrompt(species, options) {
-  return `You're a brilliant scientist who makes research accessible and exciting, like that favorite professor who helps people fall in love with life's intelligence. Share discoveries about ${species} consciousness with warmth, wonder, and consciousness-expanding language that weaves research naturally into inspiring narratives.
-
-Create content that works for both academics and general readers - like a TED talk with citations that makes awareness expand as people read.
+  return `You're a brilliant scientist who makes research accessible and exciting, like that favorite professor who helps people fall in love with life's intelligence. Share discoveries about ${species} consciousness with warmth, wonder, and consciousness-expanding language.
 
 VOICE GUIDELINES:
 - Write conversationally as if sharing exciting discoveries with a curious friend
-- Use consciousness-expanding metaphors: "chemical conversations," "bio-sonar symphonies," "electromagnetic memory," "consciousness networks"
-- Naturally integrate quantum concepts and field awareness
-- Honor indigenous wisdom alongside scientific research
+- Use consciousness-expanding metaphors: "chemical conversations," "bio-sonar symphonies," "electromagnetic memory"
 - Transform clinical language: instead of "exhibits behaviors" → "expresses wisdom through"
 - Make complex concepts feel accessible and wonder-filled
+- Include research naturally in flowing narratives
+
+CRITICAL: Your response MUST be valid JSON. Escape all quotes properly. No line breaks within strings.
 
 For ${species}, provide:
 
-1. KEY WISDOM (3-4 sentences): A consciousness-expanding insight about their intelligence that makes readers think "whoa!" Include one research reference woven naturally into the narrative.
+1. KEY WISDOM (3-4 sentences): A consciousness-expanding insight about their intelligence. Include one research reference naturally.
 
-2. PERCEIVE (3-4 sentences): How they sense their world through consciousness-based perception. Include a specific study or researcher woven into flowing language.
-   Details: 4 brief sensory capabilities using vivid, relatable descriptions
+2. PERCEIVE (3-4 sentences): How they sense their world through consciousness-based perception. Include a specific study.
+   Details: 4 brief sensory capabilities
 
-3. RELATE (3-4 sentences): Their social/communication abilities as consciousness collaboration. Include research examples flowing naturally.
-   Details: 4 brief relationship aspects using consciousness network language
+3. RELATE (3-4 sentences): Their social/communication abilities as consciousness collaboration. Include research examples.
+   Details: 4 brief relationship aspects
 
-4. APPLY (3-4 sentences): Intelligence applications as creative problem-solving wisdom. Include documented cases naturally integrated.
-   Details: 4 brief applications described as consciousness expressions
+4. APPLY (3-4 sentences): Intelligence applications as creative problem-solving wisdom. Include documented cases.
+   Details: 4 brief applications
 
-5. TEMPORAL (3-4 sentences): Time awareness as consciousness dancing through different temporal dimensions. Include chronobiology research naturally.
+5. TEMPORAL (3-4 sentences): Time awareness as consciousness dancing through temporal dimensions. Include chronobiology research.
 
-6. ENERGETIC (3-4 sentences): Biofield/electromagnetic abilities as consciousness frequency interactions. Include scientific backing with wonder.
+6. ENERGETIC (3-4 sentences): Biofield/electromagnetic abilities as consciousness frequency interactions. Include scientific backing.
 
-7. COLLECTIVE (3-4 sentences): Group intelligence as consciousness networks and collaborative wisdom. Include research examples.
+7. COLLECTIVE (3-4 sentences): Group intelligence as consciousness networks. Include research examples.
 
-8. ADAPTIVE (3-4 sentences): Resilience as consciousness creativity responding to life's challenges. Include documented adaptations.
+8. ADAPTIVE (3-4 sentences): Resilience as consciousness creativity responding to challenges. Include documented adaptations.
 
-9. QUANTUM (2-3 sentences): Quantum biology as consciousness operating through field effects. Include researcher names naturally.
+9. QUANTUM (2-3 sentences): Quantum biology as consciousness operating through field effects. Include researcher names.
 
-10. HUMANLEARNING (3-4 sentences): What we can learn from ${species} consciousness to expand our own awareness and intelligence.
+10. HUMANLEARNING (3-4 sentences): What we can learn from ${species} consciousness to expand our own awareness.
 
-11. CONSERVATION (3-4 sentences): Why protecting their consciousness contributions matters for planetary intelligence networks. Include data naturally.
+11. CONSERVATION (3-4 sentences): Why protecting their consciousness contributions matters for planetary intelligence networks.
 
 12. SOURCES: 6 credible sources mixing journals, researchers, and organizations.
 
-Format as clean JSON. Weave research naturally into consciousness-expanding narratives, not as formal citations. Keep responses academically robust while feeling like inspired conversation that makes awareness expand.
+RESPOND ONLY WITH VALID JSON. NO EXTRA TEXT. ESCAPE ALL QUOTES WITH BACKSLASHES.
 
 {
-  "keyWisdom": "text",
-  "perceive": {"summary": "text", "details": ["1","2","3","4"]},
-  "relate": {"summary": "text", "details": ["1","2","3","4"]},
-  "apply": {"summary": "text", "details": ["1","2","3","4"]},
-  "temporal": "text",
-  "energetic": "text",
-  "collective": "text",
-  "adaptive": "text",
-  "quantumBiology": "text",
-  "humanLearning": "text",
-  "conservation": "text",
+  "keyWisdom": "text here",
+  "perceive": {"summary": "text here", "details": ["1","2","3","4"]},
+  "relate": {"summary": "text here", "details": ["1","2","3","4"]},
+  "apply": {"summary": "text here", "details": ["1","2","3","4"]},
+  "temporal": "text here",
+  "energetic": "text here",
+  "collective": "text here",
+  "adaptive": "text here",
+  "quantumBiology": "text here",
+  "humanLearning": "text here",
+  "conservation": "text here",
   "sources": ["1","2","3","4","5","6"]
 }`;
 }
