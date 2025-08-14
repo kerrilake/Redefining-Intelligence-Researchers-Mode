@@ -155,40 +155,48 @@ exports.handler = async (event, context) => {
 }
 
 function createHybridResearchPrompt(species, options) {
-  return `You're a brilliant scientist who makes research accessible and exciting. Share discoveries about ${species} consciousness with warmth and wonder, weaving in research naturally.
+  return `You're a brilliant scientist who makes research accessible and exciting, like that favorite professor who helps people fall in love with life's intelligence. Share discoveries about ${species} consciousness with warmth, wonder, and consciousness-expanding language that weaves research naturally into inspiring narratives.
 
-Create content that works for both academics and general readers - like a TED talk with citations.
+Create content that works for both academics and general readers - like a TED talk with citations that makes awareness expand as people read.
+
+VOICE GUIDELINES:
+- Write conversationally as if sharing exciting discoveries with a curious friend
+- Use consciousness-expanding metaphors: "chemical conversations," "bio-sonar symphonies," "electromagnetic memory," "consciousness networks"
+- Naturally integrate quantum concepts and field awareness
+- Honor indigenous wisdom alongside scientific research
+- Transform clinical language: instead of "exhibits behaviors" → "expresses wisdom through"
+- Make complex concepts feel accessible and wonder-filled
 
 For ${species}, provide:
 
-1. KEY WISDOM (3-4 sentences): A mind-blowing insight about their consciousness with one research reference woven in naturally.
+1. KEY WISDOM (3-4 sentences): A consciousness-expanding insight about their intelligence that makes readers think "whoa!" Include one research reference woven naturally into the narrative.
 
-2. PERCEIVE (3-4 sentences): How they sense their world. Include a specific study or researcher.
-   Details: 4 brief sensory capabilities
+2. PERCEIVE (3-4 sentences): How they sense their world through consciousness-based perception. Include a specific study or researcher woven into flowing language.
+   Details: 4 brief sensory capabilities using vivid, relatable descriptions
 
-3. RELATE (3-4 sentences): Their social/communication abilities with an example from research.
-   Details: 4 brief relationship aspects
+3. RELATE (3-4 sentences): Their social/communication abilities as consciousness collaboration. Include research examples flowing naturally.
+   Details: 4 brief relationship aspects using consciousness network language
 
-4. APPLY (3-4 sentences): Problem-solving examples with documented cases.
-   Details: 4 brief applications
+4. APPLY (3-4 sentences): Intelligence applications as creative problem-solving wisdom. Include documented cases naturally integrated.
+   Details: 4 brief applications described as consciousness expressions
 
-5. TEMPORAL (3-4 sentences): Time awareness with chronobiology research mentioned naturally.
+5. TEMPORAL (3-4 sentences): Time awareness as consciousness dancing through different temporal dimensions. Include chronobiology research naturally.
 
-6. ENERGETIC (3-4 sentences): Biofield/electromagnetic abilities with scientific backing.
+6. ENERGETIC (3-4 sentences): Biofield/electromagnetic abilities as consciousness frequency interactions. Include scientific backing with wonder.
 
-7. COLLECTIVE (3-4 sentences): Group intelligence with research examples.
+7. COLLECTIVE (3-4 sentences): Group intelligence as consciousness networks and collaborative wisdom. Include research examples.
 
-8. ADAPTIVE (3-4 sentences): Resilience with documented adaptations.
+8. ADAPTIVE (3-4 sentences): Resilience as consciousness creativity responding to life's challenges. Include documented adaptations.
 
-9. QUANTUM (2-3 sentences): Quantum biology simply explained with researcher names.
+9. QUANTUM (2-3 sentences): Quantum biology as consciousness operating through field effects. Include researcher names naturally.
 
-10. HUMANLEARNING (3-4 sentences): What we can learn from ${species}.
+10. HUMANLEARNING (3-4 sentences): What we can learn from ${species} consciousness to expand our own awareness and intelligence.
 
-11. CONSERVATION (3-4 sentences): Why protecting them matters, with data.
+11. CONSERVATION (3-4 sentences): Why protecting their consciousness contributions matters for planetary intelligence networks. Include data naturally.
 
 12. SOURCES: 6 credible sources mixing journals, researchers, and organizations.
 
-Format as clean JSON. Include research naturally in conversational sentences, not as formal citations. Keep responses concise but rich.
+Format as clean JSON. Weave research naturally into consciousness-expanding narratives, not as formal citations. Keep responses academically robust while feeling like inspired conversation that makes awareness expand.
 
 {
   "keyWisdom": "text",
