@@ -2,6 +2,74 @@
 // that generates rich, consciousness-expanding reports through quantum-enhanced AI research
 
 async function callAnthropicAPI(speciesName, options) {
+    console.log('🔬 Conducting academic research for:', speciesName);
+    
+    try {
+        console.log('📡 Trying Firebase Academic Function...');
+        
+        // Try Firebase Function first
+        let response = await fetch('https://getacademicspeciesintelligence-pyu4dtffdq-ue.a.run.app', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({
+                species: speciesName
+                // Firebase function handles prompt generation and academic formatting internally
+            })
+        });
+
+        console.log('📨 Firebase Response status:', response.status);
+
+        // If Firebase fails, try Netlify backup
+        if (!response.ok) {
+            console.log('🔄 Firebase failed, trying Netlify backup...');
+            
+            const prompt = createQuantumResearchPrompt(speciesName, options);
+            
+            response = await fetch('/.netlify/functions/research-species', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({
+                    species: speciesName,
+                    prompt: prompt,
+                    options: options
+                })
+            });
+
+            console.log('📨 Netlify Backup Response status:', response.status);
+        }
+
+        if (!response.ok) {
+            const errorText = await response.text();
+            console.error('❌ Both APIs failed:', errorText);
+            throw new Error(`API Error: ${response.status} - ${errorText}`);
+        }
+
+        const data = await response.json();
+        console.log('✅ Academic research completed for', speciesName);
+        
+        if (data.success && data.response) {
+            return parseQuantumResearchResponse(data.response, speciesName);
+        } else if (data.species) {
+            // Firebase returns data directly, not wrapped in success/response
+            return parseQuantumResearchResponse(data, speciesName);
+        } else {
+            console.warn('⚠️ API returned unexpected format:', data);
+            return createQuantumFallback(speciesName, options);
+        }
+        
+    } catch (error) {
+        console.error('🚨 Academic research error for', speciesName, ':', error);
+        console.log('🔄 Using enhanced consciousness framework fallback');
+        
+        const fallbackData = createQuantumFallback(speciesName, options);
+        fallbackData.fallbackReason = `Research system building connection: ${error.message}`;
+        return fallbackData;
+    }
+}
     console.log('🔬 Conducting deep consciousness research for:', speciesName);
     
     try {
