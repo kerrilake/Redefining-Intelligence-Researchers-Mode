@@ -347,4 +347,6 @@ function createQuantumFallback(speciesName, options) {
         fallbackReason: "Enhanced consciousness framework with quantum integration",
         timestamp: new Date().toISOString()
     };
+    // Make sure function is globally accessible
+window.callAnthropicAPI = callAnthropicAPI;
 }
