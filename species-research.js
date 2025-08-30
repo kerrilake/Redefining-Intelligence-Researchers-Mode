@@ -73,18 +73,6 @@ async function callAnthropicAPI(speciesName, options) {
     console.log('🔬 Conducting deep consciousness research for:', speciesName);
     
     try {
-        const prompt = createQuantumResearchPrompt(speciesName, options);
-        console.log('📡 Sending research request to Claude API...');
-        
-        const response = await fetch('https://getacademicspeciesintelligence-pyu4dtffdq-ue.a.run.app', {
-    method: 'POST',
-    headers: {
-        'Content-Type': 'application/json',
-    },
-    body: JSON.stringify({
-        species: speciesName
-    })
-});
 
         console.log('📨 API Response status:', response.status);
 
