@@ -76,17 +76,15 @@ async function callAnthropicAPI(speciesName, options) {
         const prompt = createQuantumResearchPrompt(speciesName, options);
         console.log('📡 Sending research request to Claude API...');
         
-        const response = await fetch('/.netlify/functions/research-species', {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json',
-            },
-            body: JSON.stringify({
-                species: speciesName,
-                prompt: prompt,
-                options: options
-            })
-        });
+        const response = await fetch('https://getacademicspeciesintelligence-pyu4dtffdq-ue.a.run.app', {
+    method: 'POST',
+    headers: {
+        'Content-Type': 'application/json',
+    },
+    body: JSON.stringify({
+        species: speciesName
+    })
+});
 
         console.log('📨 API Response status:', response.status);
 
