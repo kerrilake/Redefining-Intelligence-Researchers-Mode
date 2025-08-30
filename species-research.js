@@ -69,7 +69,7 @@ async function callAnthropicAPI(speciesName, options) {
         fallbackData.fallbackReason = `Research system building connection: ${error.message}`;
         return fallbackData;
     }
-}
+
     console.log('🔬 Conducting deep consciousness research for:', speciesName);
     
     try {
