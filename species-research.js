@@ -69,37 +69,6 @@ async function callAnthropicAPI(speciesName, options) {
         fallbackData.fallbackReason = `Research system building connection: ${error.message}`;
         return fallbackData;
     }
-
-    console.log('🔬 Conducting deep consciousness research for:', speciesName);
-    
-    try {
-
-        console.log('📨 API Response status:', response.status);
-
-        if (!response.ok) {
-            const errorText = await response.text();
-            console.error('❌ API Error:', errorText);
-            throw new Error(`API Error: ${response.status} - ${errorText}`);
-        }
-
-        const data = await response.json();
-        console.log('✅ Research completed for', speciesName);
-        
-        if (data.success && data.response) {
-            return parseQuantumResearchResponse(data.response, speciesName);
-        } else {
-            console.warn('⚠️ API returned unexpected format:', data);
-            return createQuantumFallback(speciesName, options);
-        }
-        
-    } catch (error) {
-        console.error('🚨 Research error for', speciesName, ':', error);
-        console.log('🔄 Using enhanced consciousness framework fallback');
-        
-        const fallbackData = createQuantumFallback(speciesName, options);
-        fallbackData.fallbackReason = `Research system building connection: ${error.message}`;
-        return fallbackData;
-    }
 }
 
 function createQuantumResearchPrompt(speciesName, options) {
@@ -335,6 +304,7 @@ function createQuantumFallback(speciesName, options) {
         fallbackReason: "Enhanced consciousness framework with quantum integration",
         timestamp: new Date().toISOString()
     };
-    // Make sure function is globally accessible
-window.callAnthropicAPI = callAnthropicAPI;
 }
+
+// Make sure function is globally accessible
+window.callAnthropicAPI = callAnthropicAPI;
