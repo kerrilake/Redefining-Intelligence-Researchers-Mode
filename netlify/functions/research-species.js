@@ -51,7 +51,7 @@ exports.handler = async (event, context) => {
         'content-type': 'application/json'
       },
       body: JSON.stringify({
-        model: 'claude-3-5-sonnet-20241022',
+        model: 'claude-3-5-sonnet-20250514',
         max_tokens: 2000, // Reduced to ensure faster response
         temperature: 0.75,
         messages: [{
